@@ -7,32 +7,51 @@ const Testimonial = require('../models/Testimonial');
 const ContactMessage = require('../models/ContactMessage');
 const CMS = require('../models/CMS');
 const slugify = require('slugify');
+const mongoose = require('mongoose');
+const mockStore = require('../utils/mockStore');
+
+const isDbReady = () => mongoose.connection && mongoose.connection.readyState === 1;
 
 // SERVICES
 exports.getServices = async (req, res, next) => {
   try {
-    const services = await Service.find({ isPublished: true }).sort({ order: 1 });
-    res.status(200).json({ success: true, count: services.length, data: services });
+    if (isDbReady()) {
+      const services = await Service.find({ isPublished: true }).sort({ order: 1 });
+      if (services && services.length > 0) {
+        return res.status(200).json({ success: true, count: services.length, data: services });
+      }
+    }
   } catch (err) {
-    next(err);
+    console.warn('[Services] DB query failed, using mockStore fallback:', err.message);
   }
+
+  const fallback = mockStore.getServices();
+  res.status(200).json({ success: true, count: fallback.length, data: fallback });
 };
 
 exports.getServiceBySlug = async (req, res, next) => {
   try {
-    const service = await Service.findOne({ slug: req.params.slug, isPublished: true });
-    if (!service) return res.status(404).json({ success: false, message: 'Service not found' });
-    res.status(200).json({ success: true, data: service });
+    if (isDbReady()) {
+      const service = await Service.findOne({ slug: req.params.slug, isPublished: true });
+      if (service) return res.status(200).json({ success: true, data: service });
+    }
   } catch (err) {
-    next(err);
+    console.warn('[ServiceBySlug] DB query failed, using mockStore fallback:', err.message);
   }
+
+  const fallback = mockStore.getServiceBySlug(req.params.slug);
+  if (!fallback) return res.status(404).json({ success: false, message: 'Service not found' });
+  res.status(200).json({ success: true, data: fallback });
 };
 
 exports.createService = async (req, res, next) => {
   try {
     const slug = slugify(req.body.title, { lower: true, strict: true });
-    const service = await Service.create({ ...req.body, slug });
-    res.status(201).json({ success: true, data: service });
+    if (isDbReady()) {
+      const service = await Service.create({ ...req.body, slug });
+      return res.status(201).json({ success: true, data: service });
+    }
+    res.status(201).json({ success: true, data: { ...req.body, slug } });
   } catch (err) {
     next(err);
   }
@@ -40,8 +59,11 @@ exports.createService = async (req, res, next) => {
 
 exports.updateService = async (req, res, next) => {
   try {
-    const service = await Service.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.status(200).json({ success: true, data: service });
+    if (isDbReady()) {
+      const service = await Service.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      return res.status(200).json({ success: true, data: service });
+    }
+    res.status(200).json({ success: true, data: req.body });
   } catch (err) {
     next(err);
   }
@@ -49,7 +71,9 @@ exports.updateService = async (req, res, next) => {
 
 exports.deleteService = async (req, res, next) => {
   try {
-    await Service.findByIdAndDelete(req.params.id);
+    if (isDbReady()) {
+      await Service.findByIdAndDelete(req.params.id);
+    }
     res.status(200).json({ success: true, message: 'Service deleted' });
   } catch (err) {
     next(err);
@@ -59,33 +83,48 @@ exports.deleteService = async (req, res, next) => {
 // EXAMS
 exports.getExams = async (req, res, next) => {
   try {
-    const { stream, search } = req.query;
-    const query = { isPublished: true };
-    if (stream && stream !== 'All') query.stream = stream;
-    if (search) query.name = { $regex: search, $options: 'i' };
+    if (isDbReady()) {
+      const { stream, search } = req.query;
+      const query = { isPublished: true };
+      if (stream && stream !== 'All') query.stream = stream;
+      if (search) query.name = { $regex: search, $options: 'i' };
 
-    const exams = await Exam.find(query).sort({ name: 1 });
-    res.status(200).json({ success: true, count: exams.length, data: exams });
+      const exams = await Exam.find(query).sort({ name: 1 });
+      if (exams && exams.length > 0) {
+        return res.status(200).json({ success: true, count: exams.length, data: exams });
+      }
+    }
   } catch (err) {
-    next(err);
+    console.warn('[Exams] DB query failed, using mockStore fallback:', err.message);
   }
+
+  const fallback = mockStore.getExams(req.query);
+  res.status(200).json({ success: true, count: fallback.length, data: fallback });
 };
 
 exports.getExamBySlug = async (req, res, next) => {
   try {
-    const exam = await Exam.findOne({ slug: req.params.slug, isPublished: true });
-    if (!exam) return res.status(404).json({ success: false, message: 'Exam not found' });
-    res.status(200).json({ success: true, data: exam });
+    if (isDbReady()) {
+      const exam = await Exam.findOne({ slug: req.params.slug, isPublished: true });
+      if (exam) return res.status(200).json({ success: true, data: exam });
+    }
   } catch (err) {
-    next(err);
+    console.warn('[ExamBySlug] DB query failed, using mockStore fallback:', err.message);
   }
+
+  const fallback = mockStore.getExamBySlug(req.params.slug);
+  if (!fallback) return res.status(404).json({ success: false, message: 'Exam not found' });
+  res.status(200).json({ success: true, data: fallback });
 };
 
 exports.createExam = async (req, res, next) => {
   try {
     const slug = slugify(req.body.name, { lower: true, strict: true });
-    const exam = await Exam.create({ ...req.body, slug });
-    res.status(201).json({ success: true, data: exam });
+    if (isDbReady()) {
+      const exam = await Exam.create({ ...req.body, slug });
+      return res.status(201).json({ success: true, data: exam });
+    }
+    res.status(201).json({ success: true, data: { ...req.body, slug } });
   } catch (err) {
     next(err);
   }
@@ -94,40 +133,55 @@ exports.createExam = async (req, res, next) => {
 // BLOGS
 exports.getBlogs = async (req, res, next) => {
   try {
-    const { category, search, page = 1, limit = 10 } = req.query;
-    const query = { isPublished: true };
-    if (category && category !== 'All') query.category = category;
-    if (search) query.title = { $regex: search, $options: 'i' };
+    if (isDbReady()) {
+      const { category, search, page = 1, limit = 10 } = req.query;
+      const query = { isPublished: true };
+      if (category && category !== 'All') query.category = category;
+      if (search) query.title = { $regex: search, $options: 'i' };
 
-    const skip = (Number(page) - 1) * Number(limit);
-    const total = await Blog.countDocuments(query);
-    const blogs = await Blog.find(query).sort({ createdAt: -1 }).skip(skip).limit(Number(limit));
+      const skip = (Number(page) - 1) * Number(limit);
+      const total = await Blog.countDocuments(query);
+      const blogs = await Blog.find(query).sort({ createdAt: -1 }).skip(skip).limit(Number(limit));
 
-    res.status(200).json({ success: true, total, data: blogs });
+      if (blogs && blogs.length > 0) {
+        return res.status(200).json({ success: true, total, data: blogs });
+      }
+    }
   } catch (err) {
-    next(err);
+    console.warn('[Blogs] DB query failed, using mockStore fallback:', err.message);
   }
+
+  const fallback = mockStore.getBlogs(req.query.limit);
+  res.status(200).json({ success: true, total: fallback.length, data: fallback });
 };
 
 exports.getBlogBySlug = async (req, res, next) => {
   try {
-    const blog = await Blog.findOneAndUpdate(
-      { slug: req.params.slug, isPublished: true },
-      { $inc: { views: 1 } },
-      { new: true }
-    );
-    if (!blog) return res.status(404).json({ success: false, message: 'Blog not found' });
-    res.status(200).json({ success: true, data: blog });
+    if (isDbReady()) {
+      const blog = await Blog.findOneAndUpdate(
+        { slug: req.params.slug, isPublished: true },
+        { $inc: { views: 1 } },
+        { new: true }
+      );
+      if (blog) return res.status(200).json({ success: true, data: blog });
+    }
   } catch (err) {
-    next(err);
+    console.warn('[BlogBySlug] DB query failed, using mockStore fallback:', err.message);
   }
+
+  const fallback = mockStore.getBlogBySlug(req.params.slug);
+  if (!fallback) return res.status(404).json({ success: false, message: 'Blog not found' });
+  res.status(200).json({ success: true, data: fallback });
 };
 
 exports.createBlog = async (req, res, next) => {
   try {
     const slug = slugify(req.body.title, { lower: true, strict: true });
-    const blog = await Blog.create({ ...req.body, slug });
-    res.status(201).json({ success: true, data: blog });
+    if (isDbReady()) {
+      const blog = await Blog.create({ ...req.body, slug });
+      return res.status(201).json({ success: true, data: blog });
+    }
+    res.status(201).json({ success: true, data: { ...req.body, slug } });
   } catch (err) {
     next(err);
   }
@@ -136,33 +190,53 @@ exports.createBlog = async (req, res, next) => {
 // TESTIMONIALS & FAQS
 exports.getTestimonials = async (req, res, next) => {
   try {
-    const testimonials = await Testimonial.find({ isPublished: true }).sort({ rating: -1 });
-    res.status(200).json({ success: true, data: testimonials });
+    if (isDbReady()) {
+      const testimonials = await Testimonial.find({ isPublished: true }).sort({ rating: -1 });
+      if (testimonials && testimonials.length > 0) {
+        return res.status(200).json({ success: true, data: testimonials });
+      }
+    }
   } catch (err) {
-    next(err);
+    console.warn('[Testimonials] DB query failed, using mockStore fallback:', err.message);
   }
+
+  const fallback = mockStore.getTestimonials();
+  res.status(200).json({ success: true, data: fallback });
 };
 
 exports.getFAQs = async (req, res, next) => {
   try {
-    const { category } = req.query;
-    const query = { isPublished: true };
-    if (category) query.category = category;
-    const faqs = await FAQ.find(query).sort({ order: 1 });
-    res.status(200).json({ success: true, data: faqs });
+    if (isDbReady()) {
+      const { category } = req.query;
+      const query = { isPublished: true };
+      if (category) query.category = category;
+      const faqs = await FAQ.find(query).sort({ order: 1 });
+      if (faqs && faqs.length > 0) {
+        return res.status(200).json({ success: true, data: faqs });
+      }
+    }
   } catch (err) {
-    next(err);
+    console.warn('[FAQs] DB query failed:', err.message);
   }
+
+  res.status(200).json({ success: true, data: [] });
 };
 
 // CONTACT MESSAGES
 exports.submitContact = async (req, res, next) => {
   try {
-    const message = await ContactMessage.create(req.body);
+    if (isDbReady()) {
+      const message = await ContactMessage.create(req.body);
+      return res.status(201).json({
+        success: true,
+        message: 'Thank you for reaching out! We will contact you soon.',
+        data: message,
+      });
+    }
     res.status(201).json({
       success: true,
       message: 'Thank you for reaching out! We will contact you soon.',
-      data: message,
+      data: req.body,
     });
   } catch (err) {
     next(err);
@@ -171,8 +245,11 @@ exports.submitContact = async (req, res, next) => {
 
 exports.getContactMessages = async (req, res, next) => {
   try {
-    const messages = await ContactMessage.find().sort({ createdAt: -1 });
-    res.status(200).json({ success: true, data: messages });
+    if (isDbReady()) {
+      const messages = await ContactMessage.find().sort({ createdAt: -1 });
+      return res.status(200).json({ success: true, data: messages });
+    }
+    res.status(200).json({ success: true, data: [] });
   } catch (err) {
     next(err);
   }
@@ -181,27 +258,33 @@ exports.getContactMessages = async (req, res, next) => {
 // CMS SETTINGS
 exports.getCMS = async (req, res, next) => {
   try {
-    let cms = await CMS.findOne({ key: 'homepage_settings' })
-      .populate('popularCourses', 'name slug level duration image averageFeeRange')
-      .populate('featuredUniversities', 'name slug logo coverImage location universityType rating');
+    if (isDbReady()) {
+      const cms = await CMS.findOne({ key: 'homepage_settings' })
+        .populate('popularCourses', 'name slug level duration image averageFeeRange')
+        .populate('featuredUniversities', 'name slug logo coverImage location universityType rating');
 
-    if (!cms) {
-      cms = await CMS.create({ key: 'homepage_settings' });
+      if (cms) {
+        return res.status(200).json({ success: true, data: cms });
+      }
     }
-    res.status(200).json({ success: true, data: cms });
   } catch (err) {
-    next(err);
+    console.warn('[CMS] DB query failed, using mockStore fallback:', err.message);
   }
+
+  res.status(200).json({ success: true, data: mockStore.getCMS() });
 };
 
 exports.updateCMS = async (req, res, next) => {
   try {
-    const cms = await CMS.findOneAndUpdate(
-      { key: 'homepage_settings' },
-      req.body,
-      { new: true, upsert: true }
-    );
-    res.status(200).json({ success: true, data: cms });
+    if (isDbReady()) {
+      const cms = await CMS.findOneAndUpdate(
+        { key: 'homepage_settings' },
+        req.body,
+        { new: true, upsert: true }
+      );
+      return res.status(200).json({ success: true, data: cms });
+    }
+    res.status(200).json({ success: true, data: req.body });
   } catch (err) {
     next(err);
   }

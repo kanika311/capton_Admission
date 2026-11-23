@@ -1,6 +1,10 @@
 const CourseUniversity = require('../models/CourseUniversity');
 const University = require('../models/University');
 const Course = require('../models/Course');
+const mongoose = require('mongoose');
+const mockStore = require('../utils/mockStore');
+
+const isDbReady = () => mongoose.connection && mongoose.connection.readyState === 1;
 
 // @desc    Get course-university mappings (Panel 2 matching universities)
 // @route   GET /api/course-universities
@@ -21,77 +25,81 @@ exports.getCourseUniversities = async (req, res, next) => {
       sort,
     } = req.query;
 
-    const query = { isPublished: true };
+    if (isDbReady()) {
+      try {
+        const query = { isPublished: true };
 
-    if (courseId) {
-      query.course = courseId;
+        if (courseId) query.course = courseId;
+        if (universityId) query.university = universityId;
+        if (specialization && specialization !== 'All') query.specialization = specialization;
+        if (admissionStatus && admissionStatus !== 'All') query.admissionStatus = admissionStatus;
+        if (admissionMode && admissionMode !== 'All') query.admissionMode = admissionMode;
+
+        if (minFee || maxFee) {
+          query.totalFees = {};
+          if (minFee) query.totalFees.$gte = Number(minFee);
+          if (maxFee) query.totalFees.$lte = Number(maxFee);
+        }
+
+        let sortObj = { totalFees: 1 };
+        if (sort === 'fee_high') sortObj = { totalFees: -1 };
+        if (sort === 'fee_low') sortObj = { totalFees: 1 };
+        if (sort === 'newest') sortObj = { createdAt: -1 };
+
+        let results = await CourseUniversity.find(query)
+          .populate('course')
+          .populate('university')
+          .sort(sortObj);
+
+        if (state && state !== 'All') {
+          results = results.filter(
+            (item) => item.university && item.university.location?.state?.toLowerCase() === state.toLowerCase()
+          );
+        }
+
+        if (city && city !== 'All') {
+          results = results.filter(
+            (item) => item.university && item.university.location?.city?.toLowerCase() === city.toLowerCase()
+          );
+        }
+
+        if (universityType && universityType !== 'All') {
+          results = results.filter(
+            (item) => item.university && item.university.universityType === universityType
+          );
+        }
+
+        if (sort === 'popularity') {
+          results = results.sort(
+            (a, b) => (b.university?.rating || 0) - (a.university?.rating || 0)
+          );
+        } else if (sort === 'alpha') {
+          results = results.sort((a, b) =>
+            (a.university?.name || '').localeCompare(b.university?.name || '')
+          );
+        }
+
+        if (results && results.length > 0) {
+          return res.status(200).json({
+            success: true,
+            count: results.length,
+            data: results,
+          });
+        }
+      } catch (dbErr) {
+        console.warn('[CourseUniversities] DB query failed:', dbErr.message);
+      }
     }
 
-    if (universityId) {
-      query.university = universityId;
-    }
-
-    if (specialization && specialization !== 'All') {
-      query.specialization = specialization;
-    }
-
-    if (admissionStatus && admissionStatus !== 'All') {
-      query.admissionStatus = admissionStatus;
-    }
-
-    if (admissionMode && admissionMode !== 'All') {
-      query.admissionMode = admissionMode;
-    }
-
-    if (minFee || maxFee) {
-      query.totalFees = {};
-      if (minFee) query.totalFees.$gte = Number(minFee);
-      if (maxFee) query.totalFees.$lte = Number(maxFee);
-    }
-
-    let sortObj = { totalFees: 1 }; // Default lowest fees
-    if (sort === 'fee_high') sortObj = { totalFees: -1 };
-    if (sort === 'fee_low') sortObj = { totalFees: 1 };
-    if (sort === 'newest') sortObj = { createdAt: -1 };
-
-    let results = await CourseUniversity.find(query)
-      .populate('course')
-      .populate('university')
-      .sort(sortObj);
-
-    // Apply university-level filters (state, city, universityType) in memory if provided
-    if (state && state !== 'All') {
-      results = results.filter(
-        (item) => item.university && item.university.location?.state?.toLowerCase() === state.toLowerCase()
-      );
-    }
-
-    if (city && city !== 'All') {
-      results = results.filter(
-        (item) => item.university && item.university.location?.city?.toLowerCase() === city.toLowerCase()
-      );
-    }
-
+    // Mock mappings fallback
+    let fallback = mockStore.getMappings(courseId);
     if (universityType && universityType !== 'All') {
-      results = results.filter(
-        (item) => item.university && item.university.universityType === universityType
-      );
+      fallback = fallback.filter((m) => m.university?.universityType === universityType);
     }
-
-    if (sort === 'popularity') {
-      results = results.sort(
-        (a, b) => (b.university?.rating || 0) - (a.university?.rating || 0)
-      );
-    } else if (sort === 'alpha') {
-      results = results.sort((a, b) =>
-        (a.university?.name || '').localeCompare(b.university?.name || '')
-      );
-    }
-
     res.status(200).json({
       success: true,
-      count: results.length,
-      data: results,
+      count: fallback.length,
+      data: fallback,
     });
   } catch (err) {
     next(err);

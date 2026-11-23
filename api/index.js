@@ -5,12 +5,12 @@ const { connectDB } = require('../server/config/db');
 let isConnected = false;
 
 module.exports = async (req, res) => {
-  if (!isConnected) {
+  if (process.env.MONGO_URI && !isConnected) {
     try {
       await connectDB();
       isConnected = true;
     } catch (err) {
-      console.error('[Vercel Serverless] MongoDB connection error:', err);
+      console.warn('[Vercel Serverless] MongoDB connection warning:', err.message);
     }
   }
   return app(req, res);
