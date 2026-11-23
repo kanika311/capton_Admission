@@ -1,7 +1,9 @@
 node_modules/
 .env
+dist/
 server/uploads/*
 !server/uploads/.gitkeep
-client/dist/
+!server/uploads/hero_video.mp4
 .DS_Store
 *.log
+.vercel

@@ -3,6 +3,11 @@ const mongoose = require('mongoose');
 let mongodInstance = null;
 
 const connectDB = async () => {
+  // If already connected in serverless/cached runtime, reuse existing connection
+  if (mongoose.connection && mongoose.connection.readyState >= 1) {
+    return mongoose.connection;
+  }
+
   const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/captonadmission';
 
   try {
