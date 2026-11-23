@@ -260,7 +260,7 @@ const Navbar = () => {
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-brand-royal transition-colors"
                 >
                   <User className="w-3.5 h-3.5" />
-                  <span>Login</span>
+                  <span>Student Login</span>
                 </Link>
               )}
 
@@ -340,12 +340,40 @@ const Navbar = () => {
             </NavLink>
 
             <div className="pt-3 border-t border-slate-100 flex flex-col gap-2">
+              {!isAuthenticated ? (
+                <div className="flex items-center gap-2 mb-1">
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex-1 text-center py-2 border border-brand-royal text-brand-royal font-bold rounded-xl text-xs"
+                  >
+                    Student Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex-1 text-center py-2 bg-brand-royal text-white font-bold rounded-xl text-xs"
+                  >
+                    Register
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between py-2 border-b border-slate-100 mb-1">
+                  <span className="text-xs font-bold text-slate-800">{user?.name}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="text-xs text-red-600 font-bold hover:underline"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   dispatch(openEnquiryModal({}));
                 }}
-                className="w-full text-center py-2.5 bg-brand-royal text-white font-bold rounded-xl shadow-sm text-xs"
+                className="w-full text-center py-2.5 bg-brand-gold text-brand-navy font-bold rounded-xl shadow-sm text-xs"
               >
                 Let's Connect (Get Free Counselling)
               </button>

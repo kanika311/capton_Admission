@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Lock, Mail, ArrowRight } from 'lucide-react';
-import { login, clearError } from '../../redux/slices/authSlice';
+import { login, logout } from '../../redux/slices/authSlice';
 import toast from 'react-hot-toast';
 
 const LoginPage = () => {
@@ -23,14 +23,16 @@ const LoginPage = () => {
       return;
     }
 
-    const res = await dispatch(login({ email, password }));
+    const res = await dispatch(login({ email, password, portal: 'student' }));
     if (res.meta.requestStatus === 'fulfilled') {
-      toast.success('Logged in successfully!');
-      if (res.payload.user?.role === 'admin' || res.payload.user?.role === 'superadmin' || res.payload.user?.role === 'counsellor') {
-        navigate('/admin/dashboard');
-      } else {
-        navigate(from);
+      const user = res.payload.user;
+      if (user?.role !== 'student') {
+        dispatch(logout());
+        toast.error('Access Denied: This login is for students only. Staff and Administrators must log in from the Admin Portal.');
+        return;
       }
+      toast.success(`Welcome back, ${user.name}`);
+      navigate(from);
     } else {
       toast.error(res.payload || 'Login failed');
     }
@@ -57,13 +59,13 @@ const LoginPage = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Student Email Address</label>
             <div className="relative">
               <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
               <input
                 type="email"
                 required
-                placeholder="student@captonadmission.com"
+                placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-9 pr-3 py-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-brand-royal focus:outline-none"
@@ -96,20 +98,16 @@ const LoginPage = () => {
             disabled={loading}
             className="w-full py-3 bg-brand-royal hover:bg-brand-navy text-white font-bold rounded-xl text-xs shadow transition-all flex items-center justify-center gap-2"
           >
-            <span>{loading ? 'Signing in...' : 'Sign In to Portal'}</span>
+            <span>{loading ? 'Signing in...' : 'Sign In as Student'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
-        <div className="pt-2 text-center text-xs text-slate-500">
+        <div className="pt-2 text-center text-xs text-slate-500 border-t border-slate-100">
           Don't have an account yet?{' '}
           <Link to="/register" className="font-bold text-brand-royal hover:underline">
             Register for Free
           </Link>
-        </div>
-
-        <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-500 text-center">
-          Demo Student: <strong className="text-brand-navy">student@captonadmission.com</strong> / <strong className="text-brand-navy">Student@12345</strong>
         </div>
       </div>
     </div>

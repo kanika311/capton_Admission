@@ -76,7 +76,7 @@ exports.register = async (req, res, next) => {
 // @access  Public
 exports.login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, portal } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -105,6 +105,21 @@ exports.login = async (req, res, next) => {
       return res.status(403).json({
         success: false,
         message: 'Your account is deactivated. Please contact support.',
+      });
+    }
+
+    // Portal role segregation
+    if (portal === 'student' && user.role !== 'student') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access Denied: This login is for students only. Staff and Administrators must log in from the Admin Portal.',
+      });
+    }
+
+    if (portal === 'admin' && user.role === 'student') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access Denied: Staff or Administrator account required. Students please sign in via Student Login.',
       });
     }
 

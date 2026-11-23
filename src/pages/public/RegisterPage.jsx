@@ -49,9 +49,9 @@ const RegisterPage = () => {
           <Link to="/" className="inline-block mb-3">
             <img src="/logo.png" alt="CaptonAdmission" className="w-14 h-14 mx-auto rounded-full" />
           </Link>
-          <h2 className="text-2xl font-extrabold text-brand-navy">Create Free Account</h2>
+          <h2 className="text-2xl font-extrabold text-brand-navy">Student Registration</h2>
           <p className="text-xs text-slate-500 mt-1">
-            Track applications, save shortlists, and unlock personalized admission counselling.
+            Create your student account to track applications and unlock personalized admission counselling.
           </p>
         </div>
 
@@ -147,10 +147,10 @@ const RegisterPage = () => {
           </button>
         </form>
 
-        <div className="pt-2 text-center text-xs text-slate-500">
+        <div className="pt-2 text-center text-xs text-slate-500 border-t border-slate-100">
           Already registered?{' '}
           <Link to="/login" className="font-bold text-brand-royal hover:underline">
-            Sign In here
+            Sign In to Student Portal
           </Link>
         </div>
       </div>

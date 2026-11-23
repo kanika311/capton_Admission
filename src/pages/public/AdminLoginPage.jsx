@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Lock, Mail, ShieldAlert, ArrowRight } from 'lucide-react';
-import { login } from '../../redux/slices/authSlice';
+import { login, logout } from '../../redux/slices/authSlice';
 import toast from 'react-hot-toast';
 
 const AdminLoginPage = () => {
@@ -15,7 +15,12 @@ const AdminLoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await dispatch(login({ email, password }));
+    if (!email || !password) {
+      toast.error('Please enter email and password');
+      return;
+    }
+
+    const res = await dispatch(login({ email, password, portal: 'admin' }));
 
     if (res.meta.requestStatus === 'fulfilled') {
       const role = res.payload.user?.role;
@@ -23,8 +28,8 @@ const AdminLoginPage = () => {
         toast.success(`Welcome, ${res.payload.user.name}`);
         navigate('/admin/dashboard');
       } else {
-        toast.error('Unauthorized: Admin or Counsellor access required');
-        navigate('/');
+        dispatch(logout());
+        toast.error('Access Denied: Staff or Administrator account required. Students please sign in via Student Login.');
       }
     } else {
       toast.error(res.payload || 'Authentication failed');
@@ -91,13 +96,11 @@ const AdminLoginPage = () => {
           </button>
         </form>
 
-        <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-500 space-y-1">
-          <p>
-            Demo Admin: <strong className="text-brand-navy">admin@captonadmission.com</strong> / <strong className="text-brand-navy">Admin@12345</strong>
-          </p>
-          <p>
-            Demo Counsellor: <strong className="text-brand-navy">counsellor@captonadmission.com</strong> / <strong className="text-brand-navy">Counsellor@12345</strong>
-          </p>
+        <div className="pt-2 text-center text-xs text-slate-500 border-t border-slate-100">
+          Are you a student?{' '}
+          <Link to="/login" className="font-bold text-brand-royal hover:underline">
+            Go to Student Login
+          </Link>
         </div>
       </div>
     </div>
