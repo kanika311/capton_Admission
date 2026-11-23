@@ -17,9 +17,9 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="bg-white text-slate-700 border-t border-slate-200">
+    <footer className="bg-white text-slate-700 border-t border-slate-200 relative z-30 w-full block">
       {/* Top Value Banner */}
-      <div className="border-b border-slate-100 bg-slate-50/70">
+      <div className="border-b border-slate-200 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm">

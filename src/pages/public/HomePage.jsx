@@ -133,47 +133,47 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 relative">
-      {/* FULL SITE AMBIENT VIDEO BACKGROUND (HIGH VISIBILITY) */}
-      <div className="fixed inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <video
-          key={cmsData.heroVideoUrl || '/hero_video.mp4'}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-        >
-          <source src={cmsData.heroVideoUrl || '/hero_video.mp4'} type="video/mp4" />
-        </video>
-        {/* Clean, high-clarity translucent wash: Video is vividly visible across the whole site */}
-        <div className="absolute inset-0 bg-white/40" />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/50" />
-      </div>
+    <div className="w-full bg-white relative">
+      {/* SECTION 1: VIVID HERO VIDEO BANNER */}
+      <section className="relative min-h-[580px] sm:min-h-[640px] flex items-center justify-center overflow-hidden bg-slate-950 text-white">
+        {/* Direct Vivid Ambient Video (No White Bleach) */}
+        <div className="absolute inset-0 z-0">
+          <video
+            key={cmsData.heroVideoUrl || '/hero_video.mp4'}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src={cmsData.heroVideoUrl || '/hero_video.mp4'} type="video/mp4" />
+          </video>
+          {/* Subtle dark tint: Video is 100% vividly visible while text & search pill pop with razor clarity */}
+          <div className="absolute inset-0 bg-slate-950/45" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/40" />
+        </div>
 
-      {/* SECTION 1: CRYSTAL CLEAR HERO SECTION */}
-      <section className="relative z-10 py-16 sm:py-24 lg:py-28 overflow-hidden flex items-center justify-center border-b border-slate-200/40">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Crystal Clear High-Contrast Headline (Fluidly responsive, No cut-off) */}
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] xl:text-[48px] font-black text-slate-900 tracking-tight leading-tight text-center max-w-5xl mx-auto px-2 drop-shadow-sm">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center py-20 sm:py-24">
+          {/* Crystal Clear High-Contrast Headline (Fluidly responsive, Never cuts off) */}
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] xl:text-[44px] font-black text-white tracking-tight leading-tight text-center max-w-4xl mx-auto px-2 drop-shadow-lg">
             {cmsData.heroHeading ? (
               <span>{cmsData.heroHeading}</span>
             ) : (
               <>
-                Find Your Dream Course <span className="text-brand-royal">in India</span>
+                Find Your Dream Course <span className="text-brand-gold">in India</span>
               </>
             )}
           </h1>
 
           {/* Clean, Gentle Subtitle */}
-          <p className="text-slate-700 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto mt-3 font-medium drop-shadow-xs">
+          <p className="text-slate-100 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto mt-3 font-medium drop-shadow">
             One platform to apply to 10,000+ esteemed colleges/universities in India & Abroad.
           </p>
 
-          {/* Floating Minimalist Search Bar with Arrow Button */}
+          {/* Floating White Minimalist Search Bar with Arrow Button */}
           <form
             onSubmit={handleHeroSearch}
-            className="mt-8 max-w-2xl mx-auto bg-white/95 backdrop-blur-md rounded-full p-2 border border-slate-200 shadow-xl flex items-center gap-3 pl-5 pr-2 focus-within:ring-2 focus-within:ring-brand-royal/20 focus-within:border-brand-royal transition-all"
+            className="mt-8 max-w-2xl mx-auto bg-white rounded-full p-2 border border-white/20 shadow-2xl flex items-center gap-3 pl-5 pr-2 focus-within:ring-2 focus-within:ring-brand-gold transition-all"
           >
             <Search className="w-5 h-5 text-slate-500 shrink-0" />
             <input
@@ -192,9 +192,9 @@ const HomePage = () => {
             </button>
           </form>
 
-          {/* TOP LINKS PILLS (Identical to reference screenshot) */}
+          {/* TOP LINKS PILLS (Crisp Glass Design) */}
           <div className="mt-7">
-            <span className="text-[10px] font-bold tracking-widest text-slate-600 uppercase block mb-2.5">
+            <span className="text-[10px] font-bold tracking-widest text-slate-200 uppercase block mb-2.5 drop-shadow">
               TOP LINKS
             </span>
             <div className="flex flex-wrap items-center justify-center gap-2 max-w-3xl mx-auto">
@@ -211,7 +211,7 @@ const HomePage = () => {
                 <Link
                   key={idx}
                   to={`/courses?category=${link.slug}`}
-                  className="px-4 py-1.5 rounded-full border border-slate-300 bg-white/90 hover:bg-white hover:border-brand-royal text-slate-800 hover:text-brand-royal text-xs font-semibold shadow-xs transition-all"
+                  className="px-4 py-1.5 rounded-full border border-white/25 bg-white/15 hover:bg-white hover:text-brand-navy text-white text-xs font-semibold backdrop-blur-md shadow-sm transition-all"
                 >
                   {link.label}
                 </Link>
@@ -223,19 +223,19 @@ const HomePage = () => {
           <div className="mt-8 flex items-center justify-center gap-3">
             <button
               onClick={() => dispatch(openEnquiryModal({}))}
-              className="px-6 py-2.5 bg-brand-gold hover:bg-brand-goldHover text-brand-navy font-black rounded-full text-xs uppercase tracking-wider shadow-sm hover:shadow transition-all flex items-center gap-2"
+              className="px-6 py-2.5 bg-brand-gold hover:bg-brand-goldHover text-brand-navy font-black rounded-full text-xs uppercase tracking-wider shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
             >
               <span>Get Free Counselling</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          {/* Partner Universities Strip (Clean minimal logos) */}
-          <div className="mt-12 pt-8 border-t border-slate-200/80 max-w-4xl mx-auto">
-            <p className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-4">
+          {/* Partner Universities Strip (Clean White Minimalist) */}
+          <div className="mt-12 pt-8 border-t border-white/20 max-w-4xl mx-auto">
+            <p className="text-[11px] font-bold text-slate-200 uppercase tracking-wider mb-4 drop-shadow">
               Partnered with 20+ Accredited Universities
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 opacity-80 hover:opacity-100 transition-opacity">
+            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-slate-100 opacity-90 hover:opacity-100 transition-opacity">
               {[
                 'Delhi Technological University',
                 'Vellore Institute of Technology',
@@ -247,7 +247,7 @@ const HomePage = () => {
               ].map((uni, idx) => (
                 <span
                   key={idx}
-                  className="text-xs font-bold tracking-tight text-slate-700 hover:text-brand-royal transition-colors uppercase"
+                  className="text-xs font-bold tracking-tight hover:text-brand-gold transition-colors uppercase drop-shadow"
                 >
                   {uni}
                 </span>
@@ -258,7 +258,7 @@ const HomePage = () => {
       </section>
 
       {/* SECTION 2: POPULAR COURSE CATEGORIES */}
-      <section className="relative z-10 py-20 bg-white/85 backdrop-blur-md border-b border-slate-200/60">
+      <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
             Browse By Stream
@@ -305,7 +305,7 @@ const HomePage = () => {
       </section>
 
       {/* SECTION 3: FEATURED COURSES */}
-      <section className="relative z-10 py-20 bg-white/90 backdrop-blur-md border-b border-slate-200/60">
+      <section className="relative z-10 py-20 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
@@ -390,7 +390,7 @@ const HomePage = () => {
       </section>
 
       {/* SECTION 4: TOP UNIVERSITIES */}
-      <section className="relative z-10 py-20 bg-white/85 backdrop-blur-md border-b border-slate-200/60">
+      <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
@@ -488,7 +488,7 @@ const HomePage = () => {
       </section>
 
       {/* SECTION 5: OUR SERVICES */}
-      <section className="relative z-10 py-20 bg-white/90 backdrop-blur-md border-b border-slate-200/60">
+      <section className="relative z-10 py-20 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-14">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
@@ -551,7 +551,7 @@ const HomePage = () => {
       </section>
 
       {/* SECTION 6: WHY CHOOSE CAPTONADMISSION? */}
-      <section className="relative z-10 py-20 bg-white/85 backdrop-blur-md border-b border-slate-200/60">
+      <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
             Our Promise
@@ -640,7 +640,7 @@ const HomePage = () => {
       </section>
 
       {/* SECTION 7: HOW IT WORKS (FOUR-STEP JOURNEY) */}
-      <section className="relative z-10 py-20 bg-gradient-to-br from-brand-navy/90 to-brand-royal/95 text-white backdrop-blur-md">
+      <section className="relative z-10 py-20 bg-gradient-to-br from-brand-navy to-brand-royal text-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-gold bg-white/10 px-3 py-1 rounded-full border border-white/20">
@@ -699,7 +699,7 @@ const HomePage = () => {
       </section>
 
       {/* SECTION 8: POPULAR ENTRANCE EXAMS */}
-      <section className="relative z-10 py-20 bg-white/85 backdrop-blur-md border-b border-slate-200/60">
+      <section className="relative z-10 py-20 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
@@ -766,7 +766,7 @@ const HomePage = () => {
       </section>
 
       {/* SECTION 9: STUDENT TESTIMONIALS */}
-      <section className="relative z-10 py-20 bg-white/90 backdrop-blur-md border-b border-slate-200/60">
+      <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-14">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
@@ -816,7 +816,7 @@ const HomePage = () => {
       </section>
 
       {/* SECTION 10: LATEST EDUCATION BLOGS */}
-      <section className="relative z-10 py-20 bg-white/85 backdrop-blur-md border-b border-slate-200/60">
+      <section className="relative z-10 py-20 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
@@ -881,7 +881,7 @@ const HomePage = () => {
       </section>
 
       {/* SECTION 11: COUNSELLING CTA */}
-      <section className="relative z-10 py-16 bg-gradient-to-r from-brand-royal/90 to-brand-navy/95 text-white backdrop-blur-md">
+      <section className="relative z-10 py-16 bg-gradient-to-r from-brand-royal to-brand-navy text-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
             Confused About Your Career or University?
