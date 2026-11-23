@@ -19,6 +19,8 @@ exports.createEnquiry = async (req, res, next) => {
       state,
       city,
       qualification,
+      interestedInAbroad,
+      interestedInOnline,
       message,
     } = req.body;
 
@@ -39,6 +41,8 @@ exports.createEnquiry = async (req, res, next) => {
       state: state || '',
       city: city || '',
       qualification: qualification || '',
+      interestedInAbroad: Boolean(interestedInAbroad),
+      interestedInOnline: Boolean(interestedInOnline),
       message: message || '',
     });
 

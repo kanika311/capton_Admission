@@ -9,9 +9,7 @@ import {
   LogOut,
   LayoutDashboard,
   Search,
-  Phone,
-  FileCheck,
-  Sparkles,
+  MessageCircle,
 } from 'lucide-react';
 import { logout } from '../../redux/slices/authSlice';
 import { openEnquiryModal } from '../../redux/slices/enquiryModalSlice';
@@ -31,7 +29,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 15);
+      setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -45,64 +43,33 @@ const Navbar = () => {
 
   const courseCategories = [
     { name: 'Engineering (B.Tech / M.Tech)', slug: 'engineering' },
+    { name: 'Medical & Dental (MBBS / BDS)', slug: 'medical' },
     { name: 'Management (BBA / MBA)', slug: 'management' },
     { name: 'Computer Applications (BCA / MCA)', slug: 'computer-applications' },
-    { name: 'Medical & Dental (MBBS / BDS)', slug: 'medical' },
     { name: 'Law (BA LLB / LLB)', slug: 'law' },
     { name: 'Pharmacy (B.Pharm / D.Pharm)', slug: 'pharmacy' },
-    { name: 'Design (B.Des / UI-UX)', slug: 'design' },
+    { name: 'Design & Architecture', slug: 'design' },
   ];
 
   const universityTypes = [
-    { name: 'Government Universities', query: 'Government' },
-    { name: 'Deemed to be Universities', query: 'Deemed' },
     { name: 'Top Private Universities', query: 'Private' },
-    { name: 'Universities in Delhi NCR', query: 'Delhi' },
-    { name: 'Universities in Bangalore', query: 'Karnataka' },
-    { name: 'Universities in Pune / Mumbai', query: 'Maharashtra' },
+    { name: 'Government Universities', query: 'Government' },
+    { name: 'Deemed Universities', query: 'Deemed' },
+    { name: 'Colleges in Delhi NCR', query: 'Delhi' },
+    { name: 'Colleges in Bangalore', query: 'Karnataka' },
+    { name: 'Colleges in Pune & Mumbai', query: 'Maharashtra' },
   ];
 
   const navLinkClass = ({ isActive }) =>
-    `font-medium text-[14px] transition-colors py-1 px-1 flex items-center gap-1 ${
+    `font-semibold text-[14px] transition-colors py-1.5 px-2 flex items-center gap-1 ${
       isActive
-        ? 'text-brand-royal font-semibold'
+        ? 'text-brand-royal font-bold'
         : 'text-slate-700 hover:text-brand-royal'
     }`;
 
   return (
     <>
-      {/* Sleek Minimal Top Announcement Bar */}
-      <div className="bg-slate-900 text-slate-300 text-[12px] py-1.5 px-4 hidden md:block">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5 text-slate-300">
-              <Phone className="w-3 h-3 text-brand-gold" />
-              Admission Helpline: <strong className="text-white font-medium">+91 98765 43210</strong>
-            </span>
-            <span className="text-slate-600">|</span>
-            <span className="text-slate-300 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-brand-gold" />
-              Verified University Discovery & Counselling Portal
-            </span>
-          </div>
-          <div className="flex items-center gap-5">
-            <button
-              onClick={() => setSearchModalOpen(true)}
-              className="text-slate-300 hover:text-brand-gold flex items-center gap-1 text-[12px] transition-colors"
-            >
-              <Search className="w-3 h-3" /> Search
-            </button>
-            <Link to="/compare" className="text-slate-300 hover:text-brand-gold transition-colors">
-              Compare
-            </Link>
-            <Link to="/about" className="text-slate-300 hover:text-brand-gold transition-colors">
-              Why Us
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Sticky Navbar - Ultra Clean */}
+      {/* Crystal Clear Navbar */}
       <header
         className={`sticky top-0 z-40 transition-all duration-200 bg-white/95 backdrop-blur-md ${
           isScrolled ? 'shadow-sm py-2.5 border-b border-slate-200' : 'border-b border-slate-100 py-3.5'
@@ -110,28 +77,65 @@ const Navbar = () => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            {/* Brand Logo */}
-            <Link to="/" className="flex items-center gap-3 group">
+            {/* Clean Brand Logo */}
+            <Link to="/" className="flex items-center gap-2.5 group">
               <img
                 src="/logo.png"
                 alt="CaptonAdmission"
                 className="w-10 h-10 object-contain rounded-full shadow-sm group-hover:scale-105 transition-transform"
               />
               <div className="flex flex-col">
-                <span className="text-xl font-black tracking-tight text-brand-navy">
-                  Capton<span className="text-brand-gold">Admission</span>
+                <span className="text-xl font-black tracking-tight text-slate-900">
+                  Capton<span className="text-brand-royal">Admission</span>
                 </span>
                 <span className="text-[9px] tracking-widest uppercase text-slate-400 font-semibold -mt-1">
-                  Empowering Futures
+                  Education Discovery
                 </span>
               </div>
             </Link>
 
-            {/* Desktop Navigation Links */}
+            {/* Clean Center Navigation Links */}
             <nav className="hidden lg:flex items-center gap-6">
-              <NavLink to="/" end className={navLinkClass}>
-                Home
-              </NavLink>
+              {/* Colleges Dropdown */}
+              <div
+                className="relative"
+                onMouseEnter={() => setUnisDropdownOpen(true)}
+                onMouseLeave={() => setUnisDropdownOpen(false)}
+              >
+                <NavLink to="/universities" className={navLinkClass}>
+                  <span>Colleges</span>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                </NavLink>
+
+                {unisDropdownOpen && (
+                  <div className="absolute top-full left-0 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 py-2.5 z-50 animate-fadeIn">
+                    <div className="px-4 py-1.5 border-b border-slate-100 mb-1">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        Explore Colleges
+                      </p>
+                    </div>
+                    {universityTypes.map((t, idx) => (
+                      <Link
+                        key={idx}
+                        to={`/universities?type=${encodeURIComponent(t.query)}`}
+                        onClick={() => setUnisDropdownOpen(false)}
+                        className="px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand-royal block transition-colors"
+                      >
+                        {t.name}
+                      </Link>
+                    ))}
+                    <div className="border-t border-slate-100 mt-1 pt-1.5 px-4">
+                      <Link
+                        to="/universities"
+                        onClick={() => setUnisDropdownOpen(false)}
+                        className="text-xs font-bold text-brand-royal hover:underline block py-1"
+                      >
+                        All 20+ Verified Universities &rarr;
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Courses Dropdown */}
               <div
@@ -148,7 +152,7 @@ const Navbar = () => {
                   <div className="absolute top-full left-0 w-72 bg-white rounded-2xl shadow-xl border border-slate-100 py-2.5 z-50 animate-fadeIn">
                     <div className="px-4 py-1.5 border-b border-slate-100 mb-1">
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        Explore by Stream
+                        Select Stream
                       </p>
                     </div>
                     {courseCategories.map((cat) => (
@@ -156,7 +160,7 @@ const Navbar = () => {
                         key={cat.slug}
                         to={`/courses?category=${cat.slug}`}
                         onClick={() => setCoursesDropdownOpen(false)}
-                        className="px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-brand-royal flex items-center justify-between transition-colors"
+                        className="px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand-royal flex items-center justify-between transition-colors"
                       >
                         <span>{cat.name}</span>
                       </Link>
@@ -165,85 +169,40 @@ const Navbar = () => {
                       <Link
                         to="/courses"
                         onClick={() => setCoursesDropdownOpen(false)}
-                        className="text-xs font-semibold text-brand-royal hover:underline block py-1"
+                        className="text-xs font-bold text-brand-royal hover:underline block py-1"
                       >
-                        Launch 3-Panel Discovery &rarr;
+                        3-Panel Course Discovery &rarr;
                       </Link>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Universities Dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={() => setUnisDropdownOpen(true)}
-                onMouseLeave={() => setUnisDropdownOpen(false)}
-              >
-                <NavLink to="/universities" className={navLinkClass}>
-                  <span>Universities</span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-                </NavLink>
-
-                {unisDropdownOpen && (
-                  <div className="absolute top-full left-0 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 py-2.5 z-50 animate-fadeIn">
-                    <div className="px-4 py-1.5 border-b border-slate-100 mb-1">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        University Directory
-                      </p>
-                    </div>
-                    {universityTypes.map((t, idx) => (
-                      <Link
-                        key={idx}
-                        to={`/universities?type=${encodeURIComponent(t.query)}`}
-                        onClick={() => setUnisDropdownOpen(false)}
-                        className="px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-brand-royal block transition-colors"
-                      >
-                        {t.name}
-                      </Link>
-                    ))}
-                    <div className="border-t border-slate-100 mt-1 pt-1.5 px-4">
-                      <Link
-                        to="/universities"
-                        onClick={() => setUnisDropdownOpen(false)}
-                        className="text-xs font-semibold text-brand-royal hover:underline block py-1"
-                      >
-                        All 20+ Verified Universities &rarr;
-                      </Link>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <NavLink to="/exams" className={navLinkClass}>
+                Exams
+              </NavLink>
 
               <NavLink to="/services" className={navLinkClass}>
                 Services
               </NavLink>
 
-              <NavLink to="/exams" className={navLinkClass}>
-                Entrance Exams
-              </NavLink>
-
-              <NavLink to="/about" className={navLinkClass}>
-                About Us
-              </NavLink>
-
-              <NavLink to="/contact" className={navLinkClass}>
-                Contact
+              <NavLink to="/blogs" className={navLinkClass}>
+                Blogs
               </NavLink>
             </nav>
 
-            {/* Right Actions */}
+            {/* Right Action Icons & Let's Connect CTA */}
             <div className="hidden lg:flex items-center gap-3">
               <button
                 onClick={() => setSearchModalOpen(true)}
-                className="p-2 text-slate-500 hover:text-brand-royal hover:bg-slate-50 rounded-full transition-colors"
-                title="Search courses or colleges"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-brand-royal hover:bg-slate-50 rounded-full transition-colors"
               >
-                <Search className="w-4 h-4" />
+                <Search className="w-3.5 h-3.5" />
+                <span>Search</span>
               </button>
 
               {isAuthenticated && user ? (
-                /* User Profile Dropdown */
+                /* User Dropdown */
                 <div className="relative">
                   <button
                     onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -263,9 +222,6 @@ const Navbar = () => {
                       <div className="px-4 py-2 border-b border-slate-100">
                         <p className="text-xs font-bold text-slate-900">{user.name}</p>
                         <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
-                        <span className="inline-block mt-1 text-[10px] uppercase font-semibold px-2 py-0.5 rounded bg-blue-50 text-brand-royal">
-                          {user.role}
-                        </span>
                       </div>
 
                       {user.role === 'student' ? (
@@ -275,7 +231,7 @@ const Navbar = () => {
                           className="px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center gap-2"
                         >
                           <LayoutDashboard className="w-3.5 h-3.5 text-brand-royal" />
-                          Student Dashboard
+                          Student Portal
                         </Link>
                       ) : (
                         <Link
@@ -301,19 +257,20 @@ const Navbar = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="text-xs font-semibold text-slate-700 hover:text-brand-royal px-3 py-2 rounded-lg transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-brand-royal transition-colors"
                 >
-                  Log In
+                  <User className="w-3.5 h-3.5" />
+                  <span>Login</span>
                 </Link>
               )}
 
-              {/* Primary CTA */}
+              {/* Crystal Clear Let's Connect CTA Button */}
               <button
                 onClick={() => dispatch(openEnquiryModal({}))}
-                className="bg-brand-royal hover:bg-brand-navy text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-1.5"
+                className="bg-brand-royal hover:bg-brand-navy text-white font-bold text-xs px-4 py-2 rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-1.5"
               >
-                <FileCheck className="w-3.5 h-3.5 text-brand-gold" />
-                Apply Now
+                <MessageCircle className="w-3.5 h-3.5 text-brand-gold" />
+                Let's Connect
               </button>
             </div>
 
@@ -323,14 +280,14 @@ const Navbar = () => {
                 onClick={() => setSearchModalOpen(true)}
                 className="p-2 text-slate-600 hover:text-brand-royal"
               >
-                <Search className="w-5 h-5" />
+                <Search className="w-4 h-4" />
               </button>
 
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="p-2 text-slate-700 hover:text-brand-royal rounded-lg"
               >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
           </div>
@@ -358,14 +315,7 @@ const Navbar = () => {
               onClick={() => setMobileMenuOpen(false)}
               className="block py-2 text-sm font-semibold text-slate-800"
             >
-              Universities
-            </NavLink>
-            <NavLink
-              to="/services"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-sm font-semibold text-slate-800"
-            >
-              Services
+              Colleges & Universities
             </NavLink>
             <NavLink
               to="/exams"
@@ -375,71 +325,29 @@ const Navbar = () => {
               Entrance Exams
             </NavLink>
             <NavLink
-              to="/compare"
+              to="/services"
               onClick={() => setMobileMenuOpen(false)}
               className="block py-2 text-sm font-semibold text-slate-800"
             >
-              Compare Universities
+              Services
             </NavLink>
             <NavLink
-              to="/about"
+              to="/blogs"
               onClick={() => setMobileMenuOpen(false)}
               className="block py-2 text-sm font-semibold text-slate-800"
             >
-              About Us
-            </NavLink>
-            <NavLink
-              to="/contact"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-sm font-semibold text-slate-800"
-            >
-              Contact Us
+              Blogs & Articles
             </NavLink>
 
             <div className="pt-3 border-t border-slate-100 flex flex-col gap-2">
-              {isAuthenticated && user ? (
-                <>
-                  <Link
-                    to={user.role === 'student' ? '/student/dashboard' : '/admin/dashboard'}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center py-2.5 bg-blue-50 text-brand-royal font-bold rounded-xl text-xs"
-                  >
-                    Go to {user.role === 'student' ? 'Student Dashboard' : 'Admin Console'}
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-center py-2 text-red-600 font-semibold text-xs"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <div className="grid grid-cols-2 gap-2">
-                  <Link
-                    to="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-center py-2.5 border border-slate-200 text-slate-800 font-bold rounded-xl text-xs"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    to="/register"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-center py-2.5 bg-brand-royal text-white font-bold rounded-xl text-xs"
-                  >
-                    Register
-                  </Link>
-                </div>
-              )}
-
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   dispatch(openEnquiryModal({}));
                 }}
-                className="w-full text-center py-3 bg-brand-gold text-brand-navy font-bold rounded-xl shadow-sm mt-1 text-xs"
+                className="w-full text-center py-2.5 bg-brand-royal text-white font-bold rounded-xl shadow-sm text-xs"
               >
-                Apply Now / Free Counselling
+                Let's Connect (Get Free Counselling)
               </button>
             </div>
           </div>

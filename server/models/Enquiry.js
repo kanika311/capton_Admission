@@ -53,6 +53,8 @@ const EnquirySchema = new mongoose.Schema(
     state: { type: String, default: '' },
     city: { type: String, default: '' },
     qualification: { type: String, default: '' },
+    interestedInAbroad: { type: Boolean, default: false },
+    interestedInOnline: { type: Boolean, default: false },
     message: { type: String, default: '' },
     status: {
       type: String,

@@ -75,6 +75,18 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // Auto popup trigger after 3.5 seconds on first visit
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const alreadyShown = sessionStorage.getItem('enquiry_popup_shown');
+      if (!alreadyShown) {
+        dispatch(openEnquiryModal({}));
+        sessionStorage.setItem('enquiry_popup_shown', 'true');
+      }
+    }, 3500);
+    return () => clearTimeout(timer);
+  }, [dispatch]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -122,10 +134,10 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-brand-light">
-      {/* SECTION 1: HERO SECTION WITH VIDEO BACKGROUND & SINGLE-LINE HEADLINE */}
-      <section className="relative text-white py-24 sm:py-28 lg:py-32 overflow-hidden flex items-center justify-center">
-        {/* Background Ambient Video */}
+    <div className="min-h-screen bg-white">
+      {/* SECTION 1: CRYSTAL CLEAR HERO SECTION */}
+      <section className="relative py-16 sm:py-24 lg:py-28 overflow-hidden flex items-center justify-center border-b border-slate-100">
+        {/* Background Ambient Video with Crystal-Clear Light Overlay */}
         <div className="absolute inset-0 overflow-hidden z-0">
           {cmsData.heroVideoUrl && (
             <video
@@ -134,104 +146,114 @@ const HomePage = () => {
               loop
               muted
               playsInline
-              className="w-full h-full object-cover scale-105"
+              className="w-full h-full object-cover"
             >
               <source src={cmsData.heroVideoUrl} type="video/mp4" />
             </video>
           )}
-          {/* Deep clean dark gradient overlay for crystal clear contrast */}
-          <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-[1px]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-slate-950/50" />
+          {/* Luminous light frosted wash for maximum readability & crystal clarity */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/85 to-white/95 backdrop-blur-[2px]" />
         </div>
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          {/* Top Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-brand-gold text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5" />
-            India's Verified Education Admission Platform
-          </div>
-
-          {/* SINGLE-LINE HEADLINE (Strictly 1 line on desktop/tablets) */}
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight text-center md:whitespace-nowrap max-w-5xl mx-auto drop-shadow-md">
-            {cmsData.heroHeading || 'Find Your Dream Course & Discover Your Perfect University'}
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          {/* Crystal Clear High-Contrast Headline (1 Line on Desktop) */}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-tight text-center md:whitespace-nowrap max-w-5xl mx-auto">
+            {cmsData.heroHeading ? (
+              <span>{cmsData.heroHeading}</span>
+            ) : (
+              <>
+                Find Your Dream Course <span className="text-brand-royal">in India</span>
+              </>
+            )}
           </h1>
 
-          {/* Clean Subtitle */}
-          <p className="text-slate-200 text-sm sm:text-base leading-relaxed max-w-3xl mx-auto mt-4 font-normal drop-shadow">
-            {cmsData.heroDescription ||
-              'Explore top courses, compare universities, understand admission opportunities, and get personalized guidance with CaptonAdmission.'}
+          {/* Clean, Gentle Subtitle */}
+          <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto mt-3 font-normal">
+            One platform to apply to 10,000+ esteemed colleges/universities in India & Abroad.
           </p>
 
-          {/* Combined Hero Search Box - Ultra Clean Centered Pill */}
+          {/* Floating Minimalist Search Bar with Arrow Button */}
           <form
             onSubmit={handleHeroSearch}
-            className="bg-white/95 backdrop-blur-md p-2 rounded-2xl sm:rounded-full shadow-2xl border border-white/40 max-w-3xl mx-auto flex flex-col sm:flex-row items-center gap-2 text-slate-800 mt-8"
+            className="mt-8 max-w-2xl mx-auto bg-white rounded-full p-2 border border-slate-200/90 shadow-xl flex items-center gap-3 pl-5 pr-2 focus-within:ring-2 focus-within:ring-brand-royal/20 focus-within:border-brand-royal transition-all"
           >
-            <div className="w-full sm:flex-1 flex items-center gap-3 px-4 py-2">
-              <GraduationCap className="w-5 h-5 text-brand-royal shrink-0" />
-              <input
-                type="text"
-                placeholder="Search Course (e.g. B.Tech, MBA, BCA)..."
-                value={courseQuery}
-                onChange={(e) => setCourseQuery(e.target.value)}
-                className="w-full bg-transparent text-sm font-semibold focus:outline-none placeholder-slate-400"
-              />
-            </div>
-
-            <div className="hidden sm:block h-7 w-px bg-slate-200" />
-
-            <div className="w-full sm:flex-1 flex items-center gap-3 px-4 py-2">
-              <Building2 className="w-5 h-5 text-brand-gold shrink-0" />
-              <input
-                type="text"
-                placeholder="Search University or City..."
-                value={uniQuery}
-                onChange={(e) => setUniQuery(e.target.value)}
-                className="w-full bg-transparent text-sm font-semibold focus:outline-none placeholder-slate-400"
-              />
-            </div>
-
+            <Search className="w-5 h-5 text-slate-400 shrink-0" />
+            <input
+              type="text"
+              placeholder="Search for Colleges, Exams, Courses and More.."
+              value={courseQuery}
+              onChange={(e) => setCourseQuery(e.target.value)}
+              className="flex-1 bg-transparent text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none"
+            />
             <button
               type="submit"
-              className="w-full sm:w-auto bg-brand-royal hover:bg-brand-navy text-white font-bold px-7 py-3 rounded-xl sm:rounded-full transition-all flex items-center justify-center gap-2 text-sm shadow-md shrink-0"
+              aria-label="Search"
+              className="w-11 h-11 rounded-full bg-brand-royal hover:bg-brand-navy text-white flex items-center justify-center shrink-0 shadow-md transition-all group"
             >
-              <Search className="w-4 h-4" />
-              <span>Search</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </form>
 
-          {/* CTAs */}
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-7">
-            <Link
-              to="/courses"
-              className="bg-brand-gold hover:bg-brand-goldHover text-brand-navy font-black px-7 py-3 rounded-full shadow-lg transition-all flex items-center gap-2 text-xs uppercase tracking-wider"
-            >
-              <span>Explore Courses</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+          {/* TOP LINKS PILLS (Identical to reference screenshot) */}
+          <div className="mt-7">
+            <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase block mb-2.5">
+              TOP LINKS
+            </span>
+            <div className="flex flex-wrap items-center justify-center gap-2 max-w-3xl mx-auto">
+              {[
+                { label: 'B.Tech', slug: 'engineering' },
+                { label: 'MBBS', slug: 'medical' },
+                { label: 'B.Sc (Nursing)', slug: 'medical' },
+                { label: 'BCA', slug: 'computer-applications' },
+                { label: 'MBA', slug: 'management' },
+                { label: 'BA LLB', slug: 'law' },
+                { label: 'B.Pharmacy', slug: 'pharmacy' },
+                { label: 'BAMS', slug: 'medical' },
+              ].map((link, idx) => (
+                <Link
+                  key={idx}
+                  to={`/courses?category=${link.slug}`}
+                  className="px-4 py-1.5 rounded-full border border-slate-200/90 bg-white/90 hover:bg-white hover:border-brand-royal text-slate-700 hover:text-brand-royal text-xs font-semibold shadow-xs transition-all"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
 
+          {/* Quick Connect CTA & Free Advice Badge */}
+          <div className="mt-8 flex items-center justify-center gap-3">
             <button
               onClick={() => dispatch(openEnquiryModal({}))}
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/30 font-semibold px-6 py-3 rounded-full transition-all flex items-center gap-2 text-xs backdrop-blur-md"
+              className="px-6 py-2.5 bg-brand-gold hover:bg-brand-goldHover text-brand-navy font-black rounded-full text-xs uppercase tracking-wider shadow-sm hover:shadow transition-all flex items-center gap-2"
             >
-              <PhoneCall className="w-4 h-4 text-brand-gold" />
-              <span>Talk to Counsellor</span>
+              <span>Get Free Counselling</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          {/* Minimal Trust Badges */}
-          <div className="mt-10 pt-6 border-t border-white/15 flex flex-wrap items-center justify-center gap-6 sm:gap-12 text-xs text-slate-200 font-medium">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-brand-gold" />
-              <span>100% Verified Colleges</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Award className="w-4 h-4 text-brand-gold" />
-              <span>Transparent Fee Details</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-brand-gold" />
-              <span>Expert 1-on-1 Mentorship</span>
+          {/* Partner Universities Strip (Clean minimal logos) */}
+          <div className="mt-12 pt-8 border-t border-slate-200/60 max-w-4xl mx-auto">
+            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-4">
+              Partnered with 20+ Accredited Universities
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 opacity-70 hover:opacity-100 transition-opacity">
+              {[
+                'Delhi Technological University',
+                'Vellore Institute of Technology',
+                'BITS Pilani',
+                'Symbiosis International',
+                'Amity University',
+                'Bennett University',
+                'NLSIU Bangalore',
+              ].map((uni, idx) => (
+                <span
+                  key={idx}
+                  className="text-xs font-bold tracking-tight text-slate-600 hover:text-brand-royal transition-colors uppercase"
+                >
+                  {uni}
+                </span>
+              ))}
             </div>
           </div>
         </div>
