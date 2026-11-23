@@ -18,16 +18,16 @@ import api from '../../services/api';
 
 const videoPresets = [
   {
-    name: 'University Campus Walk (Recommended)',
+    name: 'CaptonAdmission Custom Video (Uploaded by You)',
+    url: '/hero_video.mp4',
+  },
+  {
+    name: 'University Campus Walk',
     url: 'https://assets.mixkit.co/videos/preview/mixkit-students-walking-in-a-university-campus-43387-large.mp4',
   },
   {
     name: 'University Library & Studying',
     url: 'https://assets.mixkit.co/videos/preview/mixkit-young-woman-studying-in-a-library-43384-large.mp4',
-  },
-  {
-    name: 'Graduation Ceremony & Joy',
-    url: 'https://assets.mixkit.co/videos/preview/mixkit-group-of-students-at-graduation-43382-large.mp4',
   },
 ];
 
@@ -37,8 +37,7 @@ const AdminCMSPage = () => {
 
   const [formData, setFormData] = useState({
     heroHeading: 'Find Your Dream Course & Discover Your Perfect University',
-    heroVideoUrl:
-      'https://assets.mixkit.co/videos/preview/mixkit-students-walking-in-a-university-campus-43387-large.mp4',
+    heroVideoUrl: '/hero_video.mp4',
     heroDescription:
       'Explore top courses, compare universities, understand admission opportunities, and get personalized guidance with CaptonAdmission.',
     contactDetails: {

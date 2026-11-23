@@ -14,7 +14,7 @@ const CMSSchema = new mongoose.Schema(
     },
     heroVideoUrl: {
       type: String,
-      default: 'https://assets.mixkit.co/videos/preview/mixkit-students-walking-in-a-university-campus-43387-large.mp4',
+      default: '/hero_video.mp4',
     },
     heroDescription: {
       type: String,

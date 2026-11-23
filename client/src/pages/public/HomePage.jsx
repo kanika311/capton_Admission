@@ -62,8 +62,7 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const [cmsData, setCmsData] = useState({
     heroHeading: 'Find Your Dream Course & Discover Your Perfect University',
-    heroVideoUrl:
-      'https://assets.mixkit.co/videos/preview/mixkit-students-walking-in-a-university-campus-43387-large.mp4',
+    heroVideoUrl: '/hero_video.mp4',
     heroDescription:
       'Explore top courses, compare universities, understand admission opportunities, and get personalized guidance with CaptonAdmission.',
   });
