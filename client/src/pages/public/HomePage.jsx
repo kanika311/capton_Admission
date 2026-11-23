@@ -60,6 +60,13 @@ const HomePage = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cmsData, setCmsData] = useState({
+    heroHeading: 'Find Your Dream Course & Discover Your Perfect University',
+    heroVideoUrl:
+      'https://assets.mixkit.co/videos/preview/mixkit-students-walking-in-a-university-campus-43387-large.mp4',
+    heroDescription:
+      'Explore top courses, compare universities, understand admission opportunities, and get personalized guidance with CaptonAdmission.',
+  });
 
   // Search hero inputs
   const [courseQuery, setCourseQuery] = useState('');
@@ -72,7 +79,7 @@ const HomePage = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [catRes, courseRes, uniRes, servRes, examRes, testRes, blogRes] =
+        const [catRes, courseRes, uniRes, servRes, examRes, testRes, blogRes, cmsRes] =
           await Promise.all([
             api.get('/courses/categories'),
             api.get('/courses?featured=true&limit=6'),
@@ -81,6 +88,7 @@ const HomePage = () => {
             api.get('/exams'),
             api.get('/testimonials'),
             api.get('/blogs?limit=3'),
+            api.get('/cms').catch(() => ({ data: { data: null } })),
           ]);
 
         setCategories(catRes.data.data || []);
@@ -90,6 +98,9 @@ const HomePage = () => {
         setExams((examRes.data.data || []).slice(0, 6));
         setTestimonials(testRes.data.data || []);
         setBlogs(blogRes.data.data || []);
+        if (cmsRes.data?.data) {
+          setCmsData(cmsRes.data.data);
+        }
       } catch (err) {
         console.error('Error loading homepage data:', err);
       } finally {
@@ -112,156 +123,115 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-brand-light">
-      {/* SECTION 1: HERO SECTION */}
-      <section className="relative bg-gradient-to-br from-brand-navy via-[#123673] to-brand-royal text-white pt-16 pb-24 overflow-hidden">
-        {/* Subtle geometric circles */}
-        <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-brand-gold/10 blur-3xl pointer-events-none"></div>
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-blue-400/10 blur-3xl pointer-events-none"></div>
+      {/* SECTION 1: HERO SECTION WITH VIDEO BACKGROUND & SINGLE-LINE HEADLINE */}
+      <section className="relative text-white py-24 sm:py-28 lg:py-32 overflow-hidden flex items-center justify-center">
+        {/* Background Ambient Video */}
+        <div className="absolute inset-0 overflow-hidden z-0">
+          {cmsData.heroVideoUrl && (
+            <video
+              key={cmsData.heroVideoUrl}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover scale-105"
+            >
+              <source src={cmsData.heroVideoUrl} type="video/mp4" />
+            </video>
+          )}
+          {/* Deep clean dark gradient overlay for crystal clear contrast */}
+          <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-[1px]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-slate-950/50" />
+        </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left Content */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-brand-gold text-xs font-semibold uppercase tracking-wider">
-                <Sparkles className="w-3.5 h-3.5" />
-                India's Verified Education Admission Platform
-              </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          {/* Top Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-brand-gold text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
+            <Sparkles className="w-3.5 h-3.5" />
+            India's Verified Education Admission Platform
+          </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
-                Find Your Dream Course.{' '}
-                <span className="text-brand-gold">Discover Your Perfect University.</span>
-              </h1>
+          {/* SINGLE-LINE HEADLINE (Strictly 1 line on desktop/tablets) */}
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight text-center md:whitespace-nowrap max-w-5xl mx-auto drop-shadow-md">
+            {cmsData.heroHeading || 'Find Your Dream Course & Discover Your Perfect University'}
+          </h1>
 
-              <p className="text-slate-200 text-base sm:text-lg leading-relaxed max-w-2xl">
-                Explore top courses, compare universities, understand admission opportunities, and get personalized guidance with CaptonAdmission.
-              </p>
+          {/* Clean Subtitle */}
+          <p className="text-slate-200 text-sm sm:text-base leading-relaxed max-w-3xl mx-auto mt-4 font-normal drop-shadow">
+            {cmsData.heroDescription ||
+              'Explore top courses, compare universities, understand admission opportunities, and get personalized guidance with CaptonAdmission.'}
+          </p>
 
-              {/* Combined Hero Search Box */}
-              <form
-                onSubmit={handleHeroSearch}
-                className="bg-white p-2.5 rounded-2xl shadow-2xl border border-white/20 max-w-2xl flex flex-col sm:flex-row gap-2.5 text-brand-darkText"
-              >
-                <div className="flex-1 flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl border border-slate-200 focus-within:border-brand-royal">
-                  <GraduationCap className="w-5 h-5 text-brand-royal shrink-0" />
-                  <input
-                    type="text"
-                    placeholder="Search Course (e.g. B.Tech, MBA, BCA)..."
-                    value={courseQuery}
-                    onChange={(e) => setCourseQuery(e.target.value)}
-                    className="w-full bg-transparent text-sm focus:outline-none"
-                  />
-                </div>
-
-                <div className="flex-1 flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl border border-slate-200 focus-within:border-brand-royal">
-                  <Building2 className="w-5 h-5 text-brand-gold shrink-0" />
-                  <input
-                    type="text"
-                    placeholder="Search University or City..."
-                    value={uniQuery}
-                    onChange={(e) => setUniQuery(e.target.value)}
-                    className="w-full bg-transparent text-sm focus:outline-none"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="bg-brand-royal hover:bg-brand-navy text-white font-bold px-6 py-3 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm shrink-0 shadow-md"
-                >
-                  <Search className="w-4 h-4" />
-                  <span>Search</span>
-                </button>
-              </form>
-
-              {/* CTAs */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <Link
-                  to="/courses"
-                  className="bg-brand-gold hover:bg-brand-goldHover text-brand-navy font-extrabold px-6 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2 text-sm"
-                >
-                  <span>Explore Courses</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-
-                <button
-                  onClick={() => dispatch(openEnquiryModal({}))}
-                  className="bg-white/10 hover:bg-white/20 text-white border border-white/30 font-semibold px-6 py-3 rounded-xl transition-all flex items-center gap-2 text-sm backdrop-blur-md"
-                >
-                  <PhoneCall className="w-4 h-4 text-brand-gold" />
-                  <span>Talk to Counsellor</span>
-                </button>
-              </div>
-
-              {/* Trust Badges */}
-              <div className="pt-4 grid grid-cols-3 gap-4 border-t border-white/10 text-xs text-slate-300">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-brand-gold" />
-                  <span>100% Verified Colleges</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Award className="w-4 h-4 text-brand-gold" />
-                  <span>Transparent Fee Details</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-brand-gold" />
-                  <span>Expert Mentorship</span>
-                </div>
-              </div>
+          {/* Combined Hero Search Box - Ultra Clean Centered Pill */}
+          <form
+            onSubmit={handleHeroSearch}
+            className="bg-white/95 backdrop-blur-md p-2 rounded-2xl sm:rounded-full shadow-2xl border border-white/40 max-w-3xl mx-auto flex flex-col sm:flex-row items-center gap-2 text-slate-800 mt-8"
+          >
+            <div className="w-full sm:flex-1 flex items-center gap-3 px-4 py-2">
+              <GraduationCap className="w-5 h-5 text-brand-royal shrink-0" />
+              <input
+                type="text"
+                placeholder="Search Course (e.g. B.Tech, MBA, BCA)..."
+                value={courseQuery}
+                onChange={(e) => setCourseQuery(e.target.value)}
+                className="w-full bg-transparent text-sm font-semibold focus:outline-none placeholder-slate-400"
+              />
             </div>
 
-            {/* Right Visual / Illustration Card */}
-            <div className="lg:col-span-5 relative">
-              <div className="relative mx-auto max-w-md bg-white rounded-3xl p-6 shadow-2xl border border-white/20 text-brand-darkText">
-                <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-                  <div className="w-12 h-12 rounded-2xl bg-brand-light flex items-center justify-center text-brand-royal">
-                    <GraduationCap className="w-7 h-7" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-sm text-brand-navy">Admissions 2026 Open</h4>
-                    <p className="text-xs text-slate-500">Over 20+ Leading Universities Available</p>
-                  </div>
-                </div>
+            <div className="hidden sm:block h-7 w-px bg-slate-200" />
 
-                <div className="py-4 space-y-3">
-                  <div className="p-3 bg-brand-light rounded-xl border border-brand-border flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-bold text-brand-royal">B.Tech Computer Science</p>
-                      <p className="text-[11px] text-slate-500">Average Placement: ₹ 12 - 20 LPA</p>
-                    </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">
-                      High Demand
-                    </span>
-                  </div>
+            <div className="w-full sm:flex-1 flex items-center gap-3 px-4 py-2">
+              <Building2 className="w-5 h-5 text-brand-gold shrink-0" />
+              <input
+                type="text"
+                placeholder="Search University or City..."
+                value={uniQuery}
+                onChange={(e) => setUniQuery(e.target.value)}
+                className="w-full bg-transparent text-sm font-semibold focus:outline-none placeholder-slate-400"
+              />
+            </div>
 
-                  <div className="p-3 bg-brand-light rounded-xl border border-brand-border flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-bold text-brand-navy">MBA in Finance & Tech</p>
-                      <p className="text-[11px] text-slate-500">SNAP / CAT / MAT Accepted</p>
-                    </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-brand-royal">
-                      Open Now
-                    </span>
-                  </div>
+            <button
+              type="submit"
+              className="w-full sm:w-auto bg-brand-royal hover:bg-brand-navy text-white font-bold px-7 py-3 rounded-xl sm:rounded-full transition-all flex items-center justify-center gap-2 text-sm shadow-md shrink-0"
+            >
+              <Search className="w-4 h-4" />
+              <span>Search</span>
+            </button>
+          </form>
 
-                  <div className="p-3 bg-brand-light rounded-xl border border-brand-border flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-bold text-brand-darkText">Integrated BA LLB (5 Yrs)</p>
-                      <p className="text-[11px] text-slate-500">CLAT / Merit Based Guidance</p>
-                    </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800">
-                      Trending
-                    </span>
-                  </div>
-                </div>
+          {/* CTAs */}
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-7">
+            <Link
+              to="/courses"
+              className="bg-brand-gold hover:bg-brand-goldHover text-brand-navy font-black px-7 py-3 rounded-full shadow-lg transition-all flex items-center gap-2 text-xs uppercase tracking-wider"
+            >
+              <span>Explore Courses</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
 
-                <div className="pt-2 text-center">
-                  <Link
-                    to="/courses"
-                    className="block w-full py-2.5 bg-brand-royal hover:bg-brand-navy text-white text-xs font-bold rounded-xl transition-colors shadow"
-                  >
-                    Launch 3-Panel Course Discovery &rarr;
-                  </Link>
-                </div>
-              </div>
+            <button
+              onClick={() => dispatch(openEnquiryModal({}))}
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/30 font-semibold px-6 py-3 rounded-full transition-all flex items-center gap-2 text-xs backdrop-blur-md"
+            >
+              <PhoneCall className="w-4 h-4 text-brand-gold" />
+              <span>Talk to Counsellor</span>
+            </button>
+          </div>
+
+          {/* Minimal Trust Badges */}
+          <div className="mt-10 pt-6 border-t border-white/15 flex flex-wrap items-center justify-center gap-6 sm:gap-12 text-xs text-slate-200 font-medium">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-brand-gold" />
+              <span>100% Verified Colleges</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Award className="w-4 h-4 text-brand-gold" />
+              <span>Transparent Fee Details</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-brand-gold" />
+              <span>Expert 1-on-1 Mentorship</span>
             </div>
           </div>
         </div>

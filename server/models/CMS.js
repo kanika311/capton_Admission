@@ -10,7 +10,11 @@ const CMSSchema = new mongoose.Schema(
     },
     heroHeading: {
       type: String,
-      default: 'Find Your Dream Course. Discover Your Perfect University.',
+      default: 'Find Your Dream Course & Discover Your Perfect University',
+    },
+    heroVideoUrl: {
+      type: String,
+      default: 'https://assets.mixkit.co/videos/preview/mixkit-students-walking-in-a-university-campus-43387-large.mp4',
     },
     heroDescription: {
       type: String,

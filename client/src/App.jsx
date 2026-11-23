@@ -41,6 +41,7 @@ import StudentNotificationsPage from './pages/student/StudentNotificationsPage';
 
 // Admin Pages
 import AdminDashboardOverview from './pages/admin/AdminDashboardOverview';
+import AdminCMSPage from './pages/admin/AdminCMSPage';
 import AdminCoursesPage from './pages/admin/AdminCoursesPage';
 import AdminUniversitiesPage from './pages/admin/AdminUniversitiesPage';
 import AdminMappingsPage from './pages/admin/AdminMappingsPage';
@@ -111,6 +112,7 @@ function App() {
       >
         <Route index element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboardOverview />} />
+        <Route path="cms" element={<AdminCMSPage />} />
         <Route path="courses" element={<AdminCoursesPage />} />
         <Route path="universities" element={<AdminUniversitiesPage />} />
         <Route path="mappings" element={<AdminMappingsPage />} />

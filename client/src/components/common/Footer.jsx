@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  GraduationCap,
   Mail,
   Phone,
   MapPin,
@@ -12,34 +11,80 @@ import {
   Youtube,
   ShieldCheck,
   Award,
+  ArrowRight,
+  Sparkles,
 } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-brand-navy text-slate-300 pt-16 pb-8 border-t-4 border-brand-gold">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+    <footer className="bg-white text-slate-700 border-t border-slate-200">
+      {/* Top Value Banner */}
+      <div className="border-b border-slate-100 bg-slate-50/70">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm">
+              <div className="w-12 h-12 rounded-xl bg-blue-50 text-brand-royal flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <div>
+                <h5 className="font-bold text-sm text-slate-900">100% UGC & AICTE Verified</h5>
+                <p className="text-xs text-slate-500">Government accredited universities only</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm">
+              <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                <Award className="w-6 h-6" />
+              </div>
+              <div>
+                <h5 className="font-bold text-sm text-slate-900">Zero Admission Brokerage</h5>
+                <p className="text-xs text-slate-500">100% transparent fee structure & scholarships</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm">
+              <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <div>
+                <h5 className="font-bold text-sm text-slate-900">Expert Career Guidance</h5>
+                <p className="text-xs text-slate-500">Free 1-on-1 personalized counselling sessions</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Footer Links */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand Info */}
-          <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center gap-3 mb-4">
+          <div className="lg:col-span-2 space-y-4">
+            <Link to="/" className="inline-flex items-center gap-3">
               <img
                 src="/logo.png"
                 alt="CaptonAdmission"
-                className="w-12 h-12 object-contain rounded-full bg-white p-0.5"
+                className="w-12 h-12 object-contain rounded-full shadow-sm"
               />
-              <span className="text-2xl font-extrabold text-white tracking-tight">
-                Capton<span className="text-brand-gold">Admission</span>
-              </span>
+              <div className="flex flex-col">
+                <span className="text-2xl font-black text-brand-navy tracking-tight">
+                  Capton<span className="text-brand-gold">Admission</span>
+                </span>
+                <span className="text-[10px] uppercase tracking-widest text-slate-400 font-semibold -mt-1">
+                  Empowering Futures
+                </span>
+              </div>
             </Link>
-            <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-sm">
-              India’s trusted higher education discovery and admission counselling platform. Helping students select verified courses, compare accredited universities, and achieve academic excellence.
+            <p className="text-slate-600 text-sm leading-relaxed max-w-sm">
+              CaptonAdmission is India’s premier higher education discovery platform. Helping students select verified courses, compare accredited universities, and achieve academic excellence.
             </p>
-            <div className="flex items-center gap-3">
+            <div className="pt-2 flex items-center gap-2.5">
               <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-brand-royal text-white flex items-center justify-center transition-colors"
+                aria-label="Facebook"
+                className="w-9 h-9 rounded-full bg-slate-100 hover:bg-brand-royal hover:text-white text-slate-600 flex items-center justify-center transition-all"
               >
                 <Facebook className="w-4 h-4" />
               </a>
@@ -47,7 +92,8 @@ const Footer = () => {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-brand-royal text-white flex items-center justify-center transition-colors"
+                aria-label="Twitter"
+                className="w-9 h-9 rounded-full bg-slate-100 hover:bg-brand-royal hover:text-white text-slate-600 flex items-center justify-center transition-all"
               >
                 <Twitter className="w-4 h-4" />
               </a>
@@ -55,7 +101,8 @@ const Footer = () => {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-brand-royal text-white flex items-center justify-center transition-colors"
+                aria-label="Instagram"
+                className="w-9 h-9 rounded-full bg-slate-100 hover:bg-brand-royal hover:text-white text-slate-600 flex items-center justify-center transition-all"
               >
                 <Instagram className="w-4 h-4" />
               </a>
@@ -63,7 +110,8 @@ const Footer = () => {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-brand-royal text-white flex items-center justify-center transition-colors"
+                aria-label="LinkedIn"
+                className="w-9 h-9 rounded-full bg-slate-100 hover:bg-brand-royal hover:text-white text-slate-600 flex items-center justify-center transition-all"
               >
                 <Linkedin className="w-4 h-4" />
               </a>
@@ -71,7 +119,8 @@ const Footer = () => {
                 href="https://youtube.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-brand-royal text-white flex items-center justify-center transition-colors"
+                aria-label="YouTube"
+                className="w-9 h-9 rounded-full bg-slate-100 hover:bg-brand-royal hover:text-white text-slate-600 flex items-center justify-center transition-all"
               >
                 <Youtube className="w-4 h-4" />
               </a>
@@ -80,77 +129,77 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4 border-l-2 border-brand-gold pl-2.5">
-              Quick Links
+            <h4 className="text-slate-900 font-bold text-xs uppercase tracking-wider mb-4 border-l-2 border-brand-royal pl-2">
+              Explore Portal
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link to="/courses" className="hover:text-brand-gold transition-colors">
-                  Three-Panel Discovery
+                <Link to="/courses" className="text-slate-600 hover:text-brand-royal transition-colors">
+                  3-Panel Course Discovery
                 </Link>
               </li>
               <li>
-                <Link to="/universities" className="hover:text-brand-gold transition-colors">
-                  Universities Directory
+                <Link to="/universities" className="text-slate-600 hover:text-brand-royal transition-colors">
+                  Top Universities
                 </Link>
               </li>
               <li>
-                <Link to="/compare" className="hover:text-brand-gold transition-colors">
-                  Compare Universities
+                <Link to="/compare" className="text-slate-600 hover:text-brand-royal transition-colors">
+                  Compare Colleges
                 </Link>
               </li>
               <li>
-                <Link to="/services" className="hover:text-brand-gold transition-colors">
+                <Link to="/services" className="text-slate-600 hover:text-brand-royal transition-colors">
                   Admission Services
                 </Link>
               </li>
               <li>
-                <Link to="/exams" className="hover:text-brand-gold transition-colors">
-                  Entrance Examinations
+                <Link to="/exams" className="text-slate-600 hover:text-brand-royal transition-colors">
+                  Entrance Exams 2026
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-brand-gold transition-colors">
-                  About Our Mission
+                <Link to="/blogs" className="text-slate-600 hover:text-brand-royal transition-colors">
+                  Latest Education News
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Popular Courses */}
+          {/* Popular Streams */}
           <div>
-            <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4 border-l-2 border-brand-gold pl-2.5">
+            <h4 className="text-slate-900 font-bold text-xs uppercase tracking-wider mb-4 border-l-2 border-brand-gold pl-2">
               Popular Degrees
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link to="/courses?category=engineering" className="hover:text-brand-gold transition-colors">
-                  B.Tech Computer Science
+                <Link to="/courses?category=engineering" className="text-slate-600 hover:text-brand-royal transition-colors">
+                  B.Tech Engineering
                 </Link>
               </li>
               <li>
-                <Link to="/courses?category=engineering" className="hover:text-brand-gold transition-colors">
-                  B.Tech AI & Data Science
+                <Link to="/courses?category=computer-applications" className="text-slate-600 hover:text-brand-royal transition-colors">
+                  BCA & MCA Tech
                 </Link>
               </li>
               <li>
-                <Link to="/courses?category=management" className="hover:text-brand-gold transition-colors">
-                  Master of Business (MBA)
+                <Link to="/courses?category=management" className="text-slate-600 hover:text-brand-royal transition-colors">
+                  MBA & BBA Programs
                 </Link>
               </li>
               <li>
-                <Link to="/courses?category=computer-applications" className="hover:text-brand-gold transition-colors">
-                  BCA Full Stack Dev
+                <Link to="/courses?category=medical" className="text-slate-600 hover:text-brand-royal transition-colors">
+                  MBBS & BDS Medical
                 </Link>
               </li>
               <li>
-                <Link to="/courses?category=medical" className="hover:text-brand-gold transition-colors">
-                  MBBS & Dental Programs
+                <Link to="/courses?category=law" className="text-slate-600 hover:text-brand-royal transition-colors">
+                  BA LLB & Law
                 </Link>
               </li>
               <li>
-                <Link to="/courses?category=law" className="hover:text-brand-gold transition-colors">
-                  5-Year BA LLB Integrated
+                <Link to="/courses?category=pharmacy" className="text-slate-600 hover:text-brand-royal transition-colors">
+                  B.Pharmacy & Healthcare
                 </Link>
               </li>
             </ul>
@@ -158,25 +207,25 @@ const Footer = () => {
 
           {/* Contact Details */}
           <div>
-            <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4 border-l-2 border-brand-gold pl-2.5">
-              Contact & Helpline
+            <h4 className="text-slate-900 font-bold text-xs uppercase tracking-wider mb-4 border-l-2 border-brand-royal pl-2">
+              Help & Contact
             </h4>
-            <div className="space-y-3 text-sm text-slate-300">
+            <div className="space-y-3 text-sm text-slate-600">
               <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-brand-gold mt-1 shrink-0" />
+                <MapPin className="w-4 h-4 text-brand-royal mt-1 shrink-0" />
                 <span>CaptonAdmission Tower, Knowledge Park, New Delhi, India</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-brand-gold shrink-0" />
-                <span>+91 98765 43210</span>
+                <Phone className="w-4 h-4 text-brand-royal shrink-0" />
+                <span className="font-semibold text-slate-800">+91 98765 43210</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-brand-gold shrink-0" />
+                <Mail className="w-4 h-4 text-brand-royal shrink-0" />
                 <span>admissions@captonadmission.com</span>
               </div>
               <div className="pt-2">
-                <span className="text-xs bg-slate-800 text-brand-gold px-2.5 py-1 rounded-md font-medium inline-block">
-                  Counselling Hours: 9 AM - 7 PM (Mon-Sat)
+                <span className="text-xs bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg font-medium inline-block border border-slate-200">
+                  Counselling: 9 AM - 7 PM (Mon-Sat)
                 </span>
               </div>
             </div>
@@ -184,17 +233,20 @@ const Footer = () => {
         </div>
 
         {/* Bottom Line */}
-        <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 gap-4">
-          <p>&copy; {new Date().getFullYear()} CaptonAdmission. All rights reserved.</p>
+        <div className="mt-12 pt-6 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 gap-4">
+          <p>&copy; {new Date().getFullYear()} CaptonAdmission Platform. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            <Link to="/privacy-policy" className="hover:text-slate-300">
-              Privacy Policy
+            <Link to="/about" className="hover:text-brand-royal transition-colors">
+              About Us
             </Link>
-            <Link to="/terms-conditions" className="hover:text-slate-300">
-              Terms & Conditions
+            <Link to="/contact" className="hover:text-brand-royal transition-colors">
+              Contact Us
             </Link>
-            <Link to="/contact" className="hover:text-slate-300">
-              Sitemap
+            <Link to="/login" className="hover:text-brand-royal transition-colors">
+              Student Login
+            </Link>
+            <Link to="/admin/login" className="hover:text-brand-royal transition-colors">
+              Admin Login
             </Link>
           </div>
         </div>

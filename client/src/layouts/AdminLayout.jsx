@@ -17,6 +17,7 @@ import {
   X,
   ExternalLink,
   ShieldAlert,
+  Video,
 } from 'lucide-react';
 import { logout } from '../redux/slices/authSlice';
 
@@ -33,6 +34,7 @@ const AdminLayout = () => {
 
   const navItems = [
     { label: 'Analytics Dashboard', to: '/admin/dashboard', icon: LayoutDashboard },
+    { label: 'Hero Video & CMS', to: '/admin/cms', icon: Video },
     { label: 'Course Management', to: '/admin/courses', icon: GraduationCap },
     { label: 'University Directory', to: '/admin/universities', icon: Building2 },
     { label: 'Course-University Mapping', to: '/admin/mappings', icon: GitMerge },
