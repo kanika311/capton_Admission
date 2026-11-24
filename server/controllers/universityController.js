@@ -14,6 +14,7 @@ exports.getUniversities = async (req, res, next) => {
     if (isDbReady()) {
       const {
         search,
+        country,
         state,
         city,
         universityType,
@@ -31,10 +32,16 @@ exports.getUniversities = async (req, res, next) => {
           { name: { $regex: search, $options: 'i' } },
           { 'location.city': { $regex: search, $options: 'i' } },
           { 'location.state': { $regex: search, $options: 'i' } },
+          { 'location.country': { $regex: search, $options: 'i' } },
         ];
       }
 
-      if (state) query['location.state'] = { $regex: new RegExp(`^${state}$`, 'i') };
+      if (country && country !== 'All' && country !== 'All Countries') {
+        query['location.country'] = { $regex: new RegExp(`^${country}$`, 'i') };
+      }
+      if (state && state !== 'All' && state !== 'All States') {
+        query['location.state'] = { $regex: new RegExp(`^${state}$`, 'i') };
+      }
       if (city) query['location.city'] = { $regex: new RegExp(`^${city}$`, 'i') };
       if (universityType) query.universityType = universityType;
       if (accreditation) query.accreditation = { $in: [accreditation] };
@@ -158,9 +165,13 @@ exports.getUniversityById = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (isDbReady() && mongoose.Types.ObjectId.isValid(id)) {
-      const university = await University.findById(id);
-      if (university) {
-        return res.status(200).json({ success: true, data: university });
+      try {
+        const university = await University.findById(id);
+        if (university) {
+          return res.status(200).json({ success: true, data: university });
+        }
+      } catch (dbErr) {
+        console.warn('[getUniversityById] DB query warning:', dbErr.message);
       }
     }
     const mock = mockStore.getUniversityById(id);
@@ -183,9 +194,18 @@ exports.createUniversity = async (req, res, next) => {
     if (!slug) {
       slug = slugify(name, { lower: true, strict: true });
     }
+    const createData = { ...req.body, slug };
+    delete createData._id;
+    delete createData.id;
+    delete createData.__v;
+
     if (isDbReady()) {
-      const university = await University.create({ ...req.body, slug });
-      return res.status(201).json({ success: true, data: university });
+      try {
+        const university = await University.create(createData);
+        return res.status(201).json({ success: true, data: university });
+      } catch (dbErr) {
+        console.warn('[createUniversity] DB create warning:', dbErr.message);
+      }
     }
     const newUni = mockStore.updateUniversity(`uni_${Date.now()}`, { ...req.body, slug });
     res.status(201).json({ success: true, data: newUni });
@@ -202,20 +222,29 @@ exports.updateUniversity = async (req, res, next) => {
     const { id } = req.params;
     let updatedUni = null;
 
+    const updateData = { ...req.body };
+    delete updateData._id;
+    delete updateData.id;
+    delete updateData.__v;
+
     if (isDbReady()) {
-      if (mongoose.Types.ObjectId.isValid(id)) {
-        updatedUni = await University.findByIdAndUpdate(id, req.body, {
-          new: true,
-          runValidators: true,
-        });
-      } else {
-        const mockItem = mockStore.getUniversityById(id);
-        const slug = slugify(req.body.name || (mockItem ? mockItem.name : id), { lower: true, strict: true });
-        updatedUni = await University.findOneAndUpdate(
-          { $or: [{ slug }, { name: req.body.name }] },
-          { ...req.body, slug },
-          { new: true, upsert: true, runValidators: true }
-        );
+      try {
+        if (mongoose.Types.ObjectId.isValid(id)) {
+          updatedUni = await University.findByIdAndUpdate(id, updateData, {
+            new: true,
+            runValidators: true,
+          });
+        } else {
+          const mockItem = mockStore.getUniversityById(id);
+          const slug = slugify(updateData.name || (mockItem ? mockItem.name : id), { lower: true, strict: true });
+          updatedUni = await University.findOneAndUpdate(
+            { $or: [{ slug }, { name: updateData.name }] },
+            { ...updateData, slug },
+            { new: true, upsert: true, runValidators: true }
+          );
+        }
+      } catch (dbErr) {
+        console.warn('[updateUniversity] DB update warning:', dbErr.message);
       }
     }
 
@@ -233,17 +262,21 @@ exports.deleteUniversity = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (isDbReady()) {
-      if (mongoose.Types.ObjectId.isValid(id)) {
-        await University.findByIdAndDelete(id);
-        await CourseUniversity.deleteMany({ university: id });
-      } else {
-        const mockItem = mockStore.getUniversityById(id);
-        if (mockItem) {
-          const deleted = await University.findOneAndDelete({ slug: mockItem.slug });
-          if (deleted) {
-            await CourseUniversity.deleteMany({ university: deleted._id });
+      try {
+        if (mongoose.Types.ObjectId.isValid(id)) {
+          await University.findByIdAndDelete(id);
+          await CourseUniversity.deleteMany({ university: id });
+        } else {
+          const mockItem = mockStore.getUniversityById(id);
+          if (mockItem) {
+            const deleted = await University.findOneAndDelete({ slug: mockItem.slug });
+            if (deleted && mongoose.Types.ObjectId.isValid(deleted._id)) {
+              await CourseUniversity.deleteMany({ university: deleted._id });
+            }
           }
         }
+      } catch (dbErr) {
+        console.warn('[deleteUniversity] DB delete warning:', dbErr.message);
       }
     }
     mockStore.deleteUniversity(id);

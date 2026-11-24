@@ -223,9 +223,18 @@ exports.createCourse = async (req, res, next) => {
     if (!slug) {
       slug = slugify(name, { lower: true, strict: true });
     }
+    const createData = { ...req.body, slug };
+    delete createData._id;
+    delete createData.id;
+    delete createData.__v;
+
     if (isDbReady()) {
-      const course = await Course.create({ ...req.body, slug });
-      return res.status(201).json({ success: true, data: course });
+      try {
+        const course = await Course.create(createData);
+        return res.status(201).json({ success: true, data: course });
+      } catch (dbErr) {
+        console.warn('[createCourse] DB create warning:', dbErr.message);
+      }
     }
     const newCourse = mockStore.updateCourse(`course_${Date.now()}`, { ...req.body, slug });
     res.status(201).json({ success: true, data: newCourse });
@@ -242,21 +251,30 @@ exports.updateCourse = async (req, res, next) => {
     const { id } = req.params;
     let updatedCourse = null;
 
+    const updateData = { ...req.body };
+    delete updateData._id;
+    delete updateData.id;
+    delete updateData.__v;
+
     if (isDbReady()) {
-      if (mongoose.Types.ObjectId.isValid(id)) {
-        updatedCourse = await Course.findByIdAndUpdate(id, req.body, {
-          new: true,
-          runValidators: true,
-        });
-      } else {
-        // Handle mock string IDs like 'course_1' by matching slug or upserting
-        const mockItem = mockStore.getCourseById(id);
-        const slug = slugify(req.body.name || (mockItem ? mockItem.name : id), { lower: true, strict: true });
-        updatedCourse = await Course.findOneAndUpdate(
-          { $or: [{ slug }, { name: req.body.name }] },
-          { ...req.body, slug },
-          { new: true, upsert: true, runValidators: true }
-        );
+      try {
+        if (mongoose.Types.ObjectId.isValid(id)) {
+          updatedCourse = await Course.findByIdAndUpdate(id, updateData, {
+            new: true,
+            runValidators: true,
+          });
+        } else {
+          // Handle mock string IDs like 'course_1' by matching slug or upserting
+          const mockItem = mockStore.getCourseById(id);
+          const slug = slugify(updateData.name || (mockItem ? mockItem.name : id), { lower: true, strict: true });
+          updatedCourse = await Course.findOneAndUpdate(
+            { $or: [{ slug }, { name: updateData.name }] },
+            { ...updateData, slug },
+            { new: true, upsert: true, runValidators: true }
+          );
+        }
+      } catch (dbErr) {
+        console.warn('[updateCourse] DB update warning:', dbErr.message);
       }
     }
 
@@ -275,17 +293,21 @@ exports.deleteCourse = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (isDbReady()) {
-      if (mongoose.Types.ObjectId.isValid(id)) {
-        await Course.findByIdAndDelete(id);
-        await CourseUniversity.deleteMany({ course: id });
-      } else {
-        const mockItem = mockStore.getCourseById(id);
-        if (mockItem) {
-          const deleted = await Course.findOneAndDelete({ slug: mockItem.slug });
-          if (deleted) {
-            await CourseUniversity.deleteMany({ course: deleted._id });
+      try {
+        if (mongoose.Types.ObjectId.isValid(id)) {
+          await Course.findByIdAndDelete(id);
+          await CourseUniversity.deleteMany({ course: id });
+        } else {
+          const mockItem = mockStore.getCourseById(id);
+          if (mockItem) {
+            const deleted = await Course.findOneAndDelete({ slug: mockItem.slug });
+            if (deleted && mongoose.Types.ObjectId.isValid(deleted._id)) {
+              await CourseUniversity.deleteMany({ course: deleted._id });
+            }
           }
         }
+      } catch (dbErr) {
+        console.warn('[deleteCourse] DB delete warning:', dbErr.message);
       }
     }
     mockStore.deleteCourse(id);

@@ -33,19 +33,7 @@ import {
 import api from '../../services/api';
 import { openEnquiryModal } from '../../redux/slices/enquiryModalSlice';
 import toast from 'react-hot-toast';
-
-const statesList = [
-  'All',
-  'Delhi',
-  'Tamil Nadu',
-  'Karnataka',
-  'Maharashtra',
-  'Punjab',
-  'Uttar Pradesh',
-  'Rajasthan',
-  'Gujarat',
-  'Odisha',
-];
+import { indianStatesList, countriesList, getStatesForCountry } from '../../data/locationData';
 
 const typesList = ['All', 'Government', 'Private', 'Deemed'];
 
@@ -71,8 +59,14 @@ const UniversitiesPage = () => {
 
   // Filters state
   const [search, setSearch] = useState('');
+  const [countryFilter, setCountryFilter] = useState(searchParams.get('country') || 'All');
   const [stateFilter, setStateFilter] = useState(searchParams.get('state') || 'All');
   const [typeFilter, setTypeFilter] = useState(searchParams.get('type') || 'All');
+
+  // Dynamic available states based on selected country
+  const availableStates = useMemo(() => {
+    return ['All States / Regions', ...getStatesForCountry(countryFilter)];
+  }, [countryFilter]);
 
   // Mobile step switcher: 'list' | 'details' | 'suggestions'
   const [mobileStep, setMobileStep] = useState('list');
@@ -117,22 +111,34 @@ const UniversitiesPage = () => {
     fetchData();
   }, []);
 
-  // Filter universities based on search & filters
+  // Filter universities based on search & filters (including Country & All States)
   const filteredUniversities = useMemo(() => {
     return universities.filter((u) => {
+      const q = search.toLowerCase();
       const matchesSearch =
         !search ||
-        u.name.toLowerCase().includes(search.toLowerCase()) ||
-        u.location?.city?.toLowerCase().includes(search.toLowerCase()) ||
-        u.location?.state?.toLowerCase().includes(search.toLowerCase()) ||
-        (u.accreditation || []).some((a) => a.toLowerCase().includes(search.toLowerCase()));
+        u.name.toLowerCase().includes(q) ||
+        u.location?.city?.toLowerCase().includes(q) ||
+        u.location?.state?.toLowerCase().includes(q) ||
+        u.location?.country?.toLowerCase().includes(q) ||
+        (u.accreditation || []).some((a) => a.toLowerCase().includes(q));
 
-      const matchesState = stateFilter === 'All' || u.location?.state?.toLowerCase() === stateFilter.toLowerCase();
+      const matchesCountry =
+        countryFilter === 'All' ||
+        countryFilter === 'All Countries' ||
+        (u.location?.country || 'India').toLowerCase() === countryFilter.toLowerCase();
+
+      const matchesState =
+        stateFilter === 'All' ||
+        stateFilter === 'All States' ||
+        stateFilter === 'All States / Regions' ||
+        u.location?.state?.toLowerCase() === stateFilter.toLowerCase();
+
       const matchesType = typeFilter === 'All' || u.universityType === typeFilter;
 
-      return matchesSearch && matchesState && matchesType;
+      return matchesSearch && matchesCountry && matchesState && matchesType;
     });
-  }, [universities, search, stateFilter, typeFilter]);
+  }, [universities, search, countryFilter, stateFilter, typeFilter]);
 
   // Handle selecting a university
   const handleSelectUniversity = (uni) => {
@@ -225,15 +231,32 @@ const UniversitiesPage = () => {
               />
             </div>
 
-            {/* State Filter */}
+            {/* Country Filter */}
+            <select
+              value={countryFilter}
+              onChange={(e) => {
+                setCountryFilter(e.target.value);
+                setStateFilter('All');
+              }}
+              className="py-2 px-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal cursor-pointer shrink-0"
+            >
+              <option value="All">🌐 All Countries</option>
+              {countriesList.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+
+            {/* State / Region Filter */}
             <select
               value={stateFilter}
               onChange={(e) => setStateFilter(e.target.value)}
-              className="py-2 px-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal cursor-pointer shrink-0"
+              className="py-2 px-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal cursor-pointer shrink-0 max-w-[160px] truncate"
             >
-              {statesList.map((st) => (
+              {availableStates.map((st) => (
                 <option key={st} value={st}>
-                  {st === 'All' ? 'All States' : st}
+                  {st === 'All' || st === 'All States / Regions' ? '📍 All States' : st}
                 </option>
               ))}
             </select>
@@ -358,19 +381,22 @@ const UniversitiesPage = () => {
             </span>
           </div>
 
-          {/* Quick Filter Badges */}
+          {/* Quick Filter Badges (Destination / Country & Types) */}
           <div className="p-2 border-b border-slate-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar bg-white">
-            {['All', 'Government', 'Private', 'Deemed'].map((t) => (
+            {['All', 'India', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Germany'].map((c) => (
               <button
-                key={t}
-                onClick={() => setTypeFilter(t)}
+                key={c}
+                onClick={() => {
+                  setCountryFilter(c);
+                  setStateFilter('All');
+                }}
                 className={`px-2.5 py-1 rounded-lg text-[10px] font-bold whitespace-nowrap transition-colors cursor-pointer ${
-                  typeFilter === t
+                  countryFilter === c
                     ? 'bg-brand-royal text-white shadow-xs'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
-                {t}
+                {c === 'All' ? '🌐 All' : c === 'United States' ? '🇺🇸 USA' : c === 'United Kingdom' ? '🇬🇧 UK' : c === 'Canada' ? '🇨🇦 Canada' : c === 'Australia' ? '🇦🇺 Australia' : c === 'Germany' ? '🇩🇪 Germany' : '🇮🇳 India'}
               </button>
             ))}
           </div>
@@ -432,7 +458,7 @@ const UniversitiesPage = () => {
 
                       <p className="text-[11px] text-slate-400 truncate flex items-center gap-1 mt-0.5">
                         <MapPin className="w-3 h-3 shrink-0" />
-                        <span>{uni.location?.city}, {uni.location?.state}</span>
+                        <span>{uni.location?.city}, {uni.location?.state}{uni.location?.country && uni.location.country !== 'India' ? `, ${uni.location.country}` : ''}</span>
                       </p>
 
                       <div className="flex items-center justify-between text-[10px] text-slate-500 mt-1.5 pt-1.5 border-t border-slate-100/60 font-semibold">

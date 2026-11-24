@@ -309,6 +309,140 @@ const universities = [
     isFeatured: true,
     isPublished: true,
   },
+  // Top Accredited International / Study Abroad Universities
+  {
+    _id: 'uni_int_1',
+    name: 'Massachusetts Institute of Technology (MIT)',
+    slug: 'massachusetts-institute-of-technology-mit',
+    logo: 'https://images.unsplash.com/photo-1562774053-701939374585?w=150&h=150&fit=crop',
+    coverImage: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&h=400&fit=crop',
+    location: { address: '77 Massachusetts Ave', city: 'Cambridge', state: 'Massachusetts', country: 'United States', pinCode: '02139' },
+    universityType: 'Private',
+    establishedYear: 1861,
+    accreditation: ['QS World Rank #1', 'NECHE Accredited', 'ABET Certified'],
+    website: 'https://www.mit.edu',
+    contactInfo: { email: 'admissions@mit.edu', phone: '+1 617-253-1000', helpline: '+1-617-253-1000' },
+    about: 'World-renowned private research university focusing on science, technology, algorithmic computation, and advanced engineering leadership.',
+    facilities: ['MIT Media Lab', 'Barker Engineering Library', 'Hayden Memorial'],
+    placementOverview: { averagePackage: '$125,000 USD / yr', highestPackage: '$280,000 USD', placementRate: '98%', topRecruiters: ['Google', 'Apple', 'NVIDIA', 'McKinsey'] },
+    rating: 5.0,
+    isFeatured: true,
+    isPublished: true,
+  },
+  {
+    _id: 'uni_int_2',
+    name: 'University of Oxford',
+    slug: 'university-of-oxford',
+    logo: 'https://images.unsplash.com/photo-1590012314607-cda9d9b699ae?w=150&h=150&fit=crop',
+    coverImage: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&h=400&fit=crop',
+    location: { address: 'Wellington Square', city: 'Oxford', state: 'Oxfordshire', country: 'United Kingdom', pinCode: 'OX1 2JD' },
+    universityType: 'Government',
+    establishedYear: 1096,
+    accreditation: ['THE World Rank #1', 'Russell Group', 'Royal Charter'],
+    website: 'https://www.ox.ac.uk',
+    contactInfo: { email: 'undergraduate.admissions@ox.ac.uk', phone: '+44 1865 270000', helpline: '+44-1865-270000' },
+    about: 'The oldest university in the English-speaking world, offering collegiate tutorial education and unmatched international academic prestige.',
+    facilities: ['Bodleian Library', 'Radcliffe Camera', 'Oxford Union'],
+    placementOverview: { averagePackage: '£ 65,000 GBP / yr', highestPackage: '£ 140,000 GBP', placementRate: '97%', topRecruiters: ['Goldman Sachs', 'UN', 'Rolls-Royce', 'AstraZeneca'] },
+    rating: 5.0,
+    isFeatured: true,
+    isPublished: true,
+  },
+  {
+    _id: 'uni_int_3',
+    name: 'University of Toronto',
+    slug: 'university-of-toronto',
+    logo: 'https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=150&h=150&fit=crop',
+    coverImage: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&h=400&fit=crop',
+    location: { address: '27 King\'s College Cir', city: 'Toronto', state: 'Ontario', country: 'Canada', pinCode: 'M5S' },
+    universityType: 'Government',
+    establishedYear: 1827,
+    accreditation: ['Ranked #1 in Canada', 'U15 Member', 'AAU Member'],
+    website: 'https://www.utoronto.ca',
+    contactInfo: { email: 'admissions@utoronto.ca', phone: '+1 416-978-2011', helpline: '+1-416-978-2011' },
+    about: 'Canada\'s leading public research institution celebrated for groundbreaking AI innovations, medical discoveries, and multicultural student life.',
+    facilities: ['Robarts Research Library', 'Hart House', 'MaRS Discovery District'],
+    placementOverview: { averagePackage: '$92,000 CAD / yr', highestPackage: '$180,000 CAD', placementRate: '96%', topRecruiters: ['RBC', 'Amazon Canada', 'Shopify', 'Deloitte'] },
+    rating: 4.9,
+    isFeatured: true,
+    isPublished: true,
+  },
+  {
+    _id: 'uni_int_4',
+    name: 'University of Melbourne',
+    slug: 'university-of-melbourne',
+    logo: 'https://images.unsplash.com/photo-1590012314607-cda9d9b699ae?w=150&h=150&fit=crop',
+    coverImage: 'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=1200&h=400&fit=crop',
+    location: { address: 'Parkville', city: 'Melbourne', state: 'Victoria', country: 'Australia', pinCode: '3010' },
+    universityType: 'Government',
+    establishedYear: 1853,
+    accreditation: ['Ranked #1 in Australia', 'Group of Eight (Go8)', 'Universitas 21'],
+    website: 'https://www.unimelb.edu.au',
+    contactInfo: { email: 'study@unimelb.edu.au', phone: '+61 3 9035 5511', helpline: '+61-3-9035-5511' },
+    about: 'Australia\'s premier university providing distinctive Melbourne Model degrees with world-class faculty and stellar employment outcomes.',
+    facilities: ['Baillieu Library', 'Bio21 Institute', 'Melbourne Connect Hub'],
+    placementOverview: { averagePackage: '$88,000 AUD / yr', highestPackage: '$170,000 AUD', placementRate: '95%', topRecruiters: ['BHP', 'Atlassian', 'ANZ', 'PwC Australia'] },
+    rating: 4.8,
+    isFeatured: true,
+    isPublished: true,
+  },
+  {
+    _id: 'uni_int_5',
+    name: 'Technical University of Munich (TUM)',
+    slug: 'technical-university-of-munich-tum',
+    logo: 'https://images.unsplash.com/photo-1562774053-701939374585?w=150&h=150&fit=crop',
+    coverImage: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&h=400&fit=crop',
+    location: { address: 'Arcisstraße 21', city: 'Munich', state: 'Bavaria', country: 'Germany', pinCode: '80333' },
+    universityType: 'Government',
+    establishedYear: 1868,
+    accreditation: ['TU9 Excellence University', 'Top Technical University in Germany'],
+    website: 'https://www.tum.de',
+    contactInfo: { email: 'studium@tum.de', phone: '+49 89 289 01', helpline: '+49-89-289-01' },
+    about: 'Germany\'s highest-ranked technical university with tuition-free European higher education, world-leading robotics and engineering labs.',
+    facilities: ['Garching Research Campus', 'TUM Venture Labs', 'Max Planck Centers'],
+    placementOverview: { averagePackage: '€ 68,000 EUR / yr', highestPackage: '€ 130,000 EUR', placementRate: '97%', topRecruiters: ['BMW Group', 'Siemens', 'SAP', 'Airbus'] },
+    rating: 4.9,
+    isFeatured: true,
+    isPublished: true,
+  },
+  {
+    _id: 'uni_int_6',
+    name: 'National University of Singapore (NUS)',
+    slug: 'national-university-of-singapore-nus',
+    logo: 'https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=150&h=150&fit=crop',
+    coverImage: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&h=400&fit=crop',
+    location: { address: '21 Lower Kent Ridge Rd', city: 'Singapore', state: 'Central Singapore', country: 'Singapore', pinCode: '119077' },
+    universityType: 'Government',
+    establishedYear: 1905,
+    accreditation: ['QS Asia Rank #1', 'Global Top 10', 'AACSB Accredited'],
+    website: 'https://www.nus.edu.sg',
+    contactInfo: { email: 'admissions@nus.edu.sg', phone: '+65 6516 6666', helpline: '+65-6516-6666' },
+    about: 'Asia\'s flagship university providing rigorous global Asian education, cutting-edge biomedical and fintech research in Singapore.',
+    facilities: ['University Town (UTown)', 'NUS Enterprise', 'Central Library'],
+    placementOverview: { averagePackage: '$78,000 SGD / yr', highestPackage: '$160,000 SGD', placementRate: '98%', topRecruiters: ['DBS Bank', 'GIC', 'Temasek', 'Grab', 'Shopee'] },
+    rating: 4.9,
+    isFeatured: true,
+    isPublished: true,
+  },
+  {
+    _id: 'uni_int_7',
+    name: 'Khalifa University (UAE)',
+    slug: 'khalifa-university-uae',
+    logo: 'https://images.unsplash.com/photo-1590012314607-cda9d9b699ae?w=150&h=150&fit=crop',
+    coverImage: 'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=1200&h=400&fit=crop',
+    location: { address: 'Zone 1', city: 'Abu Dhabi', state: 'Abu Dhabi', country: 'United Arab Emirates', pinCode: '127788' },
+    universityType: 'Government',
+    establishedYear: 2007,
+    accreditation: ['Ranked #1 in UAE', 'ABET Accredited', 'Ministry of Education UAE'],
+    website: 'https://www.ku.ac.ae',
+    contactInfo: { email: 'admissions@ku.ac.ae', phone: '+971 2 312 3333', helpline: '+971-2-312-3333' },
+    about: 'Leading research university in the Middle East with 100% scholarships, premier aerospace, clean energy, and AI engineering degrees.',
+    facilities: ['Robotics Research Lab', 'Aerospace Testing Tunnel', 'High Performance Computing'],
+    placementOverview: { averagePackage: 'AED 180,000 / yr', highestPackage: 'AED 360,000', placementRate: '96%', topRecruiters: ['ADNOC', 'Mubadala', 'EDGE Group', 'Etihad'] },
+    rating: 4.8,
+    isFeatured: true,
+    isPublished: true,
+  },
 ];
 
 const services = [
@@ -740,13 +874,17 @@ module.exports = {
         (u) =>
           u.name.toLowerCase().includes(q) ||
           u.location?.city?.toLowerCase().includes(q) ||
-          u.location?.state?.toLowerCase().includes(q)
+          u.location?.state?.toLowerCase().includes(q) ||
+          u.location?.country?.toLowerCase().includes(q)
       );
     }
-    if (query.state) {
+    if (query.country && query.country !== 'All' && query.country !== 'All Countries') {
+      result = result.filter((u) => (u.location?.country || 'India').toLowerCase() === query.country.toLowerCase());
+    }
+    if (query.state && query.state !== 'All' && query.state !== 'All States' && query.state !== 'All States / Regions') {
       result = result.filter((u) => u.location?.state?.toLowerCase() === query.state.toLowerCase());
     }
-    if (query.universityType) {
+    if (query.universityType && query.universityType !== 'All' && query.universityType !== 'All Types') {
       result = result.filter((u) => u.universityType === query.universityType);
     }
     if (query.limit) {

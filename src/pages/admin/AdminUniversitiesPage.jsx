@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
+import { indianStatesList, countriesList, getStatesForCountry } from '../../data/locationData';
 
 const AdminUniversitiesPage = () => {
   const [universities, setUniversities] = useState([]);
@@ -36,6 +37,7 @@ const AdminUniversitiesPage = () => {
     name: '',
     city: '',
     state: '',
+    country: 'India',
     universityType: 'Private',
     establishedYear: 2000,
     website: '',
@@ -135,6 +137,7 @@ const AdminUniversitiesPage = () => {
       name: uni.name,
       city: uni.location?.city || '',
       state: uni.location?.state || '',
+      country: uni.location?.country || 'India',
       universityType: uni.universityType || 'Private',
       establishedYear: uni.establishedYear || 2000,
       website: uni.website || '',
@@ -233,7 +236,7 @@ const AdminUniversitiesPage = () => {
         location: {
           city: formData.city,
           state: formData.state,
-          country: 'India',
+          country: formData.country || 'India',
         },
         universityType: formData.universityType,
         establishedYear: Number(formData.establishedYear),
@@ -355,7 +358,42 @@ const AdminUniversitiesPage = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    Country <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={formData.country || 'India'}
+                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal transition-all cursor-pointer"
+                  >
+                    {countriesList.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    State / Province <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    list="admin-states-list"
+                    placeholder="e.g. Delhi, Maharashtra, California..."
+                    value={formData.state}
+                    onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal transition-all"
+                  />
+                  <datalist id="admin-states-list">
+                    {getStatesForCountry(formData.country).map((st) => (
+                      <option key={st} value={st} />
+                    ))}
+                  </datalist>
+                </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1.5">
                     City <span className="text-red-500">*</span>
@@ -366,19 +404,6 @@ const AdminUniversitiesPage = () => {
                     placeholder="e.g. New Delhi"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                    State <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Delhi"
-                    value={formData.state}
-                    onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                     className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal transition-all"
                   />
                 </div>
@@ -905,7 +930,7 @@ const AdminUniversitiesPage = () => {
                       )}
                     </td>
                     <td className="p-4 text-slate-600">
-                      {uni.location?.city}, {uni.location?.state}
+                      {uni.location?.city}, {uni.location?.state}{uni.location?.country && uni.location.country !== 'India' ? ` (${uni.location.country})` : ''}
                     </td>
                     <td className="p-4">
                       <span className="px-2 py-0.5 rounded bg-slate-100 font-semibold text-[11px] text-slate-700">

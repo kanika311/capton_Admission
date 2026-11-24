@@ -296,15 +296,11 @@ const HomePage = () => {
       {/* SECTION 2: POPULAR COURSE CATEGORIES */}
       <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
-            Browse By Stream
-          </span>
+
           <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
             Popular Course Categories
           </h2>
-          <p className="text-slate-600 text-sm mt-2">
-            Select your academic discipline to explore degrees, eligibility, career outcomes, and accredited universities.
-          </p>
+
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-5">
@@ -345,15 +341,11 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
-                High Demand Degrees
-              </span>
+
               <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
                 Featured Courses
               </h2>
-              <p className="text-slate-600 text-sm mt-2">
-                Top recognized undergraduate and postgraduate degrees with strong career placements.
-              </p>
+
             </div>
             <Link
               to="/courses"
@@ -429,23 +421,13 @@ const HomePage = () => {
       <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
-              Accredited Campuses
-            </span>
+
             <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
               Top Universities & Colleges
             </h2>
-            <p className="text-slate-600 text-sm mt-2">
-              Explore leading government and private universities with verified NIRF and NAAC accreditations.
-            </p>
+
           </div>
-          <Link
-            to="/universities"
-            className="mt-4 md:mt-0 text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group"
-          >
-            <span>View All 20+ Universities</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
@@ -527,15 +509,11 @@ const HomePage = () => {
       <section className="relative z-10 py-20 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-14">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
-              Admission Assistance
-            </span>
+
             <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
               Comprehensive Admission Services
             </h2>
-            <p className="text-slate-600 text-sm mt-2">
-              From course selection and psychometric counselling to scholarship guidance and loan processing.
-            </p>
+
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -589,15 +567,11 @@ const HomePage = () => {
       {/* SECTION 6: WHY CHOOSE CAPTONADMISSION? */}
       <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
-            Our Promise
-          </span>
+
           <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
             Why Choose CaptonAdmission?
           </h2>
-          <p className="text-slate-600 text-sm mt-2">
-            Built on integrity, transparency, and data-backed student guidance.
-          </p>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -679,15 +653,11 @@ const HomePage = () => {
       <section className="relative z-10 py-20 bg-gradient-to-br from-brand-navy to-brand-royal text-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-gold bg-white/10 px-3 py-1 rounded-full border border-white/20">
-              Simple 4-Step Process
-            </span>
+
             <h2 className="text-3xl font-extrabold mt-3">
               How CaptonAdmission Works
             </h2>
-            <p className="text-slate-200 text-sm mt-2">
-              Your streamlined pathway from course discovery to official university enrollment.
-            </p>
+
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -738,15 +708,11 @@ const HomePage = () => {
       <section className="relative z-10 py-20 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
-              Test Prep & Dates
-            </span>
+
             <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
               Popular Entrance Examinations
             </h2>
-            <p className="text-slate-600 text-sm mt-2">
-              Stay updated on exam patterns, important schedules, and participating universities.
-            </p>
+
           </div>
           <Link
             to="/exams"
@@ -805,15 +771,11 @@ const HomePage = () => {
       <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-14">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
-              Real Experiences
-            </span>
+
             <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
               What Our Students Say
             </h2>
-            <p className="text-slate-600 text-sm mt-2">
-              Thousands of students have found their dream colleges through CaptonAdmission guidance.
-            </p>
+
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
@@ -855,15 +817,11 @@ const HomePage = () => {
       <section className="relative z-10 py-20 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full">
-              Articles & Guides
-            </span>
+
             <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
               Latest Education Insights
             </h2>
-            <p className="text-slate-600 text-sm mt-2">
-              Stay ahead with curated admissions advice, career roadmaps, and college fee analysis.
-            </p>
+
           </div>
           <Link
             to="/blogs"
@@ -922,9 +880,7 @@ const HomePage = () => {
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
             Confused About Your Career or University?
           </h2>
-          <p className="text-slate-200 text-sm sm:text-base max-w-2xl mx-auto">
-            Speak directly with our senior admission advisors. We evaluate your marks, recommend genuine accredited options, and assist with scholarships at zero cost.
-          </p>
+
           <div className="pt-2">
             <button
               onClick={() => dispatch(openEnquiryModal({}))}

@@ -28,6 +28,7 @@ import {
 } from '../../redux/slices/courseDiscoverySlice';
 import { openEnquiryModal } from '../../redux/slices/enquiryModalSlice';
 import toast from 'react-hot-toast';
+import { indianStatesList, countriesList, getStatesForCountry } from '../../data/locationData';
 
 const PanelUniversityList = () => {
   const dispatch = useDispatch();
@@ -81,7 +82,8 @@ const PanelUniversityList = () => {
     }
   };
 
-  const states = ['All', 'Delhi', 'Tamil Nadu', 'Karnataka', 'Maharashtra', 'Punjab', 'Uttar Pradesh', 'Rajasthan'];
+  const allStates = ['All', ...indianStatesList];
+  const allCountries = ['All Countries', ...countriesList];
   const types = ['All', 'Government', 'Private', 'Deemed'];
   const statuses = ['All', 'Open', 'Upcoming'];
 
@@ -126,7 +128,23 @@ const PanelUniversityList = () => {
       {/* Filter Drawer / Bar */}
       {filterDrawerOpen && (
         <div className="p-3.5 bg-brand-light border-b border-brand-border text-xs space-y-3 animate-fadeIn">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+            {/* Country filter */}
+            <div>
+              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                Country
+              </label>
+              <select
+                value={universityFilters.country || 'All'}
+                onChange={(e) => handleFilterChange('country', e.target.value)}
+                className="w-full p-1.5 text-xs bg-white border border-slate-300 rounded-md focus:outline-none"
+              >
+                {allCountries.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+
             {/* State filter */}
             <div>
               <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
@@ -137,7 +155,7 @@ const PanelUniversityList = () => {
                 onChange={(e) => handleFilterChange('state', e.target.value)}
                 className="w-full p-1.5 text-xs bg-white border border-slate-300 rounded-md focus:outline-none"
               >
-                {states.map((s) => (
+                {allStates.map((s) => (
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
