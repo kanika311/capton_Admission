@@ -1,5 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Search, X, Building2, MapPin } from 'lucide-react';
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Search,
+  X,
+  Building2,
+  MapPin,
+  ArrowLeft,
+  Save,
+  Globe,
+  Award,
+  TrendingUp,
+  Sparkles,
+} from 'lucide-react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 
@@ -7,8 +21,10 @@ const AdminUniversitiesPage = () => {
   const [universities, setUniversities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [saving, setSaving] = useState(false);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // View state: 'list' | 'editor'
+  const [viewMode, setViewMode] = useState('list');
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -57,7 +73,8 @@ const AdminUniversitiesPage = () => {
       highestPackage: '₹ 45 LPA',
       isFeatured: false,
     });
-    setIsModalOpen(true);
+    setViewMode('editor');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleOpenEdit = (uni) => {
@@ -76,14 +93,26 @@ const AdminUniversitiesPage = () => {
       highestPackage: uni.placementOverview?.highestPackage || '',
       isFeatured: uni.isFeatured || false,
     });
-    setIsModalOpen(true);
+    setViewMode('editor');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleBackToList = () => {
+    setViewMode('list');
+    setEditingId(null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.name.trim()) {
+      toast.error('Please enter university name');
+      return;
+    }
+
     try {
+      setSaving(true);
       const payload = {
-        name: formData.name,
+        name: formData.name.trim(),
         location: {
           city: formData.city,
           state: formData.state,
@@ -113,10 +142,13 @@ const AdminUniversitiesPage = () => {
         toast.success('University created successfully');
       }
 
-      setIsModalOpen(false);
+      setViewMode('list');
+      setEditingId(null);
       fetchUniversities();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to save university');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -131,6 +163,284 @@ const AdminUniversitiesPage = () => {
     }
   };
 
+  // FULL PAGE UNIVERSITY EDITOR VIEW
+  if (viewMode === 'editor') {
+    return (
+      <div className="space-y-6 animate-fadeIn pb-12">
+        {/* Top Header Bar */}
+        <div className="bg-white p-5 sm:p-6 rounded-2xl border border-brand-border shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleBackToList}
+              type="button"
+              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors cursor-pointer"
+              title="Back to universities list"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-slate-400">Universities /</span>
+                <span className="text-xs font-bold text-brand-royal uppercase tracking-wider">
+                  {editingId ? 'Edit Campus Profile' : 'New Institution'}
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-brand-navy tracking-tight mt-0.5">
+                {editingId ? `Edit: ${formData.name || 'University'}` : 'Add New University'}
+              </h2>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleBackToList}
+              className="px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              form="uniForm"
+              disabled={saving}
+              className="px-6 py-2.5 bg-brand-royal hover:bg-brand-navy active:scale-[0.99] text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 disabled:opacity-60 cursor-pointer"
+            >
+              <Save className="w-4 h-4" />
+              <span>{saving ? 'Saving...' : editingId ? 'Update University' : 'Create University'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* The University Editor Form */}
+        <form id="uniForm" onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Main Column (8 cols): Campus Info */}
+          <div className="lg:col-span-8 space-y-6">
+            {/* Campus Identity */}
+            <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-sm space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                <Building2 className="w-4 h-4 text-brand-royal" />
+                <h3 className="text-sm font-bold text-brand-navy">Institution Overview</h3>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  University / College Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Delhi Technological University (DTU)"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal transition-all"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    City <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. New Delhi"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    State <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Delhi"
+                    value={formData.state}
+                    onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal transition-all"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  Official Website URL
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <Globe className="w-4 h-4" />
+                  </div>
+                  <input
+                    type="url"
+                    placeholder="https://www.dtu.ac.in"
+                    value={formData.website}
+                    onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal transition-all"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  About University & Campus Highlights <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  rows={5}
+                  required
+                  placeholder="Campus history, academic excellence, accreditation badges, and research infrastructure..."
+                  value={formData.about}
+                  onChange={(e) => setFormData({ ...formData, about: e.target.value })}
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal transition-all resize-y"
+                ></textarea>
+              </div>
+            </div>
+
+            {/* Accreditations & Badges */}
+            <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-sm space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                <Award className="w-4 h-4 text-brand-royal" />
+                <h3 className="text-sm font-bold text-brand-navy">Accreditations & Recognitions</h3>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  Accreditations (Comma separated)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. NAAC A++, NIRF Ranked #29, AICTE Approved, UGC Recognized"
+                  value={formData.accreditation}
+                  onChange={(e) => setFormData({ ...formData, accreditation: e.target.value })}
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal transition-all"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar Column (4 cols): Classification & Placements */}
+          <div className="lg:col-span-4 space-y-6">
+            {/* Classification */}
+            <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-sm space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                <Building2 className="w-4 h-4 text-brand-royal" />
+                <h3 className="text-sm font-bold text-brand-navy">Campus Classification</h3>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  Institution Type <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={formData.universityType}
+                  onChange={(e) => setFormData({ ...formData, universityType: e.target.value })}
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal transition-all"
+                >
+                  <option value="Government">Government</option>
+                  <option value="Private">Private</option>
+                  <option value="Deemed">Deemed</option>
+                  <option value="Autonomous">Autonomous</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">Est. Year</label>
+                  <input
+                    type="number"
+                    value={formData.establishedYear}
+                    onChange={(e) => setFormData({ ...formData, establishedYear: e.target.value })}
+                    className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">Rating (1-5)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="1"
+                    max="5"
+                    value={formData.rating}
+                    onChange={(e) => setFormData({ ...formData, rating: e.target.value })}
+                    className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Placement Records */}
+            <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-sm space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                <TrendingUp className="w-4 h-4 text-emerald-600" />
+                <h3 className="text-sm font-bold text-brand-navy">Placement Statistics</h3>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">Average Package</label>
+                <input
+                  type="text"
+                  placeholder="e.g. ₹ 15.6 LPA"
+                  value={formData.averagePackage}
+                  onChange={(e) => setFormData({ ...formData, averagePackage: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">Highest Package</label>
+                <input
+                  type="text"
+                  placeholder="e.g. ₹ 1.2 CPA"
+                  value={formData.highestPackage}
+                  onChange={(e) => setFormData({ ...formData, highestPackage: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-royal/20 focus:border-brand-royal"
+                />
+              </div>
+            </div>
+
+            {/* Visibility Card */}
+            <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-sm space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                <Sparkles className="w-4 h-4 text-brand-gold" />
+                <h3 className="text-sm font-bold text-brand-navy">Promotions & Visibility</h3>
+              </div>
+
+              <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors">
+                <input
+                  type="checkbox"
+                  id="uniFeaturedCheck"
+                  checked={formData.isFeatured}
+                  onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
+                  className="mt-0.5 w-4 h-4 text-brand-royal rounded border-slate-300 focus:ring-brand-royal"
+                />
+                <div>
+                  <span className="text-xs font-bold text-slate-800 block">
+                    Feature on Homepage
+                  </span>
+                  <span className="text-[11px] text-slate-400 block mt-0.5">
+                    Showcases in the Top Universities & Accredited Colleges carousel.
+                  </span>
+                </div>
+              </label>
+
+              <button
+                type="submit"
+                disabled={saving}
+                className="w-full py-3 bg-brand-royal hover:bg-brand-navy active:scale-[0.99] text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
+              >
+                <Save className="w-4 h-4" />
+                <span>{saving ? 'Saving...' : editingId ? 'Update University' : 'Create University'}</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
+  // DEFAULT LIST VIEW
   return (
     <div className="space-y-6 animate-fadeIn">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -143,30 +453,32 @@ const AdminUniversitiesPage = () => {
 
         <button
           onClick={handleOpenAdd}
-          className="px-4 py-2.5 bg-brand-royal hover:bg-brand-navy text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5 shrink-0"
+          className="px-4 py-2.5 bg-brand-royal hover:bg-brand-navy text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5 shrink-0 cursor-pointer transition-all"
         >
           <Plus className="w-4 h-4" />
           <span>Add University</span>
         </button>
       </div>
 
+      {/* Search Filter */}
       <div className="bg-white p-3 rounded-2xl border border-brand-border flex items-center gap-2">
         <Search className="w-4 h-4 text-slate-400" />
         <input
           type="text"
-          placeholder="Filter colleges by name or location..."
+          placeholder="Filter by university name, city or state..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full text-xs focus:outline-none"
         />
       </div>
 
+      {/* Universities Table */}
       <div className="bg-white rounded-2xl border border-brand-border shadow-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-brand-border text-slate-500 uppercase text-[10px] tracking-wider">
-                <th className="p-4">University Name</th>
+                <th className="p-4">Campus / Institution</th>
                 <th className="p-4">Location</th>
                 <th className="p-4">Type</th>
                 <th className="p-4">Accreditation</th>
@@ -177,11 +489,15 @@ const AdminUniversitiesPage = () => {
             <tbody className="divide-y divide-slate-100 font-medium">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-slate-400">Loading...</td>
+                  <td colSpan={6} className="p-8 text-center text-slate-400">
+                    Loading universities...
+                  </td>
                 </tr>
               ) : universities.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-slate-400">No universities found.</td>
+                  <td colSpan={6} className="p-8 text-center text-slate-400">
+                    No universities found.
+                  </td>
                 </tr>
               ) : (
                 universities.map((uni) => (
@@ -211,15 +527,15 @@ const AdminUniversitiesPage = () => {
                     <td className="p-4 text-right space-x-2">
                       <button
                         onClick={() => handleOpenEdit(uni)}
-                        className="p-1.5 text-slate-500 hover:text-brand-royal rounded hover:bg-slate-100"
-                        title="Edit"
+                        className="p-1.5 text-slate-500 hover:text-brand-royal rounded hover:bg-slate-100 cursor-pointer"
+                        title="Edit University Profile in dedicated page"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(uni._id)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 rounded hover:bg-red-50"
-                        title="Delete"
+                        className="p-1.5 text-slate-400 hover:text-red-600 rounded hover:bg-red-50 cursor-pointer"
+                        title="Delete University"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -231,142 +547,6 @@ const AdminUniversitiesPage = () => {
           </table>
         </div>
       </div>
-
-      {/* Add / Edit University Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-brand-border overflow-hidden animate-scaleUp">
-            <div className="bg-brand-navy text-white px-6 py-4 flex items-center justify-between">
-              <h3 className="font-bold text-base">
-                {editingId ? 'Edit University' : 'Add New University'}
-              </h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs">
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">University Name *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Delhi Technological University"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-brand-royal focus:outline-none"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">City *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. New Delhi"
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">State *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Delhi"
-                    value={formData.state}
-                    onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Institution Type *</label>
-                  <select
-                    value={formData.universityType}
-                    onChange={(e) => setFormData({ ...formData, universityType: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white"
-                  >
-                    <option value="Government">Government</option>
-                    <option value="Private">Private</option>
-                    <option value="Deemed">Deemed</option>
-                    <option value="Autonomous">Autonomous</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Rating (1-5)</label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    min="1"
-                    max="5"
-                    value={formData.rating}
-                    onChange={(e) => setFormData({ ...formData, rating: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Accreditations (Comma separated)</label>
-                <input
-                  type="text"
-                  placeholder="e.g. NAAC A++, NIRF Ranked #29"
-                  value={formData.accreditation}
-                  onChange={(e) => setFormData({ ...formData, accreditation: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Average Package</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. ₹ 15.6 LPA"
-                    value={formData.averagePackage}
-                    onChange={(e) => setFormData({ ...formData, averagePackage: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Highest Package</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. ₹ 1.2 CPA"
-                    value={formData.highestPackage}
-                    onChange={(e) => setFormData({ ...formData, highestPackage: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">About University *</label>
-                <textarea
-                  rows={3}
-                  required
-                  placeholder="Campus culture, research facilities, and achievements..."
-                  value={formData.about}
-                  onChange={(e) => setFormData({ ...formData, about: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg resize-none"
-                ></textarea>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-2.5 bg-brand-royal hover:bg-brand-navy text-white font-bold rounded-xl shadow transition-colors"
-              >
-                {editingId ? 'Update University' : 'Create University'}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
