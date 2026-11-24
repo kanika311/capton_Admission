@@ -142,11 +142,18 @@ exports.getUniversityBySlug = async (req, res, next) => {
 // @access  Public
 exports.getUniversityById = async (req, res, next) => {
   try {
-    const university = await University.findById(req.params.id);
-    if (!university) {
-      return res.status(404).json({ success: false, message: 'University not found' });
+    const { id } = req.params;
+    if (isDbReady() && mongoose.Types.ObjectId.isValid(id)) {
+      const university = await University.findById(id);
+      if (university) {
+        return res.status(200).json({ success: true, data: university });
+      }
     }
-    res.status(200).json({ success: true, data: university });
+    const mock = mockStore.getUniversityById(id);
+    if (mock) {
+      return res.status(200).json({ success: true, data: mock });
+    }
+    res.status(404).json({ success: false, message: 'University not found' });
   } catch (err) {
     next(err);
   }
@@ -162,8 +169,12 @@ exports.createUniversity = async (req, res, next) => {
     if (!slug) {
       slug = slugify(name, { lower: true, strict: true });
     }
-    const university = await University.create({ ...req.body, slug });
-    res.status(201).json({ success: true, data: university });
+    if (isDbReady()) {
+      const university = await University.create({ ...req.body, slug });
+      return res.status(201).json({ success: true, data: university });
+    }
+    const newUni = mockStore.updateUniversity(`uni_${Date.now()}`, { ...req.body, slug });
+    res.status(201).json({ success: true, data: newUni });
   } catch (err) {
     next(err);
   }
@@ -174,14 +185,28 @@ exports.createUniversity = async (req, res, next) => {
 // @access  Private (Admin)
 exports.updateUniversity = async (req, res, next) => {
   try {
-    const university = await University.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!university) {
-      return res.status(404).json({ success: false, message: 'University not found' });
+    const { id } = req.params;
+    let updatedUni = null;
+
+    if (isDbReady()) {
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        updatedUni = await University.findByIdAndUpdate(id, req.body, {
+          new: true,
+          runValidators: true,
+        });
+      } else {
+        const mockItem = mockStore.getUniversityById(id);
+        const slug = slugify(req.body.name || (mockItem ? mockItem.name : id), { lower: true, strict: true });
+        updatedUni = await University.findOneAndUpdate(
+          { $or: [{ slug }, { name: req.body.name }] },
+          { ...req.body, slug },
+          { new: true, upsert: true, runValidators: true }
+        );
+      }
     }
-    res.status(200).json({ success: true, data: university });
+
+    const mockUpdated = mockStore.updateUniversity(id, req.body);
+    res.status(200).json({ success: true, data: updatedUni || mockUpdated });
   } catch (err) {
     next(err);
   }
@@ -192,12 +217,19 @@ exports.updateUniversity = async (req, res, next) => {
 // @access  Private (Admin)
 exports.deleteUniversity = async (req, res, next) => {
   try {
-    const university = await University.findByIdAndDelete(req.params.id);
-    if (!university) {
-      return res.status(404).json({ success: false, message: 'University not found' });
+    const { id } = req.params;
+    if (isDbReady()) {
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        await University.findByIdAndDelete(id);
+        await CourseUniversity.deleteMany({ university: id });
+      } else {
+        const mockItem = mockStore.getUniversityById(id);
+        if (mockItem) {
+          await University.findOneAndDelete({ slug: mockItem.slug });
+        }
+      }
     }
-    // Also remove mappings
-    await CourseUniversity.deleteMany({ university: req.params.id });
+    mockStore.deleteUniversity(id);
     res.status(200).json({ success: true, message: 'University deleted successfully' });
   } catch (err) {
     next(err);

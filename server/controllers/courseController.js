@@ -196,11 +196,18 @@ exports.getCourseBySlug = async (req, res, next) => {
 // @access  Public
 exports.getCourseById = async (req, res, next) => {
   try {
-    const course = await Course.findById(req.params.id).populate('category', 'name slug icon');
-    if (!course) {
-      return res.status(404).json({ success: false, message: 'Course not found' });
+    const { id } = req.params;
+    if (isDbReady() && mongoose.Types.ObjectId.isValid(id)) {
+      const course = await Course.findById(id).populate('category', 'name slug icon');
+      if (course) {
+        return res.status(200).json({ success: true, data: course });
+      }
     }
-    res.status(200).json({ success: true, data: course });
+    const mock = mockStore.getCourseById(id);
+    if (mock) {
+      return res.status(200).json({ success: true, data: mock });
+    }
+    res.status(404).json({ success: false, message: 'Course not found' });
   } catch (err) {
     next(err);
   }
@@ -216,8 +223,12 @@ exports.createCourse = async (req, res, next) => {
     if (!slug) {
       slug = slugify(name, { lower: true, strict: true });
     }
-    const course = await Course.create({ ...req.body, slug });
-    res.status(201).json({ success: true, data: course });
+    if (isDbReady()) {
+      const course = await Course.create({ ...req.body, slug });
+      return res.status(201).json({ success: true, data: course });
+    }
+    const newCourse = mockStore.updateCourse(`course_${Date.now()}`, { ...req.body, slug });
+    res.status(201).json({ success: true, data: newCourse });
   } catch (err) {
     next(err);
   }
@@ -228,14 +239,30 @@ exports.createCourse = async (req, res, next) => {
 // @access  Private (Admin)
 exports.updateCourse = async (req, res, next) => {
   try {
-    const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!course) {
-      return res.status(404).json({ success: false, message: 'Course not found' });
+    const { id } = req.params;
+    let updatedCourse = null;
+
+    if (isDbReady()) {
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        updatedCourse = await Course.findByIdAndUpdate(id, req.body, {
+          new: true,
+          runValidators: true,
+        });
+      } else {
+        // Handle mock string IDs like 'course_1' by matching slug or upserting
+        const mockItem = mockStore.getCourseById(id);
+        const slug = slugify(req.body.name || (mockItem ? mockItem.name : id), { lower: true, strict: true });
+        updatedCourse = await Course.findOneAndUpdate(
+          { $or: [{ slug }, { name: req.body.name }] },
+          { ...req.body, slug },
+          { new: true, upsert: true, runValidators: true }
+        );
+      }
     }
-    res.status(200).json({ success: true, data: course });
+
+    // Always keep mock store updated
+    const mockUpdated = mockStore.updateCourse(id, req.body);
+    res.status(200).json({ success: true, data: updatedCourse || mockUpdated });
   } catch (err) {
     next(err);
   }
@@ -246,12 +273,19 @@ exports.updateCourse = async (req, res, next) => {
 // @access  Private (Admin)
 exports.deleteCourse = async (req, res, next) => {
   try {
-    const course = await Course.findByIdAndDelete(req.params.id);
-    if (!course) {
-      return res.status(404).json({ success: false, message: 'Course not found' });
+    const { id } = req.params;
+    if (isDbReady()) {
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        await Course.findByIdAndDelete(id);
+        await CourseUniversity.deleteMany({ course: id });
+      } else {
+        const mockItem = mockStore.getCourseById(id);
+        if (mockItem) {
+          await Course.findOneAndDelete({ slug: mockItem.slug });
+        }
+      }
     }
-    // Also remove any mappings for this course
-    await CourseUniversity.deleteMany({ course: req.params.id });
+    mockStore.deleteCourse(id);
     res.status(200).json({ success: true, message: 'Course deleted successfully' });
   } catch (err) {
     next(err);

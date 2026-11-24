@@ -703,4 +703,34 @@ module.exports = {
     }
     return mappings;
   },
+  getCourseById: (id) => courses.find((c) => c._id === id || c.slug === id) || null,
+  updateCourse: (id, data) => {
+    const idx = courses.findIndex((c) => c._id === id || c.slug === id);
+    if (idx !== -1) {
+      courses[idx] = { ...courses[idx], ...data };
+      return courses[idx];
+    }
+    const newCourse = { _id: id || `course_${Date.now()}`, ...data };
+    courses.unshift(newCourse);
+    return newCourse;
+  },
+  deleteCourse: (id) => {
+    const idx = courses.findIndex((c) => c._id === id || c.slug === id);
+    if (idx !== -1) courses.splice(idx, 1);
+  },
+  getUniversityById: (id) => universities.find((u) => u._id === id || u.slug === id) || null,
+  updateUniversity: (id, data) => {
+    const idx = universities.findIndex((u) => u._id === id || u.slug === id);
+    if (idx !== -1) {
+      universities[idx] = { ...universities[idx], ...data };
+      return universities[idx];
+    }
+    const newUni = { _id: id || `uni_${Date.now()}`, ...data };
+    universities.unshift(newUni);
+    return newUni;
+  },
+  deleteUniversity: (id) => {
+    const idx = universities.findIndex((u) => u._id === id || u.slug === id);
+    if (idx !== -1) universities.splice(idx, 1);
+  },
 };
