@@ -12,6 +12,9 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    headers: {
+      'Cache-Control': 'no-store',
+    },
     watch: {
       ignored: ['**/*.mp4', '**/public/**', '**/server/uploads/**', '**/uploads/**'],
     },
