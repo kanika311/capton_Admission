@@ -43,6 +43,14 @@ const CourseUniversitySchema = new mongoose.Schema(
       enum: ['Open', 'Upcoming', 'Closed'],
       default: 'Open',
     },
+    brochure: {
+      type: String,
+      default: '',
+    },
+    brochureUrl: {
+      type: String,
+      default: '',
+    },
     placementInfo: {
       averagePackage: { type: String, default: '' },
       highestPackage: { type: String, default: '' },

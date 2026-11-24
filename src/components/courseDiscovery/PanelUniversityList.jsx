@@ -15,6 +15,8 @@ import {
   Layers,
   Sparkles,
   GitCompare,
+  FileText,
+  Download,
 } from 'lucide-react';
 import {
   setUniversityFilters,
@@ -345,6 +347,38 @@ const PanelUniversityList = () => {
                   </div>
 
                   <div className="flex items-center gap-2">
+                    {/* Official Brochure Download or Request */}
+                    {(item.brochureUrl || uni.brochureUrl) ? (
+                      <a
+                        href={item.brochureUrl || uni.brochureUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2.5 py-1.5 text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg flex items-center gap-1 transition-colors cursor-pointer"
+                        title="Download Official Campus & Course Brochure PDF"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-amber-700" />
+                        <span>Brochure</span>
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          dispatch(
+                            openEnquiryModal({
+                              course: selectedCourse,
+                              university: uni,
+                              specialization: item.specialization,
+                            })
+                          )
+                        }
+                        className="px-2.5 py-1.5 text-xs font-semibold bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg flex items-center gap-1 transition-colors cursor-pointer"
+                        title="Request Official Brochure"
+                      >
+                        <Download className="w-3.5 h-3.5 text-slate-400" />
+                        <span>Brochure</span>
+                      </button>
+                    )}
+
                     <Link
                       to={`/universities/${uni.slug}`}
                       className="px-3 py-1.5 text-xs font-bold text-brand-royal hover:underline flex items-center gap-1"

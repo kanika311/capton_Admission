@@ -21,6 +21,7 @@ const AdminMappingsPage = () => {
     applicationFees: 1000,
     admissionMode: 'Offline',
     admissionStatus: 'Open',
+    brochureUrl: '',
     averagePackage: '₹ 8 LPA',
     highestPackage: '₹ 40 LPA',
   });
@@ -67,6 +68,7 @@ const AdminMappingsPage = () => {
       applicationFees: 1000,
       admissionMode: 'Offline',
       admissionStatus: 'Open',
+      brochureUrl: '',
       averagePackage: '₹ 8.5 LPA',
       highestPackage: '₹ 45 LPA',
     });
@@ -86,6 +88,8 @@ const AdminMappingsPage = () => {
         applicationFees: Number(formData.applicationFees),
         admissionMode: formData.admissionMode,
         admissionStatus: formData.admissionStatus,
+        brochureUrl: formData.brochureUrl,
+        brochure: formData.brochureUrl,
         placementInfo: {
           averagePackage: formData.averagePackage,
           highestPackage: formData.highestPackage,
@@ -307,6 +311,17 @@ const AdminMappingsPage = () => {
                   type="text"
                   value={formData.eligibility}
                   onChange={(e) => setFormData({ ...formData, eligibility: e.target.value })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">Brochure / Syllabus URL (PDF)</label>
+                <input
+                  type="url"
+                  placeholder="https://example.com/brochures/syllabus.pdf"
+                  value={formData.brochureUrl || ''}
+                  onChange={(e) => setFormData({ ...formData, brochureUrl: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg"
                 />
               </div>

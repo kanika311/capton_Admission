@@ -149,6 +149,8 @@ exports.createCourseUniversity = async (req, res, next) => {
       admissionMode,
       admissionStatus,
       placementInfo,
+      brochure,
+      brochureUrl,
     } = req.body;
 
     if (mongoose.Types.ObjectId.isValid(course) && mongoose.Types.ObjectId.isValid(university)) {
@@ -170,6 +172,8 @@ exports.createCourseUniversity = async (req, res, next) => {
         applicationFees: applicationFees || 1000,
         admissionMode: admissionMode || 'Offline',
         admissionStatus: admissionStatus || 'Open',
+        brochure: brochure || '',
+        brochureUrl: brochureUrl || '',
         placementInfo: placementInfo || {},
       });
 

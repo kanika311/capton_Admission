@@ -27,6 +27,8 @@ import {
   Home,
   Compass,
   Layers,
+  FileText,
+  Download,
 } from 'lucide-react';
 import api from '../../services/api';
 import { openEnquiryModal } from '../../redux/slices/enquiryModalSlice';
@@ -511,13 +513,38 @@ const UniversitiesPage = () => {
                     </div>
 
                     {/* Action buttons */}
-                    <div className="flex items-center gap-2 pt-2 sm:pt-0">
+                    <div className="flex items-center gap-2 pt-2 sm:pt-0 flex-wrap sm:flex-nowrap">
                       <button
                         onClick={() => handleApplyClick()}
-                        className="flex-1 sm:flex-none px-5 py-2.5 bg-brand-royal hover:bg-brand-navy active:scale-95 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer"
+                        className="flex-1 sm:flex-none px-5 py-2.5 bg-brand-royal hover:bg-brand-navy active:scale-95 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer whitespace-nowrap"
                       >
                         Apply / Enquire
                       </button>
+
+                      {/* Official Brochure Download or Request */}
+                      {(selectedUni.brochureUrl || selectedUni.brochure) ? (
+                        <a
+                          href={selectedUni.brochureUrl || selectedUni.brochure}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-900 font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                          title="Download Official Campus Brochure"
+                        >
+                          <FileText className="w-4 h-4 text-slate-900" />
+                          <span>Brochure</span>
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleApplyClick()}
+                          className="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                          title="Request Campus Brochure"
+                        >
+                          <FileText className="w-3.5 h-3.5 text-slate-500" />
+                          <span>Get Brochure</span>
+                        </button>
+                      )}
+
                       {selectedUni.website && (
                         <a
                           href={selectedUni.website}

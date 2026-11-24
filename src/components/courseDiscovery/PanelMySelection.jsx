@@ -11,6 +11,7 @@ import {
   HelpCircle,
   FileCheck,
   Send,
+  FileText,
 } from 'lucide-react';
 import {
   removeFromShortlist,
@@ -142,12 +143,26 @@ const PanelMySelection = () => {
                       <span className="font-bold text-brand-royal">
                         ₹ {(item.totalFees / 100000).toFixed(2)} Lakh
                       </span>
-                      <button
-                        onClick={() => handleApplyShortlisted(item)}
-                        className="text-[11px] font-bold text-brand-navy hover:underline bg-brand-gold/30 hover:bg-brand-gold/60 px-2 py-0.5 rounded"
-                      >
-                        Apply Now
-                      </button>
+                      <div className="flex items-center gap-1.5">
+                        {(item.brochureUrl || uni?.brochureUrl) && (
+                          <a
+                            href={item.brochureUrl || uni?.brochureUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[10px] font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 px-2 py-0.5 rounded border border-amber-200 flex items-center gap-0.5"
+                            title="Download Brochure"
+                          >
+                            <FileText className="w-3 h-3 text-amber-700" />
+                            <span>Brochure</span>
+                          </a>
+                        )}
+                        <button
+                          onClick={() => handleApplyShortlisted(item)}
+                          className="text-[11px] font-bold text-brand-navy hover:underline bg-brand-gold/30 hover:bg-brand-gold/60 px-2 py-0.5 rounded"
+                        >
+                          Apply Now
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );

@@ -127,11 +127,25 @@ exports.getUniversityBySlug = async (req, res, next) => {
     return res.status(404).json({ success: false, message: 'University not found' });
   }
 
+  const coursesOffered = mockStore.getMappings().filter(
+    (m) => (m.university?._id === university._id || m.university?.slug === university.slug || m.university === university._id)
+  );
+
   res.status(200).json({
     success: true,
     data: {
       ...university,
-      coursesOffered: [],
+      coursesOffered: coursesOffered.length > 0 ? coursesOffered : mockStore.getCourses().slice(0, 5).map(c => ({
+        _id: `map_gen_${c._id}_${university._id}`,
+        course: c,
+        university,
+        specialization: c.specializations?.[0] || 'General',
+        duration: c.duration,
+        eligibility: c.eligibility,
+        totalFees: (c.averageFeeRange?.min || 120000) * 4,
+        admissionStatus: 'Open',
+        brochureUrl: university.brochureUrl || '',
+      })),
       similarUniversities: mockStore.getUniversities().filter((u) => u._id !== university._id).slice(0, 4),
     },
   });

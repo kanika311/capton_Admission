@@ -50,6 +50,14 @@ const UniversitySchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    brochure: {
+      type: String,
+      default: '',
+    },
+    brochureUrl: {
+      type: String,
+      default: '',
+    },
     contactInfo: {
       email: { type: String, default: '' },
       phone: { type: String, default: '' },
