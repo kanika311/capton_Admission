@@ -756,90 +756,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* SECTION 6: WHY CHOOSE CAPTONADMISSION? */}
-      <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
-            Why Choose CaptonAdmission?
-          </h2>
-
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-card flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-blue-50 text-brand-royal flex items-center justify-center shrink-0">
-              <Users className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-bold text-base text-brand-navy">Personalized Counselling</h4>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                One-on-one sessions with senior counsellors matched to your strengths, goals, and family budget.
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-card flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-amber-50 text-brand-gold flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-bold text-base text-brand-navy">University Comparison</h4>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                Objective side-by-side benchmarking of universities across ROI, faculty, and placement packages.
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-card flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-              <GraduationCap className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-bold text-base text-brand-navy">Admission Assistance</h4>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                Step-by-step guidance through institutional counseling, cutoff ranks, and seat confirmation.
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-card flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-              <BookOpen className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-bold text-base text-brand-navy">Application Support</h4>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                Error-free documentation review, SOP assistance, and deadline tracking for zero rejection risks.
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-card flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-              <Award className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-bold text-base text-brand-navy">Scholarship Guidance</h4>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                Direct access to university merit scholarships, defense concessions, and state education grants.
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-card flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-blue-50 text-brand-navy flex items-center justify-center shrink-0">
-              <PhoneCall className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-bold text-base text-brand-navy">Dedicated Counsellors</h4>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                Direct WhatsApp and call support throughout your entire journey until you arrive on campus.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* SECTION 7: HOW IT WORKS (FOUR-STEP JOURNEY) */}
       <section className="relative z-10 py-20 bg-gradient-to-br from-brand-navy to-brand-royal text-white border-b border-slate-200">
@@ -896,68 +813,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* SECTION 8: POPULAR ENTRANCE EXAMS */}
-      <section className="relative z-10 py-20 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div>
 
-            <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
-              Popular Entrance Examinations
-            </h2>
-
-          </div>
-          <Link
-            to="/exams"
-            className="mt-4 md:mt-0 text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group"
-          >
-            <span>View All Exams</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {exams.map((exam) => (
-            <div
-              key={exam._id}
-              className="bg-white p-6 rounded-2xl border border-brand-border shadow-card hover:shadow-card-hover transition-all flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-50 text-emerald-700">
-                    {exam.stream}
-                  </span>
-                  <span className="text-xs text-slate-400 font-medium">
-                    {exam.examLevel} Level
-                  </span>
-                </div>
-                <h3 className="font-bold text-base text-brand-navy">
-                  {exam.name}
-                </h3>
-                <p className="text-xs text-slate-500 mt-1 line-clamp-2">
-                  {exam.overview}
-                </p>
-                <div className="mt-4 p-3 bg-brand-light rounded-xl border border-slate-100 text-xs space-y-1">
-                  <p className="text-slate-600">
-                    <strong>Mode:</strong> {exam.examPattern?.mode || 'Computer Based'}
-                  </p>
-                  <p className="text-slate-600">
-                    <strong>Duration:</strong> {exam.examPattern?.duration || '3 Hours'}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100">
-                <Link
-                  to={`/exams/${exam.slug}`}
-                  className="block text-center py-2 bg-brand-light hover:bg-slate-200 text-brand-royal font-bold text-xs rounded-lg transition-colors"
-                >
-                  Exam Pattern & Syllabus &rarr;
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* SECTION 9: STUDENT TESTIMONIALS */}
       <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200">
