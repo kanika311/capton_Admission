@@ -618,6 +618,39 @@ const mappings = [
   },
 ];
 
+let enquiries = [
+  {
+    _id: 'enq_1',
+    enquiryNumber: 'ENQ-2026-10482',
+    name: 'Aarav Sharma',
+    email: 'aarav.sharma@gmail.com',
+    phone: '+91 98765 43210',
+    courseName: 'B.Tech in Computer Science & Engineering',
+    universityName: 'Delhi Technological University (DTU)',
+    city: 'New Delhi',
+    state: 'Delhi',
+    interestedInAbroad: false,
+    interestedInOnline: false,
+    status: 'New',
+    createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+  },
+  {
+    _id: 'enq_2',
+    enquiryNumber: 'ENQ-2026-92147',
+    name: 'Ananya Verma',
+    email: 'ananya.v@yahoo.com',
+    phone: '+91 98111 22334',
+    courseName: 'MBBS / Medical Degrees',
+    universityName: 'Vellore Institute of Technology (VIT)',
+    city: 'Mumbai',
+    state: 'Maharashtra',
+    interestedInAbroad: true,
+    interestedInOnline: false,
+    status: 'New',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+  },
+];
+
 module.exports = {
   categories,
   courses,
@@ -746,5 +779,44 @@ module.exports = {
   deleteMapping: (id) => {
     const idx = mappings.findIndex((m) => m._id === id);
     if (idx !== -1) mappings.splice(idx, 1);
+  },
+  getEnquiries: (query = {}) => {
+    let result = [...enquiries];
+    if (query.status && query.status !== 'All') {
+      result = result.filter((e) => e.status === query.status);
+    }
+    if (query.search) {
+      const q = query.search.toLowerCase();
+      result = result.filter(
+        (e) =>
+          e.name?.toLowerCase().includes(q) ||
+          e.email?.toLowerCase().includes(q) ||
+          e.phone?.includes(q) ||
+          e.enquiryNumber?.toLowerCase().includes(q)
+      );
+    }
+    return result;
+  },
+  addEnquiry: (data) => {
+    const item = {
+      _id: `enq_${Date.now()}`,
+      status: 'New',
+      createdAt: new Date().toISOString(),
+      ...data,
+    };
+    enquiries.unshift(item);
+    return item;
+  },
+  updateEnquiryStatus: (id, status, note) => {
+    const item = enquiries.find((e) => e._id === id || e.enquiryNumber === id);
+    if (item) {
+      item.status = status;
+      if (note) {
+        if (!item.followUpNotes) item.followUpNotes = [];
+        item.followUpNotes.push({ note, date: new Date().toISOString() });
+      }
+      return item;
+    }
+    return null;
   },
 };

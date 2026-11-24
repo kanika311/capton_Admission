@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -18,14 +18,40 @@ import {
   ExternalLink,
   ShieldAlert,
   Video,
+  Bell,
 } from 'lucide-react';
 import { logout } from '../redux/slices/authSlice';
+import api from '../services/api';
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [newLeadsCount, setNewLeadsCount] = useState(0);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // Poll for new leads count every 8 seconds for real-time red notification badges
+  useEffect(() => {
+    let isMounted = true;
+    const fetchLeadCount = async () => {
+      try {
+        const res = await api.get('/enquiries?status=New');
+        if (isMounted) {
+          const count = res.data.count ?? res.data.data?.length ?? 0;
+          setNewLeadsCount(count);
+        }
+      } catch (err) {
+        // silent fallback
+      }
+    };
+
+    fetchLeadCount();
+    const timer = setInterval(fetchLeadCount, 8000);
+    return () => {
+      isMounted = false;
+      clearInterval(timer);
+    };
+  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -39,7 +65,12 @@ const AdminLayout = () => {
     { label: 'University Directory', to: '/admin/universities', icon: Building2 },
     { label: 'Course-University Mapping', to: '/admin/mappings', icon: GitMerge },
     { label: 'Applications Management', to: '/admin/applications', icon: FileText },
-    { label: 'Enquiries & Leads', to: '/admin/enquiries', icon: PhoneCall },
+    {
+      label: 'Enquiries & Leads',
+      to: '/admin/enquiries',
+      icon: PhoneCall,
+      badge: newLeadsCount > 0 ? `${newLeadsCount} NEW` : null,
+    },
     { label: 'Student Directory', to: '/admin/students', icon: Users },
     { label: 'Counsellor Team', to: '/admin/counsellors', icon: UserCheck },
   ];
@@ -81,7 +112,7 @@ const AdminLayout = () => {
 
             <button
               onClick={() => setSidebarOpen(false)}
-              className="p-1 rounded-lg text-slate-400 hover:text-white lg:hidden"
+              className="p-1 rounded-lg text-slate-400 hover:text-white lg:hidden cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -111,15 +142,20 @@ const AdminLayout = () => {
                   end={item.to === '/admin/dashboard'}
                   onClick={() => setSidebarOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all relative ${
                       isActive
                         ? 'bg-brand-royal text-white font-bold shadow-sm'
                         : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                     }`
                   }
                 >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.label}</span>
+                  <Icon className="w-4 h-4 shrink-0" />
+                  <span className="truncate">{item.label}</span>
+                  {item.badge && (
+                    <span className="ml-auto px-2 py-0.5 rounded-full text-[10px] font-black bg-red-600 text-white animate-pulse shadow-md shadow-red-500/50">
+                      {item.badge}
+                    </span>
+                  )}
                 </NavLink>
               );
             })}
@@ -130,7 +166,7 @@ const AdminLayout = () => {
         <div className="p-4 border-t border-slate-800 space-y-2">
           <Link
             to="/"
-            className="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-slate-300 hover:text-white hover:bg-slate-800"
+            className="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
           >
             <span>View Public Website</span>
             <ExternalLink className="w-3.5 h-3.5" />
@@ -138,7 +174,7 @@ const AdminLayout = () => {
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold text-red-400 hover:bg-red-500/10 transition-colors"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             <span>Sign Out</span>
@@ -152,7 +188,7 @@ const AdminLayout = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-2 text-slate-600 hover:text-brand-royal lg:hidden"
+              className="p-2 text-slate-600 hover:text-brand-royal lg:hidden cursor-pointer"
             >
               <Menu className="w-6 h-6" />
             </button>
@@ -162,7 +198,22 @@ const AdminLayout = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-bold border border-emerald-200">
+            {/* Real-time Notification Bell */}
+            <Link
+              to="/admin/enquiries"
+              className="relative p-2 text-slate-500 hover:text-brand-navy rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+              title="Admissions Inquiries"
+            >
+              <Bell className="w-5 h-5" />
+              {newLeadsCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full bg-red-600 text-white text-[10px] font-black flex items-center justify-center animate-bounce shadow-md shadow-red-500/50">
+                  {newLeadsCount}
+                </span>
+              )}
+            </Link>
+
+            <span className="flex items-center gap-1.5 text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-bold border border-emerald-200">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               Live System Active
             </span>
           </div>

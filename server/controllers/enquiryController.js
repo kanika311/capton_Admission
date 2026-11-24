@@ -2,6 +2,7 @@ const Enquiry = require('../models/Enquiry');
 const Notification = require('../models/Notification');
 const logAdminActivity = require('../services/activityLog');
 const mongoose = require('mongoose');
+const mockStore = require('../utils/mockStore');
 
 const isDbReady = () => mongoose.connection && mongoose.connection.readyState === 1;
 
@@ -29,18 +30,20 @@ exports.createEnquiry = async (req, res, next) => {
 
     const enquiryNumber = `ENQ-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
 
+    let savedEnquiry = null;
+
     if (isDbReady()) {
       try {
-        const enquiry = await Enquiry.create({
+        savedEnquiry = await Enquiry.create({
           enquiryNumber,
           student: req.user ? req.user._id : null,
           name,
           email,
           phone,
-          course: course || null,
+          course: (course && mongoose.Types.ObjectId.isValid(course)) ? course : null,
           courseName: courseName || '',
           specialization: specialization || '',
-          university: university || null,
+          university: (university && mongoose.Types.ObjectId.isValid(university)) ? university : null,
           universityName: universityName || '',
           state: state || '',
           city: city || '',
@@ -48,24 +51,36 @@ exports.createEnquiry = async (req, res, next) => {
           interestedInAbroad: Boolean(interestedInAbroad),
           interestedInOnline: Boolean(interestedInOnline),
           message: message || '',
-        });
-
-        return res.status(201).json({
-          success: true,
-          message: 'Enquiry submitted successfully! A senior academic counsellor will contact you within 24 hours.',
-          data: enquiry,
+          status: 'New',
         });
       } catch (dbErr) {
         console.warn('[Enquiry] DB save failed:', dbErr.message);
       }
     }
 
-    // In-memory response fallback
-    console.log('[Enquiry Received]:', { name, email, phone, courseName, city });
-    res.status(201).json({
+    // Always record in mockStore so enquiries are immediately visible in all modes
+    const mockEnquiry = mockStore.addEnquiry({
+      enquiryNumber,
+      name,
+      email,
+      phone,
+      courseName,
+      specialization,
+      universityName,
+      state,
+      city,
+      qualification,
+      interestedInAbroad: Boolean(interestedInAbroad),
+      interestedInOnline: Boolean(interestedInOnline),
+      message: message || '',
+      status: 'New',
+      createdAt: new Date().toISOString(),
+    });
+
+    return res.status(201).json({
       success: true,
       message: 'Enquiry submitted successfully! A senior academic counsellor will contact you within 24 hours.',
-      data: { enquiryNumber, name, email, phone, courseName, city, status: 'New' },
+      data: savedEnquiry || mockEnquiry,
     });
   } catch (err) {
     next(err);
@@ -78,39 +93,57 @@ exports.createEnquiry = async (req, res, next) => {
 exports.getEnquiries = async (req, res, next) => {
   try {
     const { status, search, counsellorId } = req.query;
-    const query = {};
+    let enquiries = [];
 
-    if (status && status !== 'All') {
-      query.status = status;
+    if (isDbReady()) {
+      try {
+        const query = {};
+
+        if (status && status !== 'All') {
+          query.status = status;
+        }
+
+        if (counsellorId && mongoose.Types.ObjectId.isValid(counsellorId)) {
+          query.counsellorAssigned = counsellorId;
+        }
+
+        if (req.user && req.user.role === 'counsellor') {
+          query.$or = [{ counsellorAssigned: req.user._id }, { counsellorAssigned: null }];
+        }
+
+        if (search) {
+          query.$or = [
+            { name: { $regex: search, $options: 'i' } },
+            { email: { $regex: search, $options: 'i' } },
+            { phone: { $regex: search, $options: 'i' } },
+            { enquiryNumber: { $regex: search, $options: 'i' } },
+          ];
+        }
+
+        enquiries = await Enquiry.find(query)
+          .populate('counsellorAssigned', 'name email phone')
+          .populate('course', 'name slug')
+          .populate('university', 'name logo')
+          .sort({ createdAt: -1 });
+      } catch (dbErr) {
+        console.warn('[Enquiries] DB query failed:', dbErr.message);
+      }
     }
 
-    if (counsellorId) {
-      query.counsellorAssigned = counsellorId;
+    // Merge with in-memory mock store
+    const mockList = mockStore.getEnquiries(req.query);
+    const existingNums = new Set(enquiries.map((e) => e.enquiryNumber));
+    const merged = [...enquiries];
+    for (const m of mockList) {
+      if (!existingNums.has(m.enquiryNumber)) {
+        merged.unshift(m);
+      }
     }
-
-    if (req.user.role === 'counsellor') {
-      query.$or = [{ counsellorAssigned: req.user._id }, { counsellorAssigned: null }];
-    }
-
-    if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { phone: { $regex: search, $options: 'i' } },
-        { enquiryNumber: { $regex: search, $options: 'i' } },
-      ];
-    }
-
-    const enquiries = await Enquiry.find(query)
-      .populate('counsellorAssigned', 'name email phone')
-      .populate('course', 'name slug')
-      .populate('university', 'name logo')
-      .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
-      count: enquiries.length,
-      data: enquiries,
+      count: merged.length,
+      data: merged,
     });
   } catch (err) {
     next(err);
@@ -122,17 +155,25 @@ exports.getEnquiries = async (req, res, next) => {
 // @access  Private (Admin / Counsellor)
 exports.getEnquiryById = async (req, res, next) => {
   try {
-    const enquiry = await Enquiry.findById(req.params.id)
-      .populate('counsellorAssigned', 'name email phone')
-      .populate('course')
-      .populate('university')
-      .populate('followUpNotes.addedBy', 'name role');
+    const { id } = req.params;
+    if (isDbReady() && mongoose.Types.ObjectId.isValid(id)) {
+      const enquiry = await Enquiry.findById(id)
+        .populate('counsellorAssigned', 'name email phone')
+        .populate('course')
+        .populate('university')
+        .populate('followUpNotes.addedBy', 'name role');
 
-    if (!enquiry) {
-      return res.status(404).json({ success: false, message: 'Enquiry not found' });
+      if (enquiry) {
+        return res.status(200).json({ success: true, data: enquiry });
+      }
     }
 
-    res.status(200).json({ success: true, data: enquiry });
+    const mockItem = mockStore.getEnquiries().find((e) => e._id === id || e.enquiryNumber === id);
+    if (mockItem) {
+      return res.status(200).json({ success: true, data: mockItem });
+    }
+
+    res.status(404).json({ success: false, message: 'Enquiry not found' });
   } catch (err) {
     next(err);
   }
@@ -144,46 +185,61 @@ exports.getEnquiryById = async (req, res, next) => {
 exports.updateEnquiryStatus = async (req, res, next) => {
   try {
     const { status, note, nextFollowUpDate } = req.body;
+    const { id } = req.params;
+    let enquiry = null;
 
-    const enquiry = await Enquiry.findById(req.params.id);
-    if (!enquiry) {
-      return res.status(404).json({ success: false, message: 'Enquiry not found' });
+    if (isDbReady() && mongoose.Types.ObjectId.isValid(id)) {
+      enquiry = await Enquiry.findById(id);
+      if (enquiry) {
+        enquiry.status = status;
+        if (nextFollowUpDate) enquiry.nextFollowUpDate = nextFollowUpDate;
+        if (note) {
+          enquiry.followUpNotes.push({
+            note,
+            addedBy: req.user ? req.user._id : null,
+            date: new Date(),
+          });
+        }
+        await enquiry.save();
+      }
     }
 
-    enquiry.status = status;
-    if (note) {
-      enquiry.followUpNotes.push({
-        note,
-        addedBy: req.user._id,
-        date: new Date(),
-        nextFollowUpDate: nextFollowUpDate || null,
-      });
-    }
-
-    await enquiry.save();
-
+    const mockUpdated = mockStore.updateEnquiryStatus(id, status, note);
     res.status(200).json({
       success: true,
-      data: enquiry,
+      message: 'Lead status updated successfully',
+      data: enquiry || mockUpdated,
     });
   } catch (err) {
     next(err);
   }
 };
 
-// @desc    Assign counsellor to enquiry
+// @desc    Assign enquiry to counsellor
 // @route   PUT /api/enquiries/:id/assign
 // @access  Private (Admin)
-exports.assignEnquiryCounsellor = async (req, res, next) => {
+exports.assignCounsellor = async (req, res, next) => {
   try {
     const { counsellorId } = req.body;
-    const enquiry = await Enquiry.findByIdAndUpdate(
-      req.params.id,
-      { counsellorAssigned: counsellorId },
-      { new: true }
-    ).populate('counsellorAssigned', 'name email');
+    const { id } = req.params;
 
-    res.status(200).json({ success: true, data: enquiry });
+    if (isDbReady() && mongoose.Types.ObjectId.isValid(id)) {
+      const enquiry = await Enquiry.findById(id);
+      if (!enquiry) {
+        return res.status(404).json({ success: false, message: 'Enquiry not found' });
+      }
+      enquiry.counsellorAssigned = counsellorId;
+      await enquiry.save();
+      return res.status(200).json({ success: true, message: 'Counsellor assigned successfully', data: enquiry });
+    }
+
+    const mockItem = mockStore.getEnquiries().find((e) => e._id === id || e.enquiryNumber === id);
+    if (mockItem) {
+      mockItem.counsellorAssigned = counsellorId;
+      return res.status(200).json({ success: true, message: 'Counsellor assigned successfully', data: mockItem });
+    }
+
+    res.status(404).json({ success: false, message: 'Enquiry not found' });
   } catch (err) {
     next(err);
   }
