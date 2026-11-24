@@ -48,40 +48,40 @@ const CoursesPage = () => {
   }, [searchParams, dispatch]);
 
   return (
-    <div className="min-h-screen bg-brand-light flex flex-col">
-      {/* Top Breadcrumb & Page Banner */}
-      <div className="bg-brand-navy text-white py-6 px-4 border-b border-brand-border">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-xs text-brand-gold font-semibold uppercase tracking-wider mb-1">
-              <span>CaptonAdmission Core Discovery</span>
-              <span>&bull;</span>
-              <span>Interactive Three-Panel Engine</span>
+    <div className="h-[calc(100vh-65px)] bg-brand-light flex flex-col overflow-hidden">
+      {/* Top Compact Sticky Bar */}
+      <div className="bg-white border-b border-slate-200/90 py-2.5 px-4 sm:px-6 shrink-0 z-20">
+        <div className="max-w-[1700px] mx-auto flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-brand-royal/10 text-brand-royal flex items-center justify-center font-bold">
+              <span className="text-sm">🎯</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Course & University Discovery System
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
-              Select your desired degree in Panel 1, discover matching accredited universities in Panel 2, and review your selection & enquiries in Panel 3.
-            </p>
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-wider text-brand-royal block leading-none">
+                Interactive Three-Panel Discovery
+              </span>
+              <h1 className="text-sm sm:text-base font-black text-slate-900 tracking-tight leading-snug">
+                Course & University Finder
+              </h1>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="text-xs bg-white/10 px-3 py-1.5 rounded-lg border border-white/20 text-slate-200">
-              Shortlisted: <strong className="text-brand-gold">{shortlisted.length}</strong> Colleges
+          <div className="flex items-center gap-2">
+            <span className="text-xs bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 text-slate-700 font-bold">
+              Shortlisted: <strong className="text-brand-royal">{shortlisted.length}</strong> Colleges
             </span>
           </div>
         </div>
       </div>
 
       {/* Mobile Step Wizard Tabs (shown only on mobile/tablet) */}
-      <div className="lg:hidden bg-white border-b border-brand-border p-2 sticky top-[60px] z-30 shadow-sm">
+      <div className="lg:hidden bg-white border-b border-brand-border p-2 shrink-0 z-30 shadow-xs">
         <div className="grid grid-cols-3 gap-1 max-w-md mx-auto">
           <button
             onClick={() => dispatch(setMobileStep(1))}
-            className={`py-2 text-xs font-bold rounded-lg transition-all ${
+            className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
               mobileStep === 1
-                ? 'bg-brand-royal text-white shadow'
+                ? 'bg-brand-royal text-white shadow-xs'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
@@ -89,9 +89,9 @@ const CoursesPage = () => {
           </button>
           <button
             onClick={() => dispatch(setMobileStep(2))}
-            className={`py-2 text-xs font-bold rounded-lg transition-all ${
+            className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
               mobileStep === 2
-                ? 'bg-brand-royal text-white shadow'
+                ? 'bg-brand-royal text-white shadow-xs'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
@@ -99,9 +99,9 @@ const CoursesPage = () => {
           </button>
           <button
             onClick={() => dispatch(setMobileStep(3))}
-            className={`py-2 text-xs font-bold rounded-lg transition-all ${
+            className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
               mobileStep === 3
-                ? 'bg-brand-royal text-white shadow'
+                ? 'bg-brand-royal text-white shadow-xs'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
@@ -110,31 +110,30 @@ const CoursesPage = () => {
         </div>
       </div>
 
-      {/* MAIN THREE-PANEL CORE LAYOUT */}
-      <div className="flex-1 max-w-[1550px] w-full mx-auto px-3 sm:px-6 py-6">
-        {/* Desktop: 3 Columns. Mobile: Step Wizard */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 h-[calc(100vh-210px)] min-h-[640px]">
-          {/* PANEL 1: SELECT COURSE (3 cols on desktop) */}
+      {/* MAIN THREE-PANEL CORE LAYOUT (Left and Right Sticky, Center Scroll Only) */}
+      <div className="flex-1 max-w-[1700px] w-full mx-auto px-2 sm:px-4 py-3 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-full overflow-hidden">
+          {/* PANEL 1: SELECT COURSE (Sticky Left Panel) */}
           <div
-            className={`lg:col-span-3 h-full ${
+            className={`lg:col-span-3 h-full overflow-hidden lg:sticky lg:top-0 ${
               mobileStep === 1 ? 'block' : 'hidden lg:block'
             }`}
           >
             <PanelCourseSelect />
           </div>
 
-          {/* PANEL 2: EXPLORE UNIVERSITIES (6 cols on desktop) */}
+          {/* PANEL 2: EXPLORE UNIVERSITIES (Center Panel - Scrollable) */}
           <div
-            className={`lg:col-span-6 h-full ${
+            className={`lg:col-span-6 h-full overflow-hidden ${
               mobileStep === 2 ? 'block' : 'hidden lg:block'
             }`}
           >
             <PanelUniversityList />
           </div>
 
-          {/* PANEL 3: MY SELECTION (3 cols on desktop) */}
+          {/* PANEL 3: MY SELECTION (Sticky Right Panel) */}
           <div
-            className={`lg:col-span-3 h-full ${
+            className={`lg:col-span-3 h-full overflow-hidden lg:sticky lg:top-0 ${
               mobileStep === 3 ? 'block' : 'hidden lg:block'
             }`}
           >

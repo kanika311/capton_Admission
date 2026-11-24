@@ -338,10 +338,10 @@ const UniversitiesPage = () => {
          ========================================================================= */}
       <div className="flex-1 max-w-[1700px] w-full mx-auto flex overflow-hidden h-[calc(100vh-65px)]">
         {/* =======================================================================
-            PANEL 1: LEFT PANEL (University Name List & Filters)
+            PANEL 1: LEFT PANEL (University Name List & Filters - Sticky)
            ======================================================================= */}
         <aside
-          className={`w-full lg:w-[320px] xl:w-[350px] shrink-0 border-r border-slate-200 bg-white flex flex-col h-full ${
+          className={`w-full lg:w-[320px] xl:w-[350px] shrink-0 border-r border-slate-200 bg-white flex flex-col h-full lg:sticky lg:top-0 overflow-hidden ${
             mobileStep === 'list' ? 'flex' : 'hidden lg:flex'
           }`}
         >
@@ -698,10 +698,10 @@ const UniversitiesPage = () => {
         </main>
 
         {/* =======================================================================
-            PANEL 3: RIGHT PANEL (Suggestions: Courses & Similar Universities)
+            PANEL 3: RIGHT PANEL (Suggestions: Courses & Similar Universities - Sticky)
            ======================================================================= */}
         <aside
-          className={`w-full lg:w-[320px] xl:w-[360px] shrink-0 border-l border-slate-200 bg-white h-full overflow-y-auto p-4 sm:p-5 space-y-5 ${
+          className={`w-full lg:w-[320px] xl:w-[360px] shrink-0 border-l border-slate-200 bg-white h-full overflow-y-auto lg:sticky lg:top-0 p-4 sm:p-5 space-y-5 ${
             mobileStep === 'suggestions' ? 'block' : 'hidden lg:block'
           }`}
         >
