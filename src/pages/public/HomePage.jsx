@@ -352,12 +352,18 @@ const HomePage = () => {
 
       {/* SECTION 2: POPULAR COURSE CATEGORIES */}
       <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
-            Popular Course Categories
-          </h2>
-
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12">
+          <div className="max-w-3xl mx-auto">
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full border border-blue-100 inline-block mb-2">
+              Browse By Stream
+            </span>
+            <h2 className="text-3xl font-extrabold text-brand-navy">
+              Popular Course Categories
+            </h2>
+            <p className="text-slate-600 text-sm mt-2">
+              Select your academic discipline to explore degrees, eligibility, career outcomes, and accredited universities.
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-5">
@@ -396,21 +402,19 @@ const HomePage = () => {
       {/* SECTION 3: FEATURED COURSES (Horizontal Auto-Scroll) */}
       <section className="relative z-10 py-20 bg-white border-b border-slate-200 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
-                High Demand Degrees
-              </span>
-              <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
-                Featured Courses
-              </h2>
-              <p className="text-slate-600 text-sm mt-2 max-w-2xl">
-                Top recognized undergraduate and postgraduate degrees with strong career placements.
-              </p>
-            </div>
+          <div className="text-center max-w-3xl mx-auto mb-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full border border-blue-100 inline-block mb-2">
+              High Demand Degrees
+            </span>
+            <h2 className="text-3xl font-extrabold text-brand-navy">
+              Featured Courses
+            </h2>
+            <p className="text-slate-600 text-sm mt-2">
+              Top recognized undergraduate and postgraduate degrees with strong career placements.
+            </p>
 
-            {/* Controls: Auto-Scroll Indicator, Nav Arrows & View All */}
-            <div className="flex items-center gap-3 shrink-0 flex-wrap">
+            {/* Controls: Auto-Scroll Indicator, Nav Arrows & View All (Centered) */}
+            <div className="flex items-center justify-center gap-3 shrink-0 flex-wrap mt-5">
               {/* Auto-scroll status pill */}
               <button
                 type="button"
@@ -459,7 +463,7 @@ const HomePage = () => {
 
               <Link
                 to="/courses"
-                className="text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group ml-2"
+                className="text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group ml-1"
               >
                 <span>View All 30+ Courses</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -539,21 +543,19 @@ const HomePage = () => {
       {/* SECTION 4: TOP UNIVERSITIES (Horizontal Auto-Scroll) */}
       <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
-                Accredited Campuses
-              </span>
-              <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
-                Top Universities & Colleges
-              </h2>
-              <p className="text-slate-600 text-sm mt-2 max-w-2xl">
-                Explore leading government and private universities with verified NIRF and NAAC accreditations.
-              </p>
-            </div>
+          <div className="text-center max-w-3xl mx-auto mb-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full border border-blue-100 inline-block mb-2">
+              Accredited Campuses
+            </span>
+            <h2 className="text-3xl font-extrabold text-brand-navy">
+              Top Universities & Colleges
+            </h2>
+            <p className="text-slate-600 text-sm mt-2">
+              Explore leading government and private universities with verified NIRF and NAAC accreditations.
+            </p>
 
-            {/* Controls: Auto-Scroll Indicator, Nav Arrows & View All */}
-            <div className="flex items-center gap-3 shrink-0 flex-wrap">
+            {/* Controls: Auto-Scroll Indicator, Nav Arrows & View All (Centered) */}
+            <div className="flex items-center justify-center gap-3 shrink-0 flex-wrap mt-5">
               {/* Auto-scroll status pill */}
               <button
                 type="button"
@@ -602,7 +604,7 @@ const HomePage = () => {
 
               <Link
                 to="/universities"
-                className="text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group ml-2"
+                className="text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group ml-1"
               >
                 <span>View All 20+ Universities</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -863,21 +865,27 @@ const HomePage = () => {
 
       {/* SECTION 10: LATEST EDUCATION BLOGS */}
       <section className="relative z-10 py-20 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div>
-
-            <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12">
+          <div className="max-w-3xl mx-auto">
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full border border-blue-100 inline-block mb-2">
+              Articles & Guides
+            </span>
+            <h2 className="text-3xl font-extrabold text-brand-navy">
               Latest Education Insights
             </h2>
-
+            <p className="text-slate-600 text-sm mt-2">
+              Stay ahead with curated admissions advice, career roadmaps, and college fee analysis.
+            </p>
           </div>
-          <Link
-            to="/blogs"
-            className="mt-4 md:mt-0 text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group"
-          >
-            <span>View All Articles</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          <div className="mt-4 flex justify-center">
+            <Link
+              to="/blogs"
+              className="text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group"
+            >
+              <span>View All Articles</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
