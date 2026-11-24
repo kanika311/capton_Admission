@@ -51,21 +51,40 @@ const categoryIcons = {
   'Hotel Management': Utensils,
 };
 
+const getCached = (key, fallback) => {
+  try {
+    const val = sessionStorage.getItem(`ca_home_${key}`);
+    return val ? JSON.parse(val) : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const setCached = (key, data) => {
+  try {
+    sessionStorage.setItem(`ca_home_${key}`, JSON.stringify(data));
+  } catch {
+    // ignore
+  }
+};
+
 const HomePage = () => {
-  const [categories, setCategories] = useState([]);
-  const [featuredCourses, setFeaturedCourses] = useState([]);
-  const [topUniversities, setTopUniversities] = useState([]);
-  const [services, setServices] = useState([]);
-  const [exams, setExams] = useState([]);
-  const [testimonials, setTestimonials] = useState([]);
-  const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [cmsData, setCmsData] = useState({
-    heroHeading: 'Find Your Dream Course & Discover Your Perfect University',
-    heroVideoUrl: '/hero_video.mp4',
-    heroDescription:
-      'Explore top courses, compare universities, understand admission opportunities, and get personalized guidance with CaptonAdmission.',
-  });
+  const [categories, setCategories] = useState(() => getCached('categories', []));
+  const [featuredCourses, setFeaturedCourses] = useState(() => getCached('courses', []));
+  const [topUniversities, setTopUniversities] = useState(() => getCached('unis', []));
+  const [services, setServices] = useState(() => getCached('services', []));
+  const [exams, setExams] = useState(() => getCached('exams', []));
+  const [testimonials, setTestimonials] = useState(() => getCached('testimonials', []));
+  const [blogs, setBlogs] = useState(() => getCached('blogs', []));
+  const [loading, setLoading] = useState(() => getCached('categories', []).length === 0);
+  const [cmsData, setCmsData] = useState(() =>
+    getCached('cms', {
+      heroHeading: 'Find Your Dream Course & Discover Your Perfect University',
+      heroVideoUrl: '/hero_video.mp4',
+      heroDescription:
+        'Explore top courses, compare universities, understand admission opportunities, and get personalized guidance with CaptonAdmission.',
+    })
+  );
 
   // Search hero inputs
   const [courseQuery, setCourseQuery] = useState('');
@@ -102,16 +121,33 @@ const HomePage = () => {
             api.get('/cms').catch(() => ({ data: { data: null } })),
           ]);
 
-        setCategories(catRes.data.data || []);
-        setFeaturedCourses(courseRes.data.data || []);
-        setTopUniversities(uniRes.data.data || []);
-        setServices((servRes.data.data || []).slice(0, 6));
-        setExams((examRes.data.data || []).slice(0, 6));
-        setTestimonials(testRes.data.data || []);
-        setBlogs(blogRes.data.data || []);
-        if (cmsRes.data?.data) {
-          setCmsData(cmsRes.data.data);
-        }
+        const cats = catRes.data.data || [];
+        const courses = courseRes.data.data || [];
+        const unis = uniRes.data.data || [];
+        const servs = (servRes.data.data || []).slice(0, 6);
+        const exms = (examRes.data.data || []).slice(0, 6);
+        const tests = testRes.data.data || [];
+        const blgs = blogRes.data.data || [];
+        const cms = cmsRes.data?.data;
+
+        setCategories(cats);
+        setFeaturedCourses(courses);
+        setTopUniversities(unis);
+        setServices(servs);
+        setExams(exms);
+        setTestimonials(tests);
+        setBlogs(blgs);
+        if (cms) setCmsData(cms);
+
+        // Store in session cache for instant subsequent loads
+        setCached('categories', cats);
+        setCached('courses', courses);
+        setCached('unis', unis);
+        setCached('services', servs);
+        setCached('exams', exms);
+        setCached('testimonials', tests);
+        setCached('blogs', blgs);
+        if (cms) setCached('cms', cms);
       } catch (err) {
         console.error('Error loading homepage data:', err);
       } finally {

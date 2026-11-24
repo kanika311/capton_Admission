@@ -74,6 +74,15 @@ if (process.env.NODE_ENV === 'development') {
 // Serve uploaded static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Edge caching for public read requests (courses, universities, content)
+app.use('/api', (req, res, next) => {
+  if (req.method === 'GET' && !req.headers.authorization && !req.cookies?.token) {
+    // Cache public catalog reads on Vercel Edge for 5 minutes, stale-while-revalidate for 10 minutes
+    res.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
+  }
+  next();
+});
+
 // Mount API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
