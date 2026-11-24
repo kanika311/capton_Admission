@@ -244,3 +244,5 @@ exports.assignCounsellor = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.assignEnquiryCounsellor = exports.assignCounsellor;
