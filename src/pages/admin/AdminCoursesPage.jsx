@@ -151,10 +151,10 @@ const AdminCoursesPage = () => {
     if (!window.confirm('Are you sure you want to delete this course?')) return;
     try {
       await api.delete(`/courses/${id}`);
-      setCourses(courses.filter((c) => c._id !== id));
-      toast.success('Course deleted');
+      setCourses((prev) => prev.filter((c) => c._id !== id));
+      toast.success('Course deleted successfully');
     } catch (err) {
-      toast.error('Failed to delete course');
+      toast.error(err.response?.data?.message || 'Failed to delete course');
     }
   };
 

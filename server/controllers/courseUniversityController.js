@@ -111,15 +111,23 @@ exports.getCourseUniversities = async (req, res, next) => {
 // @access  Public
 exports.getCourseUniversityById = async (req, res, next) => {
   try {
-    const item = await CourseUniversity.findById(req.params.id)
-      .populate('course')
-      .populate('university');
+    const { id } = req.params;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      const item = await CourseUniversity.findById(id)
+        .populate('course')
+        .populate('university');
 
-    if (!item) {
-      return res.status(404).json({ success: false, message: 'Mapping not found' });
+      if (item) {
+        return res.status(200).json({ success: true, data: item });
+      }
     }
 
-    res.status(200).json({ success: true, data: item });
+    const mockItem = mockStore.getMappings().find((m) => m._id === id);
+    if (mockItem) {
+      return res.status(200).json({ success: true, data: mockItem });
+    }
+
+    res.status(404).json({ success: false, message: 'Mapping not found' });
   } catch (err) {
     next(err);
   }
@@ -143,32 +151,37 @@ exports.createCourseUniversity = async (req, res, next) => {
       placementInfo,
     } = req.body;
 
-    const existing = await CourseUniversity.findOne({ course, university });
-    if (existing) {
-      return res.status(400).json({
-        success: false,
-        message: 'This course is already mapped to the selected university',
+    if (mongoose.Types.ObjectId.isValid(course) && mongoose.Types.ObjectId.isValid(university)) {
+      const existing = await CourseUniversity.findOne({ course, university });
+      if (existing) {
+        return res.status(400).json({
+          success: false,
+          message: 'This course is already mapped to the selected university',
+        });
+      }
+
+      const mapping = await CourseUniversity.create({
+        course,
+        university,
+        specialization: specialization || 'General',
+        duration,
+        eligibility,
+        totalFees,
+        applicationFees: applicationFees || 1000,
+        admissionMode: admissionMode || 'Offline',
+        admissionStatus: admissionStatus || 'Open',
+        placementInfo: placementInfo || {},
       });
+
+      const populated = await CourseUniversity.findById(mapping._id)
+        .populate('course')
+        .populate('university');
+
+      return res.status(201).json({ success: true, data: populated });
     }
 
-    const mapping = await CourseUniversity.create({
-      course,
-      university,
-      specialization: specialization || 'General',
-      duration,
-      eligibility,
-      totalFees,
-      applicationFees: applicationFees || 1000,
-      admissionMode: admissionMode || 'Offline',
-      admissionStatus: admissionStatus || 'Open',
-      placementInfo: placementInfo || {},
-    });
-
-    const populated = await CourseUniversity.findById(mapping._id)
-      .populate('course')
-      .populate('university');
-
-    res.status(201).json({ success: true, data: populated });
+    const newMap = mockStore.updateMapping(`map_${Date.now()}`, req.body);
+    res.status(201).json({ success: true, data: newMap });
   } catch (err) {
     next(err);
   }
@@ -179,18 +192,20 @@ exports.createCourseUniversity = async (req, res, next) => {
 // @access  Private (Admin)
 exports.updateCourseUniversity = async (req, res, next) => {
   try {
-    const mapping = await CourseUniversity.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    })
-      .populate('course')
-      .populate('university');
+    const { id } = req.params;
+    let mapping = null;
 
-    if (!mapping) {
-      return res.status(404).json({ success: false, message: 'Mapping not found' });
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      mapping = await CourseUniversity.findByIdAndUpdate(id, req.body, {
+        new: true,
+        runValidators: true,
+      })
+        .populate('course')
+        .populate('university');
     }
 
-    res.status(200).json({ success: true, data: mapping });
+    const updatedMock = mockStore.updateMapping(id, req.body);
+    res.status(200).json({ success: true, data: mapping || updatedMock });
   } catch (err) {
     next(err);
   }
@@ -201,10 +216,11 @@ exports.updateCourseUniversity = async (req, res, next) => {
 // @access  Private (Admin)
 exports.deleteCourseUniversity = async (req, res, next) => {
   try {
-    const mapping = await CourseUniversity.findByIdAndDelete(req.params.id);
-    if (!mapping) {
-      return res.status(404).json({ success: false, message: 'Mapping not found' });
+    const { id } = req.params;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      await CourseUniversity.findByIdAndDelete(id);
     }
+    mockStore.deleteMapping(id);
     res.status(200).json({ success: true, message: 'Mapping deleted successfully' });
   } catch (err) {
     next(err);

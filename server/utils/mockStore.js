@@ -733,4 +733,18 @@ module.exports = {
     const idx = universities.findIndex((u) => u._id === id || u.slug === id);
     if (idx !== -1) universities.splice(idx, 1);
   },
+  updateMapping: (id, data) => {
+    const idx = mappings.findIndex((m) => m._id === id);
+    if (idx !== -1) {
+      mappings[idx] = { ...mappings[idx], ...data };
+      return mappings[idx];
+    }
+    const newMapping = { _id: id || `map_${Date.now()}`, ...data };
+    mappings.unshift(newMapping);
+    return newMapping;
+  },
+  deleteMapping: (id) => {
+    const idx = mappings.findIndex((m) => m._id === id);
+    if (idx !== -1) mappings.splice(idx, 1);
+  },
 };

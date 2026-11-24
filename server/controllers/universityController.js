@@ -225,7 +225,10 @@ exports.deleteUniversity = async (req, res, next) => {
       } else {
         const mockItem = mockStore.getUniversityById(id);
         if (mockItem) {
-          await University.findOneAndDelete({ slug: mockItem.slug });
+          const deleted = await University.findOneAndDelete({ slug: mockItem.slug });
+          if (deleted) {
+            await CourseUniversity.deleteMany({ university: deleted._id });
+          }
         }
       }
     }

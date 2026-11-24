@@ -156,10 +156,10 @@ const AdminUniversitiesPage = () => {
     if (!window.confirm('Are you sure you want to delete this university?')) return;
     try {
       await api.delete(`/universities/${id}`);
-      setUniversities(universities.filter((u) => u._id !== id));
-      toast.success('University removed');
+      setUniversities((prev) => prev.filter((u) => u._id !== id));
+      toast.success('University removed successfully');
     } catch (err) {
-      toast.error('Failed to delete university');
+      toast.error(err.response?.data?.message || 'Failed to delete university');
     }
   };
 
