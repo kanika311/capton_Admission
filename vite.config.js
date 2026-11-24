@@ -16,6 +16,8 @@ export default defineConfig({
       'Cache-Control': 'no-store',
     },
     watch: {
+      usePolling: true,
+      interval: 100,
       ignored: ['**/*.mp4', '**/public/**', '**/server/uploads/**', '**/uploads/**'],
     },
     proxy: {

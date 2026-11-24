@@ -25,11 +25,11 @@ const PanelCourseSelect = () => {
     selectedLevel,
     selectedCourse,
     selectedSpecialization,
+    searchQuery,
   } = useSelector((state) => state.courseDiscovery);
 
   const [categories, setCategories] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [search, setSearch] = useState('');
   const [loadingCourses, setLoadingCourses] = useState(false);
 
   // Fetch categories on mount
@@ -61,8 +61,8 @@ const PanelCourseSelect = () => {
         if (selectedLevel && selectedLevel !== 'All') {
           params.append('level', selectedLevel);
         }
-        if (search) {
-          params.append('search', search);
+        if (searchQuery) {
+          params.append('search', searchQuery);
         }
 
         const res = await api.get(`/courses?${params.toString()}`);
@@ -84,7 +84,7 @@ const PanelCourseSelect = () => {
     if (selectedCategory) {
       loadCourses();
     }
-  }, [selectedCategory, selectedLevel, search, dispatch]);
+  }, [selectedCategory, selectedLevel, searchQuery, dispatch]);
 
   const handleCourseClick = (course) => {
     dispatch(selectCourse(course));
@@ -96,30 +96,21 @@ const PanelCourseSelect = () => {
   return (
     <div className="bg-white rounded-2xl border border-brand-border shadow-card flex flex-col h-full overflow-hidden">
       {/* Panel Header */}
-      <div className="p-4 border-b border-brand-border bg-slate-50/70">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="w-6 h-6 rounded-full bg-brand-royal text-white text-xs font-extrabold flex items-center justify-center">
+      <div className="p-3.5 border-b border-brand-border bg-slate-50/70">
+        <div className="flex items-center gap-2">
+          <span className="w-5 h-5 rounded-full bg-brand-royal text-white text-[11px] font-extrabold flex items-center justify-center">
             1
           </span>
-          <h2 className="text-sm font-extrabold text-brand-navy uppercase tracking-wider">
+          <h2 className="text-xs font-extrabold text-brand-navy uppercase tracking-wider">
             Select Course
           </h2>
+          <span className="text-[10px] font-bold text-slate-400 ml-auto">
+            {courses.length} Degrees
+          </span>
         </div>
-        <p className="text-[11px] text-slate-500">
-          Choose category, level and course to view verified universities.
+        <p className="text-[10px] text-slate-500 mt-1">
+          Pick a category or browse degree programs below.
         </p>
-
-        {/* Search within panel */}
-        <div className="mt-3 relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-          <input
-            type="text"
-            placeholder="Search degrees (e.g. B.Tech, MBA)..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-royal"
-          />
-        </div>
       </div>
 
       {/* Categories Horizontal Scrolling Tabs */}
