@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   PhoneCall,
   Sparkles,
+  ChevronLeft,
   ChevronRight,
   Star,
   Clock,
@@ -30,6 +31,8 @@ import {
   Palette,
   Sprout,
   Utensils,
+  Pause,
+  Play,
 } from 'lucide-react';
 import { openEnquiryModal } from '../../redux/slices/enquiryModalSlice';
 import api from '../../services/api';
@@ -90,6 +93,60 @@ const HomePage = () => {
   const [courseQuery, setCourseQuery] = useState('');
   const [uniQuery, setUniQuery] = useState('');
 
+  // Horizontal auto-scroll slider controls
+  const coursesScrollRef = useRef(null);
+  const unisScrollRef = useRef(null);
+  const [coursesPaused, setCoursesPaused] = useState(false);
+  const [unisPaused, setUnisPaused] = useState(false);
+
+  // Auto-scroll effect for Featured Courses (smooth step scroll every 3.2s, pauses on hover)
+  useEffect(() => {
+    if (coursesPaused || featuredCourses.length === 0) return;
+    const interval = setInterval(() => {
+      const el = coursesScrollRef.current;
+      if (!el) return;
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      if (el.scrollLeft >= maxScroll - 15) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        const step = el.clientWidth > 768 ? 390 : 320;
+        el.scrollBy({ left: step, behavior: 'smooth' });
+      }
+    }, 3200);
+    return () => clearInterval(interval);
+  }, [coursesPaused, featuredCourses]);
+
+  // Auto-scroll effect for Top Universities (smooth step scroll every 3.5s, pauses on hover)
+  useEffect(() => {
+    if (unisPaused || topUniversities.length === 0) return;
+    const interval = setInterval(() => {
+      const el = unisScrollRef.current;
+      if (!el) return;
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      if (el.scrollLeft >= maxScroll - 15) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        const step = el.clientWidth > 768 ? 400 : 320;
+        el.scrollBy({ left: step, behavior: 'smooth' });
+      }
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [unisPaused, topUniversities]);
+
+  const scrollLeftCourses = () => {
+    coursesScrollRef.current?.scrollBy({ left: -390, behavior: 'smooth' });
+  };
+  const scrollRightCourses = () => {
+    coursesScrollRef.current?.scrollBy({ left: 390, behavior: 'smooth' });
+  };
+
+  const scrollLeftUnis = () => {
+    unisScrollRef.current?.scrollBy({ left: -400, behavior: 'smooth' });
+  };
+  const scrollRightUnis = () => {
+    unisScrollRef.current?.scrollBy({ left: 400, behavior: 'smooth' });
+  };
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -112,8 +169,8 @@ const HomePage = () => {
         const [catRes, courseRes, uniRes, servRes, examRes, testRes, blogRes, cmsRes] =
           await Promise.all([
             api.get('/courses/categories'),
-            api.get('/courses?featured=true&limit=6'),
-            api.get('/universities?featured=true&limit=6'),
+            api.get('/courses?limit=12'),
+            api.get('/universities?limit=12'),
             api.get('/services'),
             api.get('/exams'),
             api.get('/testimonials'),
@@ -336,31 +393,93 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* SECTION 3: FEATURED COURSES */}
-      <section className="relative z-10 py-20 bg-white border-b border-slate-200">
+      {/* SECTION 3: FEATURED COURSES (Horizontal Auto-Scroll) */}
+      <section className="relative z-10 py-20 bg-white border-b border-slate-200 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
             <div>
-
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                High Demand Degrees
+              </span>
               <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
                 Featured Courses
               </h2>
-
+              <p className="text-slate-600 text-sm mt-2 max-w-2xl">
+                Top recognized undergraduate and postgraduate degrees with strong career placements.
+              </p>
             </div>
-            <Link
-              to="/courses"
-              className="mt-4 md:mt-0 text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group"
-            >
-              <span>View All 30+ Courses</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
+
+            {/* Controls: Auto-Scroll Indicator, Nav Arrows & View All */}
+            <div className="flex items-center gap-3 shrink-0 flex-wrap">
+              {/* Auto-scroll status pill */}
+              <button
+                type="button"
+                onClick={() => setCoursesPaused(!coursesPaused)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border transition-colors cursor-pointer ${
+                  coursesPaused
+                    ? 'bg-amber-50 text-amber-700 border-amber-200'
+                    : 'bg-blue-50 text-brand-royal border-blue-200'
+                }`}
+                title={coursesPaused ? 'Click to resume auto-scroll' : 'Click to pause auto-scroll'}
+              >
+                {coursesPaused ? (
+                  <>
+                    <Pause className="w-3 h-3 text-amber-600" />
+                    <span>Paused</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3 h-3 text-brand-royal animate-pulse" />
+                    <span>Auto-Scrolling</span>
+                  </>
+                )}
+              </button>
+
+              {/* Left / Right Nav Arrows */}
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={scrollLeftCourses}
+                  className="p-2 rounded-xl bg-slate-100 hover:bg-brand-royal hover:text-white text-slate-700 transition-colors cursor-pointer border border-slate-200/60 shadow-xs"
+                  title="Scroll Left"
+                  aria-label="Previous Courses"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={scrollRightCourses}
+                  className="p-2 rounded-xl bg-slate-100 hover:bg-brand-royal hover:text-white text-slate-700 transition-colors cursor-pointer border border-slate-200/60 shadow-xs"
+                  title="Scroll Right"
+                  aria-label="Next Courses"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              <Link
+                to="/courses"
+                className="text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group ml-2"
+              >
+                <span>View All 30+ Courses</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+          {/* Horizontal Scroll Track */}
+          <div
+            ref={coursesScrollRef}
+            onMouseEnter={() => setCoursesPaused(true)}
+            onMouseLeave={() => setCoursesPaused(false)}
+            onTouchStart={() => setCoursesPaused(true)}
+            onTouchEnd={() => setCoursesPaused(false)}
+            className="flex items-stretch gap-6 overflow-x-auto pb-5 pt-2 px-1 styled-scrollbar scroll-smooth snap-x snap-mandatory"
+          >
             {featuredCourses.map((course) => (
               <div
                 key={course._id}
-                className="bg-brand-light rounded-2xl border border-brand-border overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between"
+                className="w-[300px] sm:w-[350px] md:w-[380px] shrink-0 snap-start bg-brand-light rounded-2xl border border-brand-border overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between"
               >
                 <div className="p-6">
                   <div className="flex items-center justify-between gap-2 mb-3">
@@ -417,91 +536,164 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* SECTION 4: TOP UNIVERSITIES */}
-      <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200">
+      {/* SECTION 4: TOP UNIVERSITIES (Horizontal Auto-Scroll) */}
+      <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div>
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                Accredited Campuses
+              </span>
+              <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
+                Top Universities & Colleges
+              </h2>
+              <p className="text-slate-600 text-sm mt-2 max-w-2xl">
+                Explore leading government and private universities with verified NIRF and NAAC accreditations.
+              </p>
+            </div>
 
-            <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
-              Top Universities & Colleges
-            </h2>
+            {/* Controls: Auto-Scroll Indicator, Nav Arrows & View All */}
+            <div className="flex items-center gap-3 shrink-0 flex-wrap">
+              {/* Auto-scroll status pill */}
+              <button
+                type="button"
+                onClick={() => setUnisPaused(!unisPaused)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border transition-colors cursor-pointer ${
+                  unisPaused
+                    ? 'bg-amber-50 text-amber-700 border-amber-200'
+                    : 'bg-blue-50 text-brand-royal border-blue-200'
+                }`}
+                title={unisPaused ? 'Click to resume auto-scroll' : 'Click to pause auto-scroll'}
+              >
+                {unisPaused ? (
+                  <>
+                    <Pause className="w-3 h-3 text-amber-600" />
+                    <span>Paused</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3 h-3 text-brand-royal animate-pulse" />
+                    <span>Auto-Scrolling</span>
+                  </>
+                )}
+              </button>
 
+              {/* Left / Right Nav Arrows */}
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={scrollLeftUnis}
+                  className="p-2 rounded-xl bg-white hover:bg-brand-royal hover:text-white text-slate-700 transition-colors cursor-pointer border border-slate-200 shadow-xs"
+                  title="Scroll Left"
+                  aria-label="Previous Universities"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={scrollRightUnis}
+                  className="p-2 rounded-xl bg-white hover:bg-brand-royal hover:text-white text-slate-700 transition-colors cursor-pointer border border-slate-200 shadow-xs"
+                  title="Scroll Right"
+                  aria-label="Next Universities"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              <Link
+                to="/universities"
+                className="text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group ml-2"
+              >
+                <span>View All 20+ Universities</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
           </div>
 
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-          {topUniversities.map((uni) => (
-            <div
-              key={uni._id}
-              className="bg-white rounded-2xl border border-brand-border overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between"
-            >
-              {/* Cover Image banner */}
-              <div className="relative h-44 overflow-hidden">
-                <img
-                  src={uni.coverImage || 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&h=300&fit=crop'}
-                  alt={uni.name}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-3 left-3">
-                  <span className="text-[10px] font-bold px-2.5 py-1 rounded-md bg-brand-navy/90 text-white backdrop-blur-sm">
-                    {uni.universityType}
-                  </span>
-                </div>
-                <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 px-2 py-0.5 rounded-md text-xs font-bold text-amber-600 shadow-sm">
-                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  <span>{uni.rating || 4.5}</span>
-                </div>
-              </div>
-
-              {/* Body */}
-              <div className="p-6">
-                <h3 className="font-bold text-base text-brand-navy line-clamp-1">
-                  {uni.name}
-                </h3>
-                <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                  <MapPin className="w-3.5 h-3.5 text-brand-gold shrink-0" />
-                  <span>{uni.location?.city}, {uni.location?.state}</span>
-                </p>
-
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {(uni.accreditation || []).slice(0, 3).map((acc, i) => (
-                    <span
-                      key={i}
-                      className="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700"
-                    >
-                      {acc}
+          {/* Horizontal Scroll Track */}
+          <div
+            ref={unisScrollRef}
+            onMouseEnter={() => setUnisPaused(true)}
+            onMouseLeave={() => setUnisPaused(false)}
+            onTouchStart={() => setUnisPaused(true)}
+            onTouchEnd={() => setUnisPaused(false)}
+            className="flex items-stretch gap-6 overflow-x-auto pb-5 pt-2 px-1 styled-scrollbar scroll-smooth snap-x snap-mandatory"
+          >
+            {topUniversities.map((uni) => (
+              <div
+                key={uni._id}
+                className="w-[300px] sm:w-[360px] md:w-[390px] shrink-0 snap-start bg-white rounded-2xl border border-brand-border overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between"
+              >
+                {/* Cover Image banner */}
+                <div className="relative h-44 overflow-hidden">
+                  <img
+                    src={uni.coverImage || 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&h=300&fit=crop'}
+                    alt={uni.name}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className="text-[10px] font-bold px-2.5 py-1 rounded-md bg-brand-navy/90 text-white backdrop-blur-sm">
+                      {uni.universityType}
                     </span>
-                  ))}
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs">
-                  <div>
-                    <span className="text-slate-400 block text-[11px]">Avg Package</span>
-                    <strong className="text-emerald-700 font-bold">
-                      {uni.placementOverview?.averagePackage || 'Verified'}
-                    </strong>
                   </div>
-                  <div>
-                    <span className="text-slate-400 block text-[11px]">Highest Package</span>
-                    <strong className="text-brand-navy font-bold">
-                      {uni.placementOverview?.highestPackage || 'Verified'}
-                    </strong>
+                  <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 px-2 py-0.5 rounded-md text-xs font-bold text-amber-600 shadow-sm">
+                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                    <span>{uni.rating || 4.5}</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Action */}
-              <div className="p-4 bg-slate-50 border-t border-brand-border flex items-center justify-between">
-                <Link
-                  to={`/universities/${uni.slug}`}
-                  className="w-full text-center py-2 bg-brand-royal hover:bg-brand-navy text-white font-bold text-xs rounded-lg transition-colors"
-                >
-                  View University Profile &rarr;
-                </Link>
+                {/* Body */}
+                <div className="p-6">
+                  <h3 className="font-bold text-base text-brand-navy line-clamp-1">
+                    {uni.name}
+                  </h3>
+                  <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
+                    <MapPin className="w-3.5 h-3.5 text-brand-gold shrink-0" />
+                    <span>
+                      {uni.location?.city}, {uni.location?.state}
+                      {uni.location?.country && uni.location.country !== 'India' ? `, ${uni.location.country}` : ''}
+                    </span>
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {(uni.accreditation || []).slice(0, 3).map((acc, i) => (
+                      <span
+                        key={i}
+                        className="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700"
+                      >
+                        {acc}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-slate-400 block text-[11px]">Avg Package</span>
+                      <strong className="text-emerald-700 font-bold">
+                        {uni.placementOverview?.averagePackage || 'Verified'}
+                      </strong>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[11px]">Highest Package</span>
+                      <strong className="text-brand-navy font-bold">
+                        {uni.placementOverview?.highestPackage || 'Verified'}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action */}
+                <div className="p-4 bg-slate-50 border-t border-brand-border flex items-center justify-between">
+                  <Link
+                    to={`/universities/${uni.slug}`}
+                    className="w-full text-center py-2 bg-brand-royal hover:bg-brand-navy text-white font-bold text-xs rounded-lg transition-colors"
+                  >
+                    View University Profile &rarr;
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
