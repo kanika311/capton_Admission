@@ -6,7 +6,10 @@ import EnquiryModal from '../components/common/EnquiryModal';
 
 const PublicLayout = () => {
   const location = useLocation();
-  const isThreePanelPage = location.pathname === '/courses' || location.pathname === '/universities';
+  const isThreePanelPage =
+    location.pathname === '/courses' ||
+    location.pathname === '/universities' ||
+    location.pathname === '/exams';
 
   return (
     <div
