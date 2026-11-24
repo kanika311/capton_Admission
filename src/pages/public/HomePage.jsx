@@ -699,64 +699,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* SECTION 5: OUR SERVICES */}
-      <section className="relative z-10 py-20 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-14">
 
-            <h2 className="text-3xl font-extrabold text-brand-navy mt-3">
-              Comprehensive Admission Services
-            </h2>
-
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service) => (
-              <div
-                key={service._id}
-                className="p-6 rounded-2xl border border-brand-border bg-brand-light hover:bg-white hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between group"
-              >
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-blue-100 text-brand-royal flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Compass className="w-6 h-6" />
-                  </div>
-                  <h3 className="font-bold text-base text-brand-navy">
-                    {service.title}
-                  </h3>
-                  <p className="text-xs text-slate-600 mt-2 line-clamp-3 leading-relaxed">
-                    {service.shortDescription}
-                  </p>
-                </div>
-
-                <div className="mt-5 pt-3 border-t border-slate-200 flex items-center justify-between">
-                  <Link
-                    to={`/services/${service.slug}`}
-                    className="text-xs font-bold text-brand-royal hover:underline"
-                  >
-                    Learn More
-                  </Link>
-                  <button
-                    onClick={() => dispatch(openEnquiryModal({}))}
-                    className="text-xs font-bold text-brand-navy bg-brand-gold hover:bg-brand-goldHover px-3 py-1.5 rounded-lg"
-                  >
-                    Enquire Now
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-10">
-            <Link
-              to="/services"
-              className="inline-flex items-center gap-2 text-sm font-bold text-brand-royal hover:underline"
-            >
-              <span>Explore all 12 admission assistance services</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
 
 
 
