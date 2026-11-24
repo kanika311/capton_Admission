@@ -86,6 +86,28 @@ const EnquiryModal = () => {
     }
   }, [user, prefillCourse, prefillSpecialization]);
 
+  const handleClose = () => {
+    setSubmitted(false);
+    dispatch(closeEnquiryModal());
+  };
+
+  // Close on Escape key press and prevent background page scroll
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
@@ -128,21 +150,23 @@ const EnquiryModal = () => {
     }
   };
 
-  const handleClose = () => {
-    setSubmitted(false);
-    dispatch(closeEnquiryModal());
-  };
-
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 animate-fadeIn">
-      <div className="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-100 overflow-hidden relative animate-scaleUp">
-        {/* Close Button at Top Right */}
+    <div
+      onClick={handleClose}
+      className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-start sm:items-center justify-center p-3 sm:p-5 py-6 sm:py-10 animate-fadeIn"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-2xl sm:rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-100 overflow-hidden relative animate-scaleUp my-auto"
+      >
+        {/* Prominent Close Button at Top Right (Always visible & tap-friendly) */}
         <button
           onClick={handleClose}
+          type="button"
           aria-label="Close"
-          className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors shadow-sm"
+          className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-30 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors shadow-sm cursor-pointer"
         >
-          <X className="w-4 h-4" />
+          <X className="w-4 h-4 stroke-[2.5]" />
         </button>
 
         {submitted ? (
@@ -164,16 +188,16 @@ const EnquiryModal = () => {
             </p>
             <button
               onClick={handleClose}
-              className="mt-6 px-8 py-3 bg-brand-royal text-white font-bold rounded-xl text-xs uppercase tracking-wider hover:bg-brand-navy shadow-md transition-all"
+              className="mt-6 px-8 py-3 bg-brand-royal text-white font-bold rounded-xl text-xs uppercase tracking-wider hover:bg-brand-navy shadow-md transition-all cursor-pointer"
             >
               Continue Exploring
             </button>
           </div>
         ) : (
           /* 2-Column Clean Modal - Identical to Reference */
-          <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[580px]">
-            {/* Left Column (5 cols): Friendly Illustration & Dream College Tag */}
-            <div className="lg:col-span-5 bg-gradient-to-b from-slate-50 to-blue-50/40 p-6 sm:p-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-100">
+          <div className="grid grid-cols-1 lg:grid-cols-12 min-h-0 lg:min-h-[580px]">
+            {/* Left Column (5 cols): Friendly Illustration & Dream College Tag (Hidden on mobile for fast, clean experience) */}
+            <div className="hidden lg:flex lg:col-span-5 bg-gradient-to-b from-slate-50 to-blue-50/40 p-6 sm:p-8 flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-100">
               <div className="flex items-center gap-2">
                 <img
                   src="/logo.png"
@@ -236,7 +260,6 @@ const EnquiryModal = () => {
                       strokeWidth="1.5"
                       strokeLinecap="round"
                     />
-                    {/* Student figure drawing */}
                     {/* Hair */}
                     <path
                       d="M142 55C138 48 148 40 156 42C165 44 172 50 170 58C174 61 176 68 171 73C167 77 160 76 156 74C152 75 146 72 144 67C140 64 140 59 142 55Z"
@@ -295,19 +318,40 @@ const EnquiryModal = () => {
             </div>
 
             {/* Right Column (7 cols): The Crystal Clear Form */}
-            <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between">
+            <div className="lg:col-span-7 p-5 sm:p-8 flex flex-col justify-between">
               <div>
-                <span className="text-[11px] font-black uppercase tracking-wider text-brand-royal block mb-1">
-                  GET STARTED
-                </span>
-                <h3 className="text-2xl font-black text-slate-900 tracking-tight">
-                  Welcome to CaptonAdmission
-                </h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  We need basic details first to continue.
-                </p>
+                {/* Mobile-only Header Bar with Logo */}
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 lg:hidden pr-10">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src="/logo.png"
+                      alt="CaptonAdmission"
+                      className="w-7 h-7 rounded-full bg-white p-0.5 shadow-sm"
+                    />
+                    <span className="font-extrabold text-sm tracking-tight text-brand-navy">
+                      Capton<span className="text-brand-gold">Admission</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                    <Sparkles className="w-3 h-3 text-brand-gold" />
+                    <span>100% Free</span>
+                  </div>
+                </div>
 
-                <form onSubmit={handleSubmit} className="mt-5 space-y-3.5">
+                {/* Form Heading matching SelectYourUniversity reference */}
+                <div className="pr-8 sm:pr-10">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-brand-royal block mb-0.5">
+                    GET STARTED
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                    Welcome to CaptonAdmission
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    We need basic details first to continue.
+                  </p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="mt-4 sm:mt-5 space-y-3 sm:space-y-3.5">
                   {/* Full Name */}
                   <div>
                     <div className="relative">
@@ -470,7 +514,7 @@ const EnquiryModal = () => {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="w-full py-3 bg-brand-royal hover:bg-brand-navy text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+                      className="w-full py-3 bg-brand-royal hover:bg-brand-navy active:scale-[0.99] text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
                     >
                       <span>{submitting ? 'Submitting Details...' : 'Submit'}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
