@@ -6,6 +6,10 @@ const Enquiry = require('../models/Enquiry');
 const Counsellor = require('../models/Counsellor');
 const Counselling = require('../models/Counselling');
 const AdminActivityLog = require('../models/AdminActivityLog');
+const mongoose = require('mongoose');
+const mockStore = require('../utils/mockStore');
+
+const isDbReady = () => mongoose.connection && mongoose.connection.readyState === 1;
 
 // @desc    Get aggregated dashboard analytics
 // @route   GET /api/admin/dashboard
@@ -198,6 +202,157 @@ exports.getActivityLogs = async (req, res, next) => {
       .limit(100);
 
     res.status(200).json({ success: true, data: logs });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Get all admin users
+// @route   GET /api/admin/admins
+// @access  Private (Admin / Superadmin)
+exports.getAdmins = async (req, res, next) => {
+  try {
+    if (isDbReady()) {
+      const admins = await User.find({ role: { $in: ['admin', 'superadmin'] } })
+        .select('-password')
+        .sort({ createdAt: -1 });
+
+      if (admins && admins.length > 0) {
+        return res.status(200).json({ success: true, count: admins.length, data: admins });
+      }
+    }
+
+    const mockAdmins = mockStore.getUsers().filter((u) => u.role === 'admin' || u.role === 'superadmin');
+    res.status(200).json({ success: true, count: mockAdmins.length, data: mockAdmins });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Create new admin user
+// @route   POST /api/admin/admins
+// @access  Private (Admin / Superadmin)
+exports.createAdmin = async (req, res, next) => {
+  try {
+    const { name, email, password, phone, role } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({ success: false, message: 'Please provide name, email (Admin ID), and password' });
+    }
+
+    const assignedRole = role === 'superadmin' ? 'superadmin' : 'admin';
+
+    if (isDbReady()) {
+      const existing = await User.findOne({ email: email.toLowerCase() });
+      if (existing) {
+        return res.status(400).json({ success: false, message: 'An account with this email/ID already exists' });
+      }
+
+      const admin = await User.create({
+        name,
+        email: email.toLowerCase(),
+        password,
+        phone: phone || '',
+        role: assignedRole,
+        isActive: true,
+      });
+
+      const result = admin.toObject();
+      delete result.password;
+      return res.status(201).json({ success: true, data: result, message: 'New admin created successfully' });
+    }
+
+    // Mock fallback
+    const existingMock = mockStore.getUserByEmail(email);
+    if (existingMock) {
+      return res.status(400).json({ success: false, message: 'An account with this email/ID already exists' });
+    }
+
+    const newAdmin = mockStore.addUser({
+      name,
+      email: email.toLowerCase(),
+      password,
+      phone: phone || '',
+      role: assignedRole,
+      isActive: true,
+    });
+
+    const result = { ...newAdmin };
+    delete result.password;
+    res.status(201).json({ success: true, data: result, message: 'New admin created successfully' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Update admin user
+// @route   PUT /api/admin/admins/:id
+// @access  Private (Admin / Superadmin)
+exports.updateAdmin = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { name, email, role, phone, isActive, password } = req.body;
+
+    if (isDbReady() && mongoose.Types.ObjectId.isValid(id)) {
+      const admin = await User.findById(id).select('+password');
+      if (!admin) {
+        return res.status(404).json({ success: false, message: 'Admin user not found' });
+      }
+
+      if (name) admin.name = name;
+      if (email) admin.email = email.toLowerCase();
+      if (role) admin.role = role;
+      if (phone !== undefined) admin.phone = phone;
+      if (isActive !== undefined) admin.isActive = isActive;
+      if (password && password.trim().length >= 6) {
+        admin.password = password;
+      }
+
+      await admin.save();
+      const result = admin.toObject();
+      delete result.password;
+      return res.status(200).json({ success: true, data: result, message: 'Admin updated successfully' });
+    }
+
+    // Mock fallback
+    const updated = mockStore.updateUser(id, {
+      ...(name && { name }),
+      ...(email && { email: email.toLowerCase() }),
+      ...(role && { role }),
+      ...(phone !== undefined && { phone }),
+      ...(isActive !== undefined && { isActive }),
+      ...(password && password.trim().length >= 6 && { password }),
+    });
+
+    if (updated) {
+      const result = { ...updated };
+      delete result.password;
+      return res.status(200).json({ success: true, data: result, message: 'Admin updated successfully' });
+    }
+
+    res.status(404).json({ success: false, message: 'Admin user not found' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Delete admin user
+// @route   DELETE /api/admin/admins/:id
+// @access  Private (Admin / Superadmin)
+exports.deleteAdmin = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const currentUserId = req.user.id || req.user._id;
+
+    if (id === currentUserId || (req.user.email && id === req.user.email)) {
+      return res.status(400).json({ success: false, message: 'You cannot delete your own logged-in admin account' });
+    }
+
+    if (isDbReady() && mongoose.Types.ObjectId.isValid(id)) {
+      await User.findByIdAndDelete(id);
+    }
+
+    mockStore.deleteUser(id);
+    res.status(200).json({ success: true, message: 'Admin account deleted successfully' });
   } catch (err) {
     next(err);
   }

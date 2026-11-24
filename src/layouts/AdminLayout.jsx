@@ -17,6 +17,8 @@ import {
   X,
   ExternalLink,
   ShieldAlert,
+  ShieldCheck,
+  KeyRound,
   Video,
   Bell,
 } from 'lucide-react';
@@ -73,6 +75,7 @@ const AdminLayout = () => {
     },
     { label: 'Student Directory', to: '/admin/students', icon: Users },
     { label: 'Counsellor Team', to: '/admin/counsellors', icon: UserCheck },
+    { label: 'Admin Accounts & Access', to: '/admin/admins', icon: ShieldCheck },
   ];
 
   return (
@@ -118,18 +121,26 @@ const AdminLayout = () => {
             </button>
           </div>
 
-          {/* User badge */}
-          <div className="p-4 mx-3 my-3 bg-slate-800/80 rounded-xl border border-slate-700/60 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-brand-royal text-white font-bold flex items-center justify-center uppercase text-xs">
+          {/* User badge with 1-click Profile & Password link */}
+          <Link
+            to="/admin/admins?tab=profile"
+            onClick={() => setSidebarOpen(false)}
+            className="p-3.5 mx-3 my-3 bg-slate-800/80 hover:bg-slate-800 rounded-xl border border-slate-700/60 flex items-center gap-3 transition-colors group cursor-pointer"
+            title="Manage Admin ID & Password"
+          >
+            <div className="w-9 h-9 rounded-full bg-brand-royal text-white font-bold flex items-center justify-center uppercase text-xs group-hover:scale-105 transition-transform">
               {user?.name ? user.name[0] : 'A'}
             </div>
             <div className="flex-1 truncate">
-              <p className="text-xs font-bold text-white truncate">{user?.name || 'Admin'}</p>
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-bold text-white truncate">{user?.name || 'Admin'}</p>
+                <KeyRound className="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-gold transition-colors" />
+              </div>
               <span className="inline-block mt-0.5 text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-blue-900/60 text-brand-gold">
                 {user?.role || 'Staff'}
               </span>
             </div>
-          </div>
+          </Link>
 
           {/* Nav Links */}
           <nav className="px-3 space-y-1 mt-2">

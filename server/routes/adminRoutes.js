@@ -7,6 +7,10 @@ const {
   getCounsellors,
   createCounsellor,
   getActivityLogs,
+  getAdmins,
+  createAdmin,
+  updateAdmin,
+  deleteAdmin,
 } = require('../controllers/adminController');
 const { protect, authorize } = require('../middleware/auth');
 
@@ -19,5 +23,11 @@ router.put('/students/:id/toggle-status', toggleStudentStatus);
 router.get('/counsellors', getCounsellors);
 router.post('/counsellors', createCounsellor);
 router.get('/activity-logs', getActivityLogs);
+
+// Admin user and security management
+router.get('/admins', getAdmins);
+router.post('/admins', createAdmin);
+router.put('/admins/:id', updateAdmin);
+router.delete('/admins/:id', deleteAdmin);
 
 module.exports = router;

@@ -49,6 +49,7 @@ import AdminApplicationsPage from './pages/admin/AdminApplicationsPage';
 import AdminEnquiriesPage from './pages/admin/AdminEnquiriesPage';
 import AdminStudentsPage from './pages/admin/AdminStudentsPage';
 import AdminCounsellorsPage from './pages/admin/AdminCounsellorsPage';
+import AdminUsersPage from './pages/admin/AdminUsersPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -120,6 +121,7 @@ function App() {
         <Route path="enquiries" element={<AdminEnquiriesPage />} />
         <Route path="students" element={<AdminStudentsPage />} />
         <Route path="counsellors" element={<AdminCounsellorsPage />} />
+        <Route path="admins" element={<AdminUsersPage />} />
       </Route>
 
       {/* Catch-all redirect */}

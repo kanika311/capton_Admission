@@ -4,39 +4,12 @@ const sendEmail = require('../services/emailService');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const mockStore = require('../utils/mockStore');
 
 const isDbReady = () => mongoose.connection && mongoose.connection.readyState === 1;
 
 // Built-in verified users for offline / serverless fallback
-const mockUsers = [
-  {
-    _id: 'usr_admin',
-    name: 'Super Administrator',
-    email: 'admin@captonadmission.com',
-    password: 'Admin@12345',
-    phone: '+91 9876543210',
-    role: 'superadmin',
-    isActive: true,
-  },
-  {
-    _id: 'usr_counsellor',
-    name: 'Dr. Rajesh Sharma',
-    email: 'counsellor@captonadmission.com',
-    password: 'Counsellor@12345',
-    phone: '+91 9876543211',
-    role: 'counsellor',
-    isActive: true,
-  },
-  {
-    _id: 'usr_student',
-    name: 'Aarav Patel',
-    email: 'student@captonadmission.com',
-    password: 'Student@12345',
-    phone: '+91 9876543212',
-    role: 'student',
-    isActive: true,
-  },
-];
+const getMockUsers = () => mockStore.getUsers();
 
 // Helper to send token response with cookie
 const sendTokenResponse = (user, statusCode, res) => {
@@ -171,7 +144,7 @@ exports.login = async (req, res, next) => {
     }
 
     // In-memory fallback authentication
-    const mockUser = mockUsers.find((u) => u.email.toLowerCase() === email.toLowerCase());
+    const mockUser = getMockUsers().find((u) => u.email.toLowerCase() === email.toLowerCase());
     if (mockUser && mockUser.password === password) {
       if (portal === 'student' && mockUser.role !== 'student') {
         return res.status(403).json({
@@ -235,6 +208,74 @@ exports.getMe = async (req, res, next) => {
       user: req.user,
       profile: null,
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Update current user profile & password
+// @route   PUT /api/auth/profile
+// @access  Private
+exports.updateProfile = async (req, res, next) => {
+  try {
+    const userId = req.user.id || req.user._id;
+    const { name, email, phone, currentPassword, newPassword } = req.body;
+
+    if (isDbReady() && mongoose.Types.ObjectId.isValid(userId)) {
+      const user = await User.findById(userId).select('+password');
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+
+      if (newPassword) {
+        if (!currentPassword) {
+          return res.status(400).json({ success: false, message: 'Current password is required to set a new password' });
+        }
+        const isMatch = await user.matchPassword(currentPassword);
+        if (!isMatch) {
+          return res.status(401).json({ success: false, message: 'Current password does not match' });
+        }
+        if (newPassword.length < 6) {
+          return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
+        }
+        user.password = newPassword;
+      }
+
+      if (name) user.name = name;
+      if (phone !== undefined) user.phone = phone;
+      if (email && email.toLowerCase() !== user.email) {
+        const existing = await User.findOne({ email: email.toLowerCase() });
+        if (existing && existing._id.toString() !== user._id.toString()) {
+          return res.status(400).json({ success: false, message: 'This email is already taken by another account' });
+        }
+        user.email = email.toLowerCase();
+      }
+
+      await user.save();
+      const updatedUser = user.toObject();
+      delete updatedUser.password;
+      return res.status(200).json({ success: true, data: updatedUser, message: 'Profile updated successfully' });
+    }
+
+    // Mock fallback
+    const mockUser = mockStore.getUserById(userId) || mockStore.getUserByEmail(req.user.email);
+    if (mockUser) {
+      if (newPassword) {
+        if (currentPassword && currentPassword !== mockUser.password) {
+          return res.status(401).json({ success: false, message: 'Current password does not match' });
+        }
+        mockUser.password = newPassword;
+      }
+      if (name) mockUser.name = name;
+      if (email) mockUser.email = email.toLowerCase();
+      if (phone !== undefined) mockUser.phone = phone;
+      mockStore.updateUser(mockUser._id, mockUser);
+      const result = { ...mockUser };
+      delete result.password;
+      return res.status(200).json({ success: true, data: result, message: 'Profile updated successfully' });
+    }
+
+    res.status(404).json({ success: false, message: 'User not found' });
   } catch (err) {
     next(err);
   }

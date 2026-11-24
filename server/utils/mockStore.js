@@ -618,6 +618,51 @@ const mappings = [
   },
 ];
 
+let users = [
+  {
+    _id: 'usr_admin',
+    name: 'Super Administrator',
+    email: 'admin@captonadmission.com',
+    password: 'Admin@12345',
+    phone: '+91 9876543210',
+    role: 'superadmin',
+    isActive: true,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    lastLogin: new Date().toISOString(),
+  },
+  {
+    _id: 'usr_admin_2',
+    name: 'Admissions Officer (Admin)',
+    email: 'admissions@captonadmission.com',
+    password: 'Admin@12345',
+    phone: '+91 9811122334',
+    role: 'admin',
+    isActive: true,
+    createdAt: '2026-02-15T00:00:00.000Z',
+    lastLogin: new Date().toISOString(),
+  },
+  {
+    _id: 'usr_counsellor',
+    name: 'Dr. Rajesh Sharma',
+    email: 'counsellor@captonadmission.com',
+    password: 'Counsellor@12345',
+    phone: '+91 9876543211',
+    role: 'counsellor',
+    isActive: true,
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    _id: 'usr_student',
+    name: 'Aarav Patel',
+    email: 'student@captonadmission.com',
+    password: 'Student@12345',
+    phone: '+91 9876543212',
+    role: 'student',
+    isActive: true,
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+];
+
 let enquiries = [
   {
     _id: 'enq_1',
@@ -840,6 +885,36 @@ module.exports = {
         item.followUpNotes.push({ note, date: new Date().toISOString() });
       }
       return item;
+    }
+    return null;
+  },
+  // Admin & User access store
+  getUsers: () => users,
+  getUserById: (id) => users.find((u) => u._id === id),
+  getUserByEmail: (email) => users.find((u) => u.email.toLowerCase() === email.toLowerCase()),
+  addUser: (userData) => {
+    const newUser = {
+      _id: `usr_${Date.now()}`,
+      isActive: true,
+      createdAt: new Date().toISOString(),
+      ...userData,
+    };
+    users.unshift(newUser);
+    return newUser;
+  },
+  updateUser: (id, updates) => {
+    const idx = users.findIndex((u) => u._id === id || u.email.toLowerCase() === id.toLowerCase());
+    if (idx !== -1) {
+      users[idx] = { ...users[idx], ...updates, updatedAt: new Date().toISOString() };
+      return users[idx];
+    }
+    return null;
+  },
+  deleteUser: (id) => {
+    const idx = users.findIndex((u) => u._id === id || u.email.toLowerCase() === id.toLowerCase());
+    if (idx !== -1) {
+      const removed = users.splice(idx, 1);
+      return removed[0];
     }
     return null;
   },
