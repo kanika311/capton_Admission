@@ -350,54 +350,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* SECTION 2: POPULAR COURSE CATEGORIES */}
-      <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12">
-          <div className="max-w-3xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full border border-blue-100 inline-block mb-2">
-              Browse By Stream
-            </span>
-            <h2 className="text-3xl font-extrabold text-brand-navy">
-              Popular Course Categories
-            </h2>
-            <p className="text-slate-600 text-sm mt-2">
-              Select your academic discipline to explore degrees, eligibility, career outcomes, and accredited universities.
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-5">
-          {categories.map((cat) => {
-            const IconComponent = categoryIcons[cat.name] || GraduationCap;
-            return (
-              <div
-                key={cat._id}
-                className="bg-white p-5 rounded-2xl border border-brand-border shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between group"
-              >
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-brand-light group-hover:bg-brand-royal text-brand-royal group-hover:text-white flex items-center justify-center transition-colors mb-4">
-                    <IconComponent className="w-6 h-6" />
-                  </div>
-                  <h3 className="font-bold text-base text-brand-darkText group-hover:text-brand-royal transition-colors">
-                    {cat.name}
-                  </h3>
-                  <p className="text-xs text-slate-500 mt-1.5 line-clamp-2">
-                    {cat.description || 'Undergraduate and postgraduate degrees.'}
-                  </p>
-                </div>
-
-                <Link
-                  to={`/courses?category=${cat.slug}`}
-                  className="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-brand-royal group-hover:text-brand-navy flex items-center justify-between"
-                >
-                  <span>Explore Courses</span>
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-            );
-          })}
-        </div>
-      </section>
 
       {/* SECTION 3: FEATURED COURSES (Horizontal Auto-Scroll) */}
       <section className="relative z-10 py-20 bg-white border-b border-slate-200 overflow-hidden">
