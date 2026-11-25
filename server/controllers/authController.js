@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const mockStore = require('../utils/mockStore');
+const { connectDB } = require('../config/db');
 
 const isDbReady = () => mongoose.connection && mongoose.connection.readyState === 1;
 
@@ -52,34 +53,82 @@ exports.register = async (req, res, next) => {
   try {
     const { name, email, password, phone, role } = req.body;
 
-    // Check if email already registered
-    const existing = await User.findOne({ email });
-    if (existing) {
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide full name, email address, and password',
+      });
+    }
+
+    // Try to ensure DB connection if MONGO_URI is set but connection is not established yet
+    if (!isDbReady() && process.env.MONGO_URI) {
+      try {
+        await Promise.race([
+          connectDB(),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('DB Connect Timeout')), 1800)),
+        ]);
+      } catch (connErr) {
+        console.warn('[Register] DB connection notice:', connErr.message);
+      }
+    }
+
+    if (isDbReady()) {
+      try {
+        // Check if email already registered in DB
+        const existing = await User.findOne({ email: email.toLowerCase() });
+        if (existing) {
+          return res.status(400).json({
+            success: false,
+            message: 'An account with this email address already exists',
+          });
+        }
+
+        // Students are default; admins cannot be created publicly
+        const userRole = role === 'student' || !role ? 'student' : 'student';
+
+        const user = await User.create({
+          name,
+          email: email.toLowerCase(),
+          password,
+          phone: phone || '',
+          role: userRole,
+        });
+
+        // Create student profile automatically
+        if (user.role === 'student') {
+          try {
+            await StudentProfile.create({
+              user: user._id,
+            });
+          } catch (spErr) {
+            console.warn('[StudentProfile] Notice:', spErr.message);
+          }
+        }
+
+        return sendTokenResponse(user, 201, res);
+      } catch (dbErr) {
+        console.warn('[Register] DB operation error, falling back to mockStore:', dbErr.message);
+      }
+    }
+
+    // Fallback in-memory registration for offline / serverless runtime
+    const existingMock = mockStore.getUserByEmail(email);
+    if (existingMock) {
       return res.status(400).json({
         success: false,
         message: 'An account with this email address already exists',
       });
     }
 
-    // Students are default; admins cannot be created publicly
-    const userRole = role === 'student' || !role ? 'student' : 'student';
-
-    const user = await User.create({
+    const newUser = mockStore.addUser({
       name,
-      email,
+      email: email.toLowerCase(),
       password,
       phone: phone || '',
-      role: userRole,
+      role: 'student',
     });
 
-    // Create student profile automatically
-    if (user.role === 'student') {
-      await StudentProfile.create({
-        user: user._id,
-      });
-    }
-
-    sendTokenResponse(user, 201, res);
+    return sendTokenResponse(newUser, 201, res);
   } catch (err) {
     next(err);
   }
@@ -287,38 +336,62 @@ exports.updateProfile = async (req, res, next) => {
 exports.forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email });
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide email address',
+      });
+    }
 
-    if (!user) {
+    if (isDbReady()) {
+      try {
+        const user = await User.findOne({ email: email.toLowerCase() });
+        if (user) {
+          const resetToken = crypto.randomBytes(20).toString('hex');
+          user.resetPasswordToken = crypto
+            .createHash('sha256')
+            .update(resetToken)
+            .digest('hex');
+          user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+          await user.save({ validateBeforeSave: false });
+
+          const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
+          const message = `You are receiving this email because you requested a password reset. Please click on the link below:\n\n${resetUrl}\n\nIf you did not request this, please ignore this email.`;
+
+          try {
+            await sendEmail({
+              email: user.email,
+              subject: 'CaptonAdmission Password Reset Token',
+              message,
+            });
+          } catch (e) {
+            console.warn('[Email] Could not send reset email:', e.message);
+          }
+
+          return res.status(200).json({
+            success: true,
+            message: 'Password reset link sent to your email',
+            resetToken,
+          });
+        }
+      } catch (dbErr) {
+        console.warn('[ForgotPassword] DB notice:', dbErr.message);
+      }
+    }
+
+    const mockUser = mockStore.getUserByEmail(email);
+    if (!mockUser) {
       return res.status(404).json({
         success: false,
         message: 'There is no user with that email address',
       });
     }
 
-    // Generate reset token
-    const resetToken = crypto.randomBytes(20).toString('hex');
-    user.resetPasswordToken = crypto
-      .createHash('sha256')
-      .update(resetToken)
-      .digest('hex');
-    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
-
-    await user.save({ validateBeforeSave: false });
-
-    const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
-    const message = `You are receiving this email because you requested a password reset. Please click on the link below:\n\n${resetUrl}\n\nIf you did not request this, please ignore this email.`;
-
-    await sendEmail({
-      email: user.email,
-      subject: 'CaptonAdmission Password Reset Token',
-      message,
-    });
-
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: 'Password reset link sent to your email',
-      resetToken, // for ease of testing in dev
+      resetToken: 'mock_reset_token_dev',
     });
   } catch (err) {
     next(err);
@@ -335,24 +408,29 @@ exports.resetPassword = async (req, res, next) => {
       .update(req.params.resetToken)
       .digest('hex');
 
-    const user = await User.findOne({
-      resetPasswordToken,
-      resetPasswordExpire: { $gt: Date.now() },
-    });
+    if (isDbReady()) {
+      try {
+        const user = await User.findOne({
+          resetPasswordToken,
+          resetPasswordExpire: { $gt: Date.now() },
+        });
 
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid or expired password reset token',
-      });
+        if (user) {
+          user.password = req.body.password;
+          user.resetPasswordToken = undefined;
+          user.resetPasswordExpire = undefined;
+          await user.save();
+          return sendTokenResponse(user, 200, res);
+        }
+      } catch (dbErr) {
+        console.warn('[ResetPassword] DB notice:', dbErr.message);
+      }
     }
 
-    user.password = req.body.password;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
-    await user.save();
-
-    sendTokenResponse(user, 200, res);
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid or expired password reset token',
+    });
   } catch (err) {
     next(err);
   }

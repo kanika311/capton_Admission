@@ -6,6 +6,8 @@ const morgan = require('morgan');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const errorHandler = require('./middleware/error');
+const mongoose = require('mongoose');
+const { connectDB } = require('./config/db');
 
 // Import Route handlers
 const authRoutes = require('./routes/authRoutes');
@@ -79,6 +81,21 @@ app.use('/api', (req, res, next) => {
   if (req.method === 'GET' && !req.headers.authorization && !req.cookies?.token) {
     // Cache public catalog reads on Vercel Edge for 5 minutes, stale-while-revalidate for 10 minutes
     res.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
+  }
+  next();
+});
+
+// Serverless cold-start resilience: attempt connection if MONGO_URI is set
+app.use(async (req, res, next) => {
+  if (process.env.MONGO_URI && (!mongoose.connection || mongoose.connection.readyState !== 1)) {
+    try {
+      await Promise.race([
+        connectDB(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('DB Connect Timeout')), 1500)),
+      ]);
+    } catch {
+      // Allow request to proceed to route handlers and fallbacks
+    }
   }
   next();
 });
