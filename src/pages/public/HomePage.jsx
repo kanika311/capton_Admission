@@ -351,303 +351,285 @@ const HomePage = () => {
       </section>
 
 
-      {/* SECTION 3: FEATURED COURSES (Horizontal Auto-Scroll) */}
-      <section className="relative z-10 py-20 bg-white border-b border-slate-200 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full border border-blue-100 inline-block mb-2">
-              High Demand Degrees
-            </span>
-            <h2 className="text-3xl font-extrabold text-brand-navy">
-              Featured Courses
-            </h2>
-            <p className="text-slate-600 text-sm mt-2">
-              Top recognized undergraduate and postgraduate degrees with strong career placements.
-            </p>
+      {/* SECTION 3: FEATURED COURSES (Full Width Interactive Auto-Scroll) */}
+      <section className="relative z-10 py-16 sm:py-20 bg-slate-50/60 border-b border-slate-200 overflow-hidden w-full">
+        {/* Clean Centered Section Title */}
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 px-4">
+          <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3.5 py-1 rounded-full border border-blue-100 inline-block mb-2.5 shadow-2xs">
+            High Demand Degrees
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-black text-brand-navy tracking-tight">
+            Featured Courses
+          </h2>
+        </div>
 
-            {/* Controls: Auto-Scroll Indicator, Nav Arrows & View All (Centered) */}
-            <div className="flex items-center justify-center gap-3 shrink-0 flex-wrap mt-5">
-              {/* Auto-scroll status pill */}
-              <button
-                type="button"
-                onClick={() => setCoursesPaused(!coursesPaused)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border transition-colors cursor-pointer ${
-                  coursesPaused
-                    ? 'bg-amber-50 text-amber-700 border-amber-200'
-                    : 'bg-blue-50 text-brand-royal border-blue-200'
-                }`}
-                title={coursesPaused ? 'Click to resume auto-scroll' : 'Click to pause auto-scroll'}
-              >
-                {coursesPaused ? (
-                  <>
-                    <Pause className="w-3 h-3 text-amber-600" />
-                    <span>Paused</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-3 h-3 text-brand-royal animate-pulse" />
-                    <span>Auto-Scrolling</span>
-                  </>
-                )}
-              </button>
+        {/* Full Width Slider Wrapper with Floating Nav Buttons */}
+        <div className="relative w-full group/courses">
+          {/* Left Floating Arrow Button */}
+          <button
+            type="button"
+            onClick={scrollLeftCourses}
+            className="absolute left-3 sm:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/95 hover:bg-brand-royal text-slate-700 hover:text-white shadow-xl hover:shadow-2xl border border-slate-200/80 flex items-center justify-center transition-all duration-300 opacity-90 hover:opacity-100 hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-md"
+            title="Previous Courses"
+            aria-label="Previous Courses"
+          >
+            <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
+          </button>
 
-              {/* Left / Right Nav Arrows */}
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={scrollLeftCourses}
-                  className="p-2 rounded-xl bg-slate-100 hover:bg-brand-royal hover:text-white text-slate-700 transition-colors cursor-pointer border border-slate-200/60 shadow-xs"
-                  title="Scroll Left"
-                  aria-label="Previous Courses"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={scrollRightCourses}
-                  className="p-2 rounded-xl bg-slate-100 hover:bg-brand-royal hover:text-white text-slate-700 transition-colors cursor-pointer border border-slate-200/60 shadow-xs"
-                  title="Scroll Right"
-                  aria-label="Next Courses"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
+          {/* Right Floating Arrow Button */}
+          <button
+            type="button"
+            onClick={scrollRightCourses}
+            className="absolute right-3 sm:right-6 lg:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/95 hover:bg-brand-royal text-slate-700 hover:text-white shadow-xl hover:shadow-2xl border border-slate-200/80 flex items-center justify-center transition-all duration-300 opacity-90 hover:opacity-100 hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-md"
+            title="Next Courses"
+            aria-label="Next Courses"
+          >
+            <ChevronRight className="w-5 h-5 stroke-[2.5]" />
+          </button>
 
-              <Link
-                to="/courses"
-                className="text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group ml-1"
-              >
-                <span>View All 30+ Courses</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </div>
+          {/* Edge Gradient Masks */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-slate-50 via-slate-50/60 to-transparent z-10" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-slate-50 via-slate-50/60 to-transparent z-10" />
 
-          {/* Horizontal Scroll Track */}
+          {/* Horizontal Scroll Track (Scrollbar completely hidden, full width, smooth auto scroll) */}
           <div
             ref={coursesScrollRef}
             onMouseEnter={() => setCoursesPaused(true)}
             onMouseLeave={() => setCoursesPaused(false)}
             onTouchStart={() => setCoursesPaused(true)}
             onTouchEnd={() => setCoursesPaused(false)}
-            className="flex items-stretch gap-6 overflow-x-auto pb-5 pt-2 px-1 styled-scrollbar scroll-smooth snap-x snap-mandatory"
+            className="flex items-stretch gap-6 overflow-x-auto py-4 px-6 sm:px-12 lg:px-16 scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           >
             {featuredCourses.map((course) => (
               <div
                 key={course._id}
-                className="w-[300px] sm:w-[350px] md:w-[380px] shrink-0 snap-start bg-brand-light rounded-2xl border border-brand-border overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between"
+                className="w-[310px] sm:w-[350px] md:w-[380px] shrink-0 snap-start bg-white rounded-3xl border border-slate-200/90 hover:border-brand-royal/40 shadow-card hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between overflow-hidden group/card relative"
               >
+                {/* Top Accent Gradient Bar */}
+                <div className="h-1.5 w-full bg-gradient-to-r from-brand-royal via-blue-500 to-indigo-600" />
+
                 <div className="p-6">
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-100 text-brand-royal">
+                  {/* Badges: Level & Duration */}
+                  <div className="flex items-center justify-between gap-2 mb-3.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-brand-royal border border-blue-100">
                       {course.level}
                     </span>
-                    <span className="text-xs text-slate-500 flex items-center gap-1 font-medium">
+                    <span className="text-xs text-slate-500 flex items-center gap-1 font-semibold bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100">
                       <Clock className="w-3.5 h-3.5 text-slate-400" />
                       {course.duration}
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-lg text-brand-navy line-clamp-2 leading-snug">
+                  {/* Course Title */}
+                  <h3 className="font-extrabold text-base sm:text-lg text-brand-navy group-hover/card:text-brand-royal transition-colors line-clamp-2 leading-snug">
                     {course.name}
                   </h3>
 
-                  <p className="text-xs text-slate-600 mt-2 line-clamp-2">
+                  {/* Overview */}
+                  <p className="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">
                     {course.overview}
                   </p>
 
-                  <div className="mt-4 pt-3 border-t border-slate-200/60 space-y-2 text-xs">
+                  {/* Key Specs Card */}
+                  <div className="mt-5 p-3.5 rounded-2xl bg-slate-50/80 border border-slate-100 space-y-2 text-xs">
                     <div className="flex items-center justify-between text-slate-600">
-                      <span className="font-medium text-slate-500">Eligibility:</span>
-                      <span className="font-semibold text-brand-darkText truncate max-w-[190px]">
+                      <span className="font-medium text-slate-400 flex items-center gap-1">
+                        <GraduationCap className="w-3.5 h-3.5 text-brand-royal" />
+                        Eligibility
+                      </span>
+                      <span className="font-bold text-slate-800 truncate max-w-[170px]" title={course.eligibility}>
                         {course.eligibility}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between text-slate-600">
-                      <span className="font-medium text-slate-500">Avg Fee Range:</span>
-                      <span className="font-bold text-brand-navy">
+                    <div className="flex items-center justify-between text-slate-600 pt-1 border-t border-slate-200/60">
+                      <span className="font-medium text-slate-400 flex items-center gap-1">
+                        <Award className="w-3.5 h-3.5 text-amber-500" />
+                        Avg Fee
+                      </span>
+                      <span className="font-extrabold text-emerald-700">
                         ₹ {(course.averageFeeRange?.min / 1000).toFixed(0)}k - {(course.averageFeeRange?.max / 1000).toFixed(0)}k / yr
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 bg-white border-t border-brand-border flex items-center gap-2">
+                {/* Interactive Bottom Actions */}
+                <div className="p-4 bg-slate-50/50 border-t border-slate-100 flex items-center gap-2.5">
                   <Link
                     to={`/courses/${course.slug}`}
-                    className="flex-1 text-center py-2 bg-brand-light hover:bg-slate-200 text-brand-royal font-bold text-xs rounded-lg transition-colors"
+                    className="flex-1 text-center py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-colors shadow-2xs"
                   >
                     Course Details
                   </Link>
                   <Link
                     to={`/courses?selectCourse=${course.slug}`}
-                    className="flex-1 text-center py-2 bg-brand-royal hover:bg-brand-navy text-white font-bold text-xs rounded-lg transition-colors"
+                    className="flex-1 text-center py-2.5 bg-brand-royal hover:bg-brand-navy text-white font-extrabold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-1 group/btn"
                   >
-                    Explore Colleges
+                    <span>Explore Colleges</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
                   </Link>
                 </div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Bottom Interactive Explore CTA */}
+        <div className="mt-10 flex items-center justify-center gap-4 px-4">
+          <Link
+            to="/courses"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand-royal hover:bg-brand-navy text-white font-extrabold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all"
+          >
+            <span>View All 30+ Courses</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </section>
 
-      {/* SECTION 4: TOP UNIVERSITIES (Horizontal Auto-Scroll) */}
-      <section className="relative z-10 py-20 bg-slate-50 border-b border-slate-200 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full border border-blue-100 inline-block mb-2">
-              Accredited Campuses
-            </span>
-            <h2 className="text-3xl font-extrabold text-brand-navy">
-              Top Universities & Colleges
-            </h2>
-            <p className="text-slate-600 text-sm mt-2">
-              Explore leading government and private universities with verified NIRF and NAAC accreditations.
-            </p>
+      {/* SECTION 4: TOP UNIVERSITIES (Full Width Interactive Auto-Scroll) */}
+      <section className="relative z-10 py-16 sm:py-20 bg-white border-b border-slate-200 overflow-hidden w-full">
+        {/* Clean Centered Section Title */}
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 px-4">
+          <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3.5 py-1 rounded-full border border-blue-100 inline-block mb-2.5 shadow-2xs">
+            Accredited Campuses
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-black text-brand-navy tracking-tight">
+            Top Universities & Colleges
+          </h2>
+        </div>
 
-            {/* Controls: Auto-Scroll Indicator, Nav Arrows & View All (Centered) */}
-            <div className="flex items-center justify-center gap-3 shrink-0 flex-wrap mt-5">
-              {/* Auto-scroll status pill */}
-              <button
-                type="button"
-                onClick={() => setUnisPaused(!unisPaused)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border transition-colors cursor-pointer ${
-                  unisPaused
-                    ? 'bg-amber-50 text-amber-700 border-amber-200'
-                    : 'bg-blue-50 text-brand-royal border-blue-200'
-                }`}
-                title={unisPaused ? 'Click to resume auto-scroll' : 'Click to pause auto-scroll'}
-              >
-                {unisPaused ? (
-                  <>
-                    <Pause className="w-3 h-3 text-amber-600" />
-                    <span>Paused</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-3 h-3 text-brand-royal animate-pulse" />
-                    <span>Auto-Scrolling</span>
-                  </>
-                )}
-              </button>
+        {/* Full Width Slider Wrapper with Floating Nav Buttons */}
+        <div className="relative w-full group/unis">
+          {/* Left Floating Arrow Button */}
+          <button
+            type="button"
+            onClick={scrollLeftUnis}
+            className="absolute left-3 sm:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/95 hover:bg-brand-royal text-slate-700 hover:text-white shadow-xl hover:shadow-2xl border border-slate-200/80 flex items-center justify-center transition-all duration-300 opacity-90 hover:opacity-100 hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-md"
+            title="Previous Universities"
+            aria-label="Previous Universities"
+          >
+            <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
+          </button>
 
-              {/* Left / Right Nav Arrows */}
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={scrollLeftUnis}
-                  className="p-2 rounded-xl bg-white hover:bg-brand-royal hover:text-white text-slate-700 transition-colors cursor-pointer border border-slate-200 shadow-xs"
-                  title="Scroll Left"
-                  aria-label="Previous Universities"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={scrollRightUnis}
-                  className="p-2 rounded-xl bg-white hover:bg-brand-royal hover:text-white text-slate-700 transition-colors cursor-pointer border border-slate-200 shadow-xs"
-                  title="Scroll Right"
-                  aria-label="Next Universities"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
+          {/* Right Floating Arrow Button */}
+          <button
+            type="button"
+            onClick={scrollRightUnis}
+            className="absolute right-3 sm:right-6 lg:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/95 hover:bg-brand-royal text-slate-700 hover:text-white shadow-xl hover:shadow-2xl border border-slate-200/80 flex items-center justify-center transition-all duration-300 opacity-90 hover:opacity-100 hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-md"
+            title="Next Universities"
+            aria-label="Next Universities"
+          >
+            <ChevronRight className="w-5 h-5 stroke-[2.5]" />
+          </button>
 
-              <Link
-                to="/universities"
-                className="text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group ml-1"
-              >
-                <span>View All 20+ Universities</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </div>
+          {/* Edge Gradient Masks */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-white via-white/60 to-transparent z-10" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-white via-white/60 to-transparent z-10" />
 
-          {/* Horizontal Scroll Track */}
+          {/* Horizontal Scroll Track (Scrollbar hidden, full width, smooth auto scroll) */}
           <div
             ref={unisScrollRef}
             onMouseEnter={() => setUnisPaused(true)}
             onMouseLeave={() => setUnisPaused(false)}
             onTouchStart={() => setUnisPaused(true)}
             onTouchEnd={() => setUnisPaused(false)}
-            className="flex items-stretch gap-6 overflow-x-auto pb-5 pt-2 px-1 styled-scrollbar scroll-smooth snap-x snap-mandatory"
+            className="flex items-stretch gap-6 overflow-x-auto py-4 px-6 sm:px-12 lg:px-16 scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           >
             {topUniversities.map((uni) => (
               <div
                 key={uni._id}
-                className="w-[300px] sm:w-[360px] md:w-[390px] shrink-0 snap-start bg-white rounded-2xl border border-brand-border overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between"
+                className="w-[310px] sm:w-[360px] md:w-[390px] shrink-0 snap-start bg-white rounded-3xl border border-slate-200/90 hover:border-brand-royal/40 overflow-hidden shadow-card hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between group/uni"
               >
-                {/* Cover Image banner */}
-                <div className="relative h-44 overflow-hidden">
+                {/* Cover Image Banner */}
+                <div className="relative h-44 overflow-hidden bg-slate-100">
                   <img
                     src={uni.coverImage || 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&h=300&fit=crop'}
                     alt={uni.name}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover/uni:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute top-3 left-3">
-                    <span className="text-[10px] font-bold px-2.5 py-1 rounded-md bg-brand-navy/90 text-white backdrop-blur-sm">
-                      {uni.universityType}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+                  {/* University Type Badge */}
+                  <span className="absolute top-3.5 left-3.5 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/95 text-brand-navy shadow-sm backdrop-blur-md">
+                    {uni.universityType || 'Government'}
+                  </span>
+
+                  {/* Rating Badge */}
+                  <span className="absolute top-3.5 right-3.5 flex items-center gap-1 text-[11px] font-bold text-slate-800 bg-white/95 px-2.5 py-1 rounded-full shadow-sm backdrop-blur-md">
+                    <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                    <span>{uni.rating || '4.8'}</span>
+                  </span>
+
+                  {/* NIRF / NAAC Badge */}
+                  {uni.nirfRank && (
+                    <span className="absolute bottom-3 left-3 text-[10px] font-bold text-white bg-blue-600/90 px-2.5 py-0.5 rounded-md backdrop-blur-md">
+                      NIRF Ranked #{uni.nirfRank}
                     </span>
-                  </div>
-                  <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 px-2 py-0.5 rounded-md text-xs font-bold text-amber-600 shadow-sm">
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    <span>{uni.rating || 4.5}</span>
-                  </div>
+                  )}
                 </div>
 
-                {/* Body */}
-                <div className="p-6">
-                  <h3 className="font-bold text-base text-brand-navy line-clamp-1">
-                    {uni.name}
-                  </h3>
-                  <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                    <MapPin className="w-3.5 h-3.5 text-brand-gold shrink-0" />
-                    <span>
-                      {uni.location?.city}, {uni.location?.state}
-                      {uni.location?.country && uni.location.country !== 'India' ? `, ${uni.location.country}` : ''}
-                    </span>
-                  </p>
+                <div className="p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-extrabold text-base sm:text-lg text-brand-navy group-hover/uni:text-brand-royal transition-colors line-clamp-1 leading-snug">
+                      {uni.name}
+                    </h3>
 
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {(uni.accreditation || []).slice(0, 3).map((acc, i) => (
-                      <span
-                        key={i}
-                        className="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700"
-                      >
-                        {acc}
+                    <p className="text-xs text-slate-400 flex items-center gap-1 mt-1 font-medium">
+                      <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <span>{uni.location?.city}, {uni.location?.state}</span>
+                    </p>
+
+                    <p className="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed font-normal">
+                      {uni.about}
+                    </p>
+                  </div>
+
+                  {/* Placement Statistics Strip */}
+                  <div className="mt-4 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-center">
+                    <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
+                      <span className="text-[10px] font-bold text-slate-400 block uppercase">Avg Package</span>
+                      <span className="text-xs font-black text-brand-royal">
+                        {uni.placementOverview?.averagePackage || '₹ 10.5 LPA'}
                       </span>
-                    ))}
-                  </div>
-
-                  <div className="mt-4 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                      <span className="text-slate-400 block text-[11px]">Avg Package</span>
-                      <strong className="text-emerald-700 font-bold">
-                        {uni.placementOverview?.averagePackage || 'Verified'}
-                      </strong>
                     </div>
-                    <div>
-                      <span className="text-slate-400 block text-[11px]">Highest Package</span>
-                      <strong className="text-brand-navy font-bold">
-                        {uni.placementOverview?.highestPackage || 'Verified'}
-                      </strong>
+                    <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
+                      <span className="text-[10px] font-bold text-slate-400 block uppercase">Highest Package</span>
+                      <span className="text-xs font-black text-emerald-600">
+                        {uni.placementOverview?.highestPackage || '₹ 45.0 LPA'}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Action */}
-                <div className="p-4 bg-slate-50 border-t border-brand-border flex items-center justify-between">
+                {/* Bottom Action Strip */}
+                <div className="p-4 bg-slate-50/50 border-t border-slate-100 flex items-center gap-2.5">
                   <Link
                     to={`/universities/${uni.slug}`}
-                    className="w-full text-center py-2 bg-brand-royal hover:bg-brand-navy text-white font-bold text-xs rounded-lg transition-colors"
+                    className="flex-1 text-center py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-colors shadow-2xs"
                   >
-                    View University Profile &rarr;
+                    View Campus
                   </Link>
+                  <button
+                    onClick={() => dispatch(openEnquiryModal({ university: uni.name }))}
+                    className="flex-1 text-center py-2.5 bg-brand-gold hover:bg-brand-goldHover text-brand-navy font-black text-xs rounded-xl shadow-xs transition-all uppercase tracking-wider"
+                  >
+                    Enquire Now
+                  </button>
                 </div>
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Bottom Interactive Explore CTA */}
+        <div className="mt-10 flex items-center justify-center gap-4 px-4">
+          <Link
+            to="/universities"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand-navy hover:bg-brand-royal text-white font-extrabold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all"
+          >
+            <span>View All 20+ Universities</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 
