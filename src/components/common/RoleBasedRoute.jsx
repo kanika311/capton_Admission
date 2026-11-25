@@ -15,7 +15,7 @@ const RoleBasedRoute = ({ children, allowedRoles }) => {
   }
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/admin/login" state={{ from: location }} replace />;
+    return <Navigate to="/capton-admin" state={{ from: location }} replace />;
   }
 
   if (user.role === 'superadmin') {

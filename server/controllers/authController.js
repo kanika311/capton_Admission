@@ -137,6 +137,9 @@ exports.register = async (req, res, next) => {
 // @desc    Login user
 // @route   POST /api/auth/login
 // @access  Public
+// @desc    Login user (Student & Admin)
+// @route   POST /api/auth/login
+// @access  Public
 exports.login = async (req, res, next) => {
   try {
     const { email, password, portal } = req.body;
@@ -144,19 +147,28 @@ exports.login = async (req, res, next) => {
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide both email and password',
+        message: 'Please provide both identifier and password',
       });
     }
 
+    const identifier = String(email).trim();
+    const digitsOnly = identifier.replace(/\D/g, '');
+
     if (isDbReady()) {
       try {
-        const user = await User.findOne({ email }).select('+password');
+        const orConditions = [{ email: identifier.toLowerCase() }];
+        if (digitsOnly.length >= 10) {
+          orConditions.push({ phone: { $regex: digitsOnly.slice(-10) } });
+          orConditions.push({ phone: identifier });
+        }
+
+        const user = await User.findOne({ $or: orConditions }).select('+password');
         if (user) {
           const isMatch = await user.matchPassword(password);
           if (!isMatch) {
             return res.status(401).json({
               success: false,
-              message: 'Invalid email or password',
+              message: 'Invalid credentials. Please verify your identifier and password.',
             });
           }
 
@@ -171,14 +183,14 @@ exports.login = async (req, res, next) => {
           if (portal === 'student' && user.role !== 'student') {
             return res.status(403).json({
               success: false,
-              message: 'Access Denied: This login is for students only. Staff and Administrators must log in from the Admin Portal.',
+              message: 'Access Denied: This login is for students only.',
             });
           }
 
           if (portal === 'admin' && user.role === 'student') {
             return res.status(403).json({
               success: false,
-              message: 'Access Denied: Staff or Administrator account required. Students please sign in via Student Login.',
+              message: 'Access Denied: Administrator account required.',
             });
           }
 
@@ -193,19 +205,27 @@ exports.login = async (req, res, next) => {
     }
 
     // In-memory fallback authentication
-    const mockUser = getMockUsers().find((u) => u.email.toLowerCase() === email.toLowerCase());
+    const mockUser = getMockUsers().find((u) => {
+      const mEmail = u.email?.toLowerCase();
+      const mPhone = (u.phone || '').replace(/\D/g, '');
+      if (mEmail === identifier.toLowerCase()) return true;
+      if (digitsOnly.length >= 10 && mPhone.includes(digitsOnly.slice(-10))) return true;
+      if (u.phone === identifier) return true;
+      return false;
+    });
+
     if (mockUser && mockUser.password === password) {
       if (portal === 'student' && mockUser.role !== 'student') {
         return res.status(403).json({
           success: false,
-          message: 'Access Denied: This login is for students only. Staff and Administrators must log in from the Admin Portal.',
+          message: 'Access Denied: This login is for students only.',
         });
       }
 
       if (portal === 'admin' && mockUser.role === 'student') {
         return res.status(403).json({
           success: false,
-          message: 'Access Denied: Staff or Administrator account required. Students please sign in via Student Login.',
+          message: 'Access Denied: Administrator account required.',
         });
       }
 
@@ -214,7 +234,7 @@ exports.login = async (req, res, next) => {
 
     return res.status(401).json({
       success: false,
-      message: 'Invalid email or password',
+      message: 'Invalid credentials. Please verify your identifier and password.',
     });
   } catch (err) {
     next(err);

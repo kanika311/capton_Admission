@@ -81,8 +81,13 @@ function App() {
         <Route path="/blogs/:slug" element={<BlogDetailsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/admin/login" element={<AdminLoginPage />} />
+        {/* Public disguise: /admin/login redirects to home for security */}
+        <Route path="/admin/login" element={<Navigate to="/" replace />} />
       </Route>
+
+      {/* Standalone Secret Administrator Access Portal (Isolated from website) */}
+      <Route path="/capton-admin" element={<AdminLoginPage />} />
+      <Route path="/capton-admin/login" element={<AdminLoginPage />} />
 
       {/* Student Protected Portal */}
       <Route

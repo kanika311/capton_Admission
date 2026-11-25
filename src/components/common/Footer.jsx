@@ -245,9 +245,6 @@ const Footer = () => {
             <Link to="/login" className="hover:text-brand-royal transition-colors">
               Student Login
             </Link>
-            <Link to="/admin/login" className="hover:text-brand-royal transition-colors">
-              Admin Login
-            </Link>
           </div>
         </div>
       </div>

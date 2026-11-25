@@ -1392,7 +1392,7 @@ let users = [
     name: 'Super Administrator',
     email: 'admin@captonadmission.com',
     password: 'Admin@12345',
-    phone: '+91 9876543210',
+    phone: '07895726762',
     role: 'superadmin',
     isActive: true,
     createdAt: '2026-01-01T00:00:00.000Z',
