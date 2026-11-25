@@ -9,7 +9,9 @@ const PublicLayout = () => {
   const isThreePanelPage =
     location.pathname === '/courses' ||
     location.pathname === '/universities' ||
-    location.pathname === '/exams';
+    location.pathname === '/exams' ||
+    location.pathname === '/services' ||
+    location.pathname === '/blogs';
 
   return (
     <div

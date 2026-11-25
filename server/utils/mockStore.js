@@ -450,10 +450,39 @@ const services = [
     _id: 'serv_1',
     title: 'Career Counselling',
     slug: 'career-counselling',
+    category: 'Career Planning',
     icon: 'Compass',
     shortDescription: 'Scientific psychometric assessment and 1-on-1 career mapping to discover your authentic professional calling.',
-    fullDescription: 'Our certified career counsellors evaluate your academic strengths, personality drivers, and long-term career aspirations to identify the optimal career pathway.',
-    benefits: ['Clarity on strengths and aptitude', 'Objective psychometric insights', 'Personalized roadmap for 5-10 years'],
+    fullDescription: 'Our certified career counsellors evaluate your academic strengths, personality drivers, and long-term career aspirations to identify the optimal career pathway. We use international psychometric assessment matrices mapped to future employment horizons.',
+    benefits: [
+      'Clarity on strengths, aptitude, and emotional quotient',
+      'Objective psychometric insights with detailed 12-page report',
+      'Personalized career roadmap spanning 5 to 10 years',
+      'Direct parent-counsellor advisory session'
+    ],
+    stats: { rating: '4.9/5', studentsAssisted: '18,500+', satisfactionRate: '99%' },
+    deliverables: [
+      'Standardized Psychometric Aptitude Report',
+      'Personalized Career Matrix with 3 alternative tracks',
+      '1-on-1 60-Minute Video Consultation with Senior Psychologist',
+      'Lifelong Access to CaptonAdmission Career Webinars'
+    ],
+    process: [
+      { step: '01', title: 'Student Diagnostic Intake', desc: 'Online assessment assessing cognitive strengths, verbal, mathematical, and spatial acumen.' },
+      { step: '02', title: 'Psychometric Report Generation', desc: 'Deep analytics pinpointing ideal vocational clusters with lowest burn-out risk.' },
+      { step: '03', title: '1-on-1 Senior Counsellor Session', desc: 'Live video consultation with student and parents to explore career prospects and ROI.' },
+      { step: '04', title: 'Actionable Career Roadmap', desc: 'Milestone timeline detailing exams to prepare for and target degrees to pursue.' }
+    ],
+    whoIsThisFor: [
+      'Class 10th students deciding between Science, Commerce, and Humanities',
+      'Class 12th students confused between Engineering, Design, Law, or Medical',
+      'College undergraduates planning Master degrees (MBA, M.Tech, MS Abroad)'
+    ],
+    faqs: [
+      { q: 'How long does the counselling session take?', a: 'The psychometric evaluation takes approximately 30 minutes online, followed by a 60-minute 1-on-1 deep-dive session with our principal career counsellor.' },
+      { q: 'Can parents join the session?', a: 'Yes! We actively encourage parents to attend so family budget, location preferences, and expectations are seamlessly aligned.' },
+      { q: 'Is this service free of charge?', a: 'Initial diagnostic evaluation and institutional partner counselling is 100% free with zero brokerage fees.' }
+    ],
     isPublished: true,
     order: 1,
   },
@@ -461,10 +490,37 @@ const services = [
     _id: 'serv_2',
     title: 'Course Selection Guidance',
     slug: 'course-selection-guidance',
+    category: 'Career Planning',
     icon: 'BookOpen',
     shortDescription: 'Comprehensive curriculum analysis comparing emerging vs evergreen degrees to secure peak career placements.',
-    fullDescription: 'Make data-backed decisions between traditional streams and high-growth specializations like AI, FinTech, and Corporate Law.',
-    benefits: ['Curriculum breakdown', '5-year industry hiring trends', 'ROI comparison'],
+    fullDescription: 'Make data-backed decisions between traditional streams and high-growth specializations like AI & ML, FinTech, Corporate Law, and Biotech. We break down the real syllabi, industry placement stats, and recruiter preferences.',
+    benefits: [
+      'Deep curriculum comparison across 50+ degree programs',
+      'Insights into 5-year industry hiring trends and salary trajectories',
+      'Specialization viability analysis (Core vs Interdisciplinary)',
+      'Accreditation verification (UGC, AICTE, NAAC, NBA)'
+    ],
+    stats: { rating: '4.8/5', studentsAssisted: '24,000+', satisfactionRate: '98%' },
+    deliverables: [
+      'Syllabus & Course Curriculum Comparison Dossier',
+      'Industry Placement Trajectory & Average CTC Projections',
+      'Specialization Electives Recommendation Guide'
+    ],
+    process: [
+      { step: '01', title: 'Aptitude & Stream Review', desc: 'Assess qualifying exam marks, entrance rank, and natural subject affinity.' },
+      { step: '02', title: 'Curriculum Benchmarking', desc: 'Side-by-side comparison of emerging degrees with market demand and placement data.' },
+      { step: '03', title: 'Industry Hiring Insights', desc: 'Examine recruiter preferences and 5-year starting packages across core industries.' },
+      { step: '04', title: 'Final Degree Recommendation', desc: 'Lock in primary and backup degree choices with proven career stability.' }
+    ],
+    whoIsThisFor: [
+      'Students deciding between CSE core vs CSE specializations (AI/ML, Data Science)',
+      'Students evaluating BBA vs B.Com vs Integrated Management degrees',
+      'Aspirants curious about interdisciplinary tech and design opportunities'
+    ],
+    faqs: [
+      { q: 'Should I choose core CSE or specialized AI/ML?', a: 'Our counsellors evaluate university curriculum strength: if the institution provides robust math and fundamentals, specialized tracks offer higher initial campus packages.' },
+      { q: 'What is the ROI difference across streams?', a: 'We provide real verified placement statistics from NIRF and institutional audits.' }
+    ],
     isPublished: true,
     order: 2,
   },
@@ -472,21 +528,75 @@ const services = [
     _id: 'serv_3',
     title: 'University Shortlisting',
     slug: 'university-shortlisting',
+    category: 'Admissions',
     icon: 'Building2',
     shortDescription: 'Curated Dream, Reach, and Safe college matrices matched to your cutoff scores, budget, and location preferences.',
-    fullDescription: 'Avoid unverified promises with objective benchmarking across NIRF ranks, NAAC accreditations, and verified placement packages.',
-    benefits: ['Balanced portfolio of universities', 'Cutoff match guarantees', 'Elimination of hidden charges'],
+    fullDescription: 'Avoid misleading marketing and fake promises. Our proprietary college benchmarking algorithm screens institutions across NAAC accreditations, NIRF rankings, actual median placement reports, faculty ratios, and campus infrastructure.',
+    benefits: [
+      'Balanced portfolio of universities (Dream, Target & Safety buckets)',
+      'Cutoff match guarantee based on previous 5-year institutional ranks',
+      'Elimination of hidden charges, fake affiliations, and agent traps',
+      'Campus infrastructure, safety, and hostel vetting'
+    ],
+    stats: { rating: '4.9/5', studentsAssisted: '31,000+', satisfactionRate: '99.4%' },
+    deliverables: [
+      'Tailored Shortlist of 10-15 Accredited Universities',
+      'Fee Structure & Hostel Cost Breakdown Matrix',
+      'Cutoff Probability Percentile Scorecards'
+    ],
+    process: [
+      { step: '01', title: 'Scorecard & Budget Evaluation', desc: 'Capture entrance percentiles, 12th board marks, geographic constraints, and maximum budget.' },
+      { step: '02', title: 'Matrix Segmentation', desc: 'Categorize institutions into 3 tiers: Dream (aspirational), Target (high probability), and Safe (guaranteed).' },
+      { step: '03', title: 'Faculty & Placement Vetting', desc: 'Verify audited placement reports, highest CTCs, and campus recruitment partnerships.' },
+      { step: '04', title: 'Application Readiness Checklist', desc: 'Compile individual university deadlines, registration fees, and document requirements.' }
+    ],
+    whoIsThisFor: [
+      'Candidates navigating central or state counselling rounds (JoSAA, CSAB, JAC, NEET, CET)',
+      'Parents looking for trustworthy, accredited private universities within a clear budget',
+      'Students looking for top institutions with zero hidden charges'
+    ],
+    faqs: [
+      { q: 'How do you ensure universities are accredited?', a: 'We strictly recommend UGC-recognized, AICTE-approved, and NAAC/NIRF accredited institutions.' },
+      { q: 'Can you help with private university direct admissions?', a: 'Yes, we assist with merit-based applications to certified partner universities with zero brokerage.' }
+    ],
     isPublished: true,
     order: 3,
   },
   {
     _id: 'serv_4',
-    title: 'Application Assistance',
+    title: 'Application Form Assistance',
     slug: 'application-assistance',
+    category: 'Admissions',
     icon: 'FileText',
     shortDescription: 'Flawless form filing, document verification, and SOP assistance to eliminate university rejection risks.',
-    fullDescription: 'End-to-end management of complex multi-university application portals and institutional counseling windows.',
-    benefits: ['Zero-error application guarantee', 'Statement of Purpose (SOP) editing', 'Deadline monitoring'],
+    fullDescription: 'Navigating dozens of conflicting portal interfaces, file size constraints, and strict eligibility documentation can lead to disqualification. Our dedicated admissions officers supervise your form submissions with zero errors.',
+    benefits: [
+      'Zero-error application guarantee across all university portals',
+      'Professional Statement of Purpose (SOP) and essay editing',
+      'Real-time deadline tracking and admission notification alerts',
+      'Quota certificate verification (Defense, EWS, Sports, Kashmiri Migrant)'
+    ],
+    stats: { rating: '4.9/5', studentsAssisted: '22,000+', satisfactionRate: '99.8%' },
+    deliverables: [
+      'Document Audit and Format Correction',
+      'Tailored SOP and Statement of Intent Review',
+      'Application Submission Acknowledgements Dossier'
+    ],
+    process: [
+      { step: '01', title: 'Document Vault Creation', desc: 'Collect and standardize marksheets, certificates, IDs, and photographs into required specs.' },
+      { step: '02', title: 'SOP & Personal Essay Drafting', desc: 'Polish your personal statement to highlight academic leadership and extracurricular achievements.' },
+      { step: '03', title: 'Supervised Portal Submission', desc: 'Complete registration, choice filling, and fee payment before the cut-off deadline.' },
+      { step: '04', title: 'Receipt & Admit Card Archive', desc: 'Track application reference numbers and schedule admit card download reminders.' }
+    ],
+    whoIsThisFor: [
+      'Students applying to multiple universities simultaneously',
+      'Aspirants worried about making critical mistakes on official application forms',
+      'Candidates requiring polished SOPs for premier private universities'
+    ],
+    faqs: [
+      { q: 'What happens if a form has a typo?', a: 'Our double-verification process ensures details match your Class 10/12 certificate exactly before final submission.' },
+      { q: 'Do you help with SOP drafting?', a: 'Yes! Our editorial team reviews, corrects, and enhances your SOPs.' }
+    ],
     isPublished: true,
     order: 4,
   },
@@ -494,10 +604,37 @@ const services = [
     _id: 'serv_5',
     title: 'Entrance Exam Guidance',
     slug: 'entrance-exam-guidance',
+    category: 'Exam Prep',
     icon: 'GraduationCap',
     shortDescription: 'Test alerts, syllabus breakdowns, mock analysis, and scoring strategies for JEE, NEET, CAT, CUET, and CLAT.',
-    fullDescription: 'Strategic preparation roadmaps, cutoffs analysis, and guidance on optimal attempts across national entrance examinations.',
-    benefits: ['Exam date alerts', 'Subject-wise weightage analysis', 'Rank vs percentile projections'],
+    fullDescription: 'Strategic preparation roadmaps, high-yield subject weightage analysis, and guidance on optimal attempts across national and state level entrance examinations.',
+    benefits: [
+      'Instant notifications on registration, admit cards, and correction windows',
+      'Subject-wise weightage and high-yield chapters prioritization',
+      'Rank vs percentile projections based on previous years trends',
+      'Tie-breaker rule insights and negative marking strategies'
+    ],
+    stats: { rating: '4.8/5', studentsAssisted: '40,000+', satisfactionRate: '98.5%' },
+    deliverables: [
+      'Official Exam Pattern & Blueprint Handbook',
+      'Milestone Dates & Important Deadlines Calendar',
+      'Cutoff Benchmarks for Top 50 Institutions'
+    ],
+    process: [
+      { step: '01', title: 'Exam Readiness Diagnostic', desc: 'Evaluate your target stream and list all eligible national and state exams.' },
+      { step: '02', title: 'Syllabus & Weightage Breakdown', desc: 'Filter high-weightage chapters to maximize your score in the remaining preparation window.' },
+      { step: '03', title: 'Attempt Strategy & Mock Feedback', desc: 'Optimize time management, question selection, and minimize negative marking penalties.' },
+      { step: '04', title: 'Post-Exam Counselling Strategy', desc: 'Translate raw percentiles into realistic college choices across multiple counselling rounds.' }
+    ],
+    whoIsThisFor: [
+      'Aspirants preparing for JEE Main, NEET UG, CAT, CUET, or CLAT',
+      'Students looking for backup entrance examinations with similar syllabi',
+      'Candidates seeking cutoff analysis for premier universities'
+    ],
+    faqs: [
+      { q: 'Do you provide mock tests?', a: 'We provide question patterns, high-scoring topic breakdowns, and strategic test-taking frameworks.' },
+      { q: 'Can you help if my percentile is average?', a: 'Absolutely! Thousands of accredited colleges admit students based on moderate percentiles and direct institutional exams.' }
+    ],
     isPublished: true,
     order: 5,
   },
@@ -505,12 +642,115 @@ const services = [
     _id: 'serv_6',
     title: 'Scholarship Assistance',
     slug: 'scholarship-assistance',
+    category: 'Financial Support',
     icon: 'Award',
     shortDescription: 'Unlock institutional merit scholarships, defense wards concessions, and state government education grants.',
-    fullDescription: 'Access over 50+ crore worth of verified scholarship schemes to minimize your family financial burden.',
-    benefits: ['Direct fee concession up to 100%', 'Corporate CSR scholarship grants', 'Merit-cum-means assistance'],
+    fullDescription: 'Access over ₹ 50+ Crore worth of verified scholarship schemes to minimize your family financial burden. We help you identify, apply for, and secure fee concessions ranging from 25% up to 100%.',
+    benefits: [
+      'Direct fee concession up to 100% on tuition fees',
+      'Corporate CSR scholarship grant identification',
+      'Merit-cum-means assistance and single girl child concessions',
+      'Sports and defense wards quota fee reductions'
+    ],
+    stats: { rating: '4.9/5', studentsAssisted: '12,000+', satisfactionRate: '99%' },
+    deliverables: [
+      'Personalized Scholarship Match Matrix',
+      'Application Dossier with Supporting Documents Checklist',
+      'Direct Institutional Scholarship Liaison Support'
+    ],
+    process: [
+      { step: '01', title: 'Eligibility Screening', desc: 'Match your 12th board marks, entrance percentile, family income, and category criteria.' },
+      { step: '02', title: 'Grant & Scholarship Discovery', desc: 'Identify active government, corporate CSR, and university internal scholarship pools.' },
+      { step: '03', title: 'Documentation & Verification', desc: 'Assemble income certificates, affidavit declarations, and merit credentials.' },
+      { step: '04', title: 'Institutional Fee Adjustment', desc: 'Ensure awarded scholarship discounts reflect directly on university tuition invoices.' }
+    ],
+    whoIsThisFor: [
+      'High-performing students with 85%+ in 10+2 seeking merit waivers',
+      'Students from economically weaker sections (EWS) seeking financial aid',
+      'Wards of defense personnel, teachers, and single girl children'
+    ],
+    faqs: [
+      { q: 'Is scholarship assistance free?', a: 'Yes! CaptonAdmission does not charge any commission or deduction from your scholarship amount.' },
+      { q: 'Are scholarships renewed every year?', a: 'Most institutional merit scholarships require maintaining a minimum CGPA (usually 7.5 or 8.0) each semester.' }
+    ],
     isPublished: true,
     order: 6,
+  },
+  {
+    _id: 'serv_7',
+    title: 'Education Loan Support',
+    slug: 'education-loan-support',
+    category: 'Financial Support',
+    icon: 'ShieldCheck',
+    shortDescription: 'Hassle-free student loan sanctioning through leading nationalized banks and NBFCs with low interest rates.',
+    fullDescription: 'We partner with premier nationalized banks and specialized education NBFCs to secure swift, collateral-free education loans up to ₹ 7.5 Lakhs and secured loans up to ₹ 1.5 Crores with simplified documentation.',
+    benefits: [
+      'Collateral-free loans up to ₹ 7.5 Lakhs under government credit guarantee',
+      'Lowest interest rates with Vidya Lakshmi portal integration',
+      '100% financing covering tuition, hostel, laptop, and travel expenses',
+      'Moratorium period benefit (repayment starts after course completion)'
+    ],
+    stats: { rating: '4.8/5', studentsAssisted: '9,500+', satisfactionRate: '97.8%' },
+    deliverables: [
+      'Bank Interest Rate Comparison Grid',
+      'Loan Eligibility & EMI Calculator Dossier',
+      'Direct Banking Desk Priority Sanction Follow-up'
+    ],
+    process: [
+      { step: '01', title: 'Financial Assessment', desc: 'Determine total course outlay, co-applicant CIBIL score, and loan requirement.' },
+      { step: '02', title: 'Bank Selection', desc: 'Select the optimal bank or NBFC offering lowest rates and longest moratorium.' },
+      { step: '03', title: 'Paperwork Expediting', desc: 'Submit bonafide admission letter, fee structure, and KYC documents.' },
+      { step: '04', title: 'Sanction Letter Issuance', desc: 'Expedite sanction letter so university admission deposit deadlines are met.' }
+    ],
+    whoIsThisFor: [
+      'Students needing financial financing for professional degrees',
+      'Families seeking collateral-free educational loans under government schemes',
+      'Aspirants needing fast sanction letters for seat reservations'
+    ],
+    faqs: [
+      { q: 'Can I get a loan without property collateral?', a: 'Yes! Under the government CGFSEL scheme, education loans up to ₹ 7.5 Lakhs require zero property collateral or third-party guarantee.' },
+      { q: 'When does repayment begin?', a: 'Repayment begins after course completion plus a 6-month or 1-year grace (moratorium) period.' }
+    ],
+    isPublished: true,
+    order: 7,
+  },
+  {
+    _id: 'serv_8',
+    title: 'Documentation & Seat Confirmation',
+    slug: 'documentation-seat-confirmation',
+    category: 'Admissions',
+    icon: 'CheckCircle2',
+    shortDescription: 'Full verification, apostille/attestation guidance, and institutional seat freeze support for peaceful admissions.',
+    fullDescription: 'From migration certificates and gap-year affidavits to medical fitness certificates and physical verification counters, our counsellors ensure you never risk losing a confirmed seat due to technical document discrepancies.',
+    benefits: [
+      'Complete checklist for physical and online document verification',
+      'Standardized gap-year affidavit and anti-ragging undertaking templates',
+      'Seat acceptance fee verification and formal admission letter tracking',
+      'Hostel allotment and orientation day onboarding support'
+    ],
+    stats: { rating: '4.9/5', studentsAssisted: '19,000+', satisfactionRate: '99.6%' },
+    deliverables: [
+      'Master Document Verification Checklist',
+      'Legal Undertaking & Affidavit Formats',
+      'Campus Reporting Guide'
+    ],
+    process: [
+      { step: '01', title: 'Document Audit', desc: 'Check Class 10/12 original marksheets, transfer certificates, and category proofs.' },
+      { step: '02', title: 'Affidavit Preparation', desc: 'Provide verified drafts for gap year, character certificate, and domicile claims.' },
+      { step: '03', title: 'Seat Freeze Confirmation', desc: 'Coordinate fee payment and obtain the official institutional enrolment number.' },
+      { step: '04', title: 'Campus Check-In', desc: 'Guidance on hostel room reservation, mess registration, and academic calendar start.' }
+    ],
+    whoIsThisFor: [
+      'Students with gap years needing valid legal affidavits',
+      'Outstation students transitioning to campus hostels',
+      'Parents wanting complete peace of mind during final seat confirmation'
+    ],
+    faqs: [
+      { q: 'What if my original marksheet is not released yet by the board?', a: 'We help you obtain a provisional passing certificate or internet copy attested by your school principal which is accepted conditionally.' },
+      { q: 'Is a gap-year affidavit difficult to obtain?', a: 'Not at all. We provide a ready-to-print notary template stating the reasons for the drop year.' }
+    ],
+    isPublished: true,
+    order: 8,
   },
 ];
 
@@ -876,9 +1116,30 @@ const blogs = [
     slug: 'top-10-high-demand-engineering-specializations-2026',
     category: 'Engineering',
     excerpt: 'Detailed analysis of why AI, Cybersecurity, VLSI, and Robotics engineering offer the highest starting placement packages in 2026.',
-    featuredImage: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=450&fit=crop',
-    author: 'Editorial Desk',
-    createdAt: new Date(),
+    featuredImage: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1000&h=500&fit=crop',
+    author: 'Er. Rajesh Sharma',
+    authorRole: 'Senior Admissions Strategist',
+    readTime: '6 min read',
+    createdAt: new Date('2026-02-10T10:00:00.000Z'),
+    tags: ['Engineering', 'Artificial Intelligence', 'Campus Placements', 'B.Tech Trends'],
+    keyTakeaways: [
+      'Artificial Intelligence & Machine Learning degrees command a 35% higher median starting CTC than traditional IT.',
+      'Hardware renaissance: VLSI and Semiconductor Engineering are witnessing exponential hiring due to India Semiconductor Mission.',
+      'Accredited universities with Tier-1 industry labs (NVIDIA, Intel, AWS) outperform general colleges in core placements.'
+    ],
+    content: `Engineering in India is experiencing a monumental transformation in 2026. While traditional Computer Science remains the evergreen foundation, recruiter demand has definitively pivoted toward specialized sub-disciplines.
+
+### 1. Artificial Intelligence and Autonomous Systems
+AI engineering programs that integrate deep learning, mathematical optimization, and large-scale model inference now command the highest campus packages in India. Tier-1 institutes and accredited private universities with dedicated GPU infrastructure report average starter offers between ₹ 14 LPA and ₹ 28 LPA.
+
+### 2. Semiconductor Design & VLSI Engineering
+Spurred by national investments under the India Semiconductor Mission, semiconductor giants and fabless design firms are aggressively hiring B.Tech graduates proficient in Verilog, SystemVerilog, and FPGA architecture.
+
+### 3. Cyber Defense and Cloud Architecture
+As financial infrastructure and health networks migrate to multi-cloud architectures, cybersecurity engineers specialized in zero-trust architectures and ethical exploitation rank among the most non-cyclical tech professions.
+
+### What Aspirants Should Look For in 2026
+When shortlisting engineering colleges, students must examine faculty research output, active corporate sponsored labs, and internship release percentages rather than relying on legacy branding alone.`,
     isPublished: true,
   },
   {
@@ -887,20 +1148,152 @@ const blogs = [
     slug: 'how-to-select-the-perfect-b-school-for-mba',
     category: 'Management',
     excerpt: 'Crucial checklist comparing ROI, median CTC packages, faculty mentorship, and international exchange programs.',
-    featuredImage: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=450&fit=crop',
-    author: 'Senior Counsellor',
-    createdAt: new Date(),
+    featuredImage: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1000&h=500&fit=crop',
+    author: 'Priya Iyer',
+    authorRole: 'Executive MBA Consultant',
+    readTime: '5 min read',
+    createdAt: new Date('2026-02-05T09:30:00.000Z'),
+    tags: ['MBA Admissions', 'CAT Exam', 'B-School ROI', 'Placement Analysis'],
+    keyTakeaways: [
+      'Never evaluate B-schools purely on highest domestic package; median CTC provides the truest measure of batch placement depth.',
+      'Check course fees versus expected 2-year post-tax salary to calculate your real break-even ROI timeline.',
+      'Alumni network density in your target industry (Consulting, BFSI, FMCG) is your biggest career asset.'
+    ],
+    content: `Choosing the right business school is arguably the most capital-intensive academic decision of your career. An MBA program involves significant tuition outlay coupled with opportunity costs.
+
+### The Realistic Metric: Median CTC vs Batch Size
+Many institutions highlight eye-catching international packages of ₹ 1 Crore+ secured by one or two candidates. The true operational health of a B-school is revealed by its median salary across the entire graduating cohort. A median salary of ₹ 18 LPA across 400 students is significantly more reliable than a top package outlier across 60 students.
+
+### Industry Domain Specializations
+- **Consulting & Strategy**: Premier IIMs, XLRI, and ISB dominate recruitment from McKinsey, BCG, Bain, and Big 4 advisory arms.
+- **FinTech & Investment Banking**: Mumbai and Delhi-NCR based schools hold a strong locational advantage for treasury, PE/VC, and risk modeling roles.
+- **Brand Management & E-Commerce**: Look for B-schools with strong live-project integration and summer internship conversion ratios.
+
+### Evaluating Global Accreditations
+Ensure your shortlisted MBA or PGDM program holds international Triple Crown accreditations (AACSB, AMBA, EQUIS) or at minimum NBA and AIU equivalence.`,
     isPublished: true,
   },
   {
     _id: 'blog_3',
-    title: 'Common Mistakes Students Make During University Choice Filling',
+    title: '5 Costly Mistakes Students Make During College Admission Counseling',
     slug: 'common-mistakes-students-make-during-counseling',
     category: 'Admissions',
     excerpt: 'Avoid choice filling blunders, missed document verification windows, and falling for unverified seat agents.',
-    featuredImage: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&h=450&fit=crop',
-    author: 'Dr. Rajesh Sharma',
-    createdAt: new Date(),
+    featuredImage: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1000&h=500&fit=crop',
+    author: 'Dr. Sunita Varma',
+    authorRole: 'Central Admissions Advisor',
+    readTime: '7 min read',
+    createdAt: new Date('2026-01-28T14:15:00.000Z'),
+    tags: ['Counseling Guide', 'Seat Allocation', 'JoSAA', 'NEET Counseling'],
+    keyTakeaways: [
+      'Order of choice filling dictates seat allotment algorithms; never list a less-preferred institution above your dream choice.',
+      'Keep standardized PDF document scans below 200KB ready ahead of the counselling portal launch.',
+      'Beware of unverified third-party consultants demanding cash advances for "guaranteed" management quota seats.'
+    ],
+    content: `Every admission season, thousands of deserving candidates lose their rightful college seats not due to low percentiles, but because of administrative blunders during the multi-round counselling process.
+
+### Mistake 1: Sub-Optimal Choice Filling Priority
+Central counselling algorithms (such as JoSAA, CSAB, and MCC) evaluate choices sequentially from Option 1 downwards. If you place a lower-preference college at Rank 3, the algorithm will lock you into that seat immediately if your rank qualifies, completely bypassing superior institutions listed below it.
+
+### Mistake 2: Missing the "Float", "Slide", or "Freeze" Deadlines
+Students often assume their initial allotment is permanent and forget to exercise active willingness options. Failing to pay the seat acceptance fee within the designated 72-hour window results in immediate disqualification from all subsequent rounds.
+
+### Mistake 3: Faulty Category & Domicile Documentation
+OBC-NCL and EWS certificates must strictly adhere to the financial year guidelines (issued on or after April 1st of the current academic year). State format certificates are frequently rejected during Central counselling rounds.
+
+### Mistake 4: Falling for Unverified "Direct Seat" Brokers
+Always ensure application fees and seat reservation deposits are made exclusively via official university payment gateways. CaptonAdmission provides transparent guidance with zero middlemen.`,
+    isPublished: true,
+  },
+  {
+    _id: 'blog_4',
+    title: 'Medical Education in India: NEET Cutoffs, Govt vs Private Colleges and Fee Structures',
+    slug: 'medical-education-in-india-neet-cutoffs-fee-structures',
+    category: 'Medical',
+    excerpt: 'Navigating MBBS counseling, All India Quota versus State counseling, and realistic private college budget expectations.',
+    featuredImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1000&h=500&fit=crop',
+    author: 'Dr. Sunita Varma',
+    authorRole: 'Medical Admissions Director',
+    readTime: '8 min read',
+    createdAt: new Date('2026-01-20T11:45:00.000Z'),
+    tags: ['NEET UG', 'MBBS Cutoffs', 'Medical Counseling', 'Govt Medical Colleges'],
+    keyTakeaways: [
+      '15% All India Quota (AIQ) requires top-tier marks (640+ in general category), while state domiciles offer higher probability.',
+      'Deemed universities offer transparent centralized counseling but require budget planning of ₹ 60L to ₹ 1.1 Crore for full course.',
+      'Alternative medical degrees like BDS, BAMS (Ayurveda), and B.Sc Nursing provide rewarding healthcare careers with high ROI.'
+    ],
+    content: `With over 24 Lakh students competing for approximately 1.05 Lakh MBBS seats in India, NEET UG represents one of the world's most competitive entrance examinations.
+
+### Understanding the Seat Matrix
+- **AIQ (All India Quota - 15%)**: Open to all Indian nationals across all government medical colleges, administered by the Medical Counselling Committee (MCC).
+- **State Quota (85%)**: Reserved exclusively for state domicile holders. Cutoffs here are generally 20 to 50 marks lower than AIQ, making state counselling your primary focus.
+- **Deemed Universities**: Centrally counselled by MCC without state domicile restrictions, offering world-class tertiary care teaching hospitals.
+
+### Budgeting for Private Medical Colleges
+Tuition fees at premier private medical institutions range between ₹ 14 Lakhs and ₹ 25 Lakhs per annum. Adding hostel, mess, and clinical exam charges requires families to plan a total financial horizon of approximately ₹ 75 to 90 Lakhs.
+
+### Exploring Allied Healthcare: The Rising Prominence of Nursing & Biotechnology
+For students with percentiles in the 70-85 range, B.Sc Nursing and Biomedical Engineering offer immediate global employment opportunities across premier private hospitals in India, the UK, Australia, and the Middle East.`,
+    isPublished: true,
+  },
+  {
+    _id: 'blog_5',
+    title: 'Step-by-Step Guide to Securing Education Loans for Higher Studies in India',
+    slug: 'step-by-step-guide-to-securing-education-loans-india',
+    category: 'Financial Aid',
+    excerpt: 'Learn about Vidya Lakshmi portal, collateral-free thresholds up to 7.5 Lakhs, and interest subsidy schemes.',
+    featuredImage: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1000&h=500&fit=crop',
+    author: 'Financial Advisory Desk',
+    authorRole: 'Student Finance Expert',
+    readTime: '6 min read',
+    createdAt: new Date('2026-01-15T08:00:00.000Z'),
+    tags: ['Education Loan', 'Vidya Lakshmi', 'Collateral-free Loan', 'Subsidies'],
+    keyTakeaways: [
+      'Under the government CGFSEL scheme, education loans up to ₹ 7.5 Lakhs require zero property collateral or third-party guarantee.',
+      'The Vidya Lakshmi portal allows students to submit a single loan application to multiple nationalized banks simultaneously.',
+      'Central Sector Interest Subsidy (CSIS) covers 100% of interest charges during the study moratorium for eligible families.'
+    ],
+    content: `Financial limitations should never stand between a meritorious student and their higher education aspirations. The government and banking sector provide robust financial frameworks designed to empower students.
+
+### Key Government Loan Schemes
+1. **Collateral-Free Bracket (Up to ₹ 7.5 Lakhs)**: Banks cannot demand real estate or fixed deposits as collateral. A parent acts as co-borrower.
+2. **Vidya Lakshmi Portal**: The single-window portal developed by the Department of Financial Services (DFS) enables application tracking across public sector banks like SBI, PNB, and Bank of Baroda.
+3. **Interest Subsidy (CSIS)**: Available for economically disadvantaged students (annual family income up to ₹ 4.5 Lakhs) pursuing technical or professional degrees.
+
+### Necessary Documents for Expedited Sanction
+- Confirmed University Admission Letter with full fee structure breakdown
+- Class 10th and 12th original marksheets and passing certificates
+- KYC documents (Aadhaar, PAN) of student and co-applicant
+- Income proof of co-applicant (ITR of last 2 years / Form 16 / Salary Slips)
+- Six-month audited bank statement of salary account`,
+    isPublished: true,
+  },
+  {
+    _id: 'blog_6',
+    title: 'CUET UG 2026: Complete Strategy, Subject Mapping & Normalization Explained',
+    slug: 'cuet-ug-2026-complete-strategy-subject-mapping',
+    category: 'Entrance Exams',
+    excerpt: 'Demystifying domain subject choices, general test strategies, and university eligibility matrices for Delhi University, BHU, and JNU.',
+    featuredImage: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1000&h=500&fit=crop',
+    author: 'Er. Rajesh Sharma',
+    authorRole: 'National Exam Strategist',
+    readTime: '7 min read',
+    createdAt: new Date('2026-01-08T12:00:00.000Z'),
+    tags: ['CUET UG', 'Delhi University', 'Subject Mapping', 'NTA Exams'],
+    keyTakeaways: [
+      'Delhi University strictly mandates selecting only those domain subjects in CUET that you studied and passed in Class 12.',
+      'General Test (Section III) is compulsory for high-demand programs like BMS, BBA-FIA, and BBE.',
+      'Hybrid exam format combines Computer-Based Testing (CBT) and Pen-Paper OMR sheets for high-volume subjects.'
+    ],
+    content: `The Common University Entrance Test (CUET UG) has democratized admissions to more than 250 Central, State, Deemed, and Private universities across India.
+
+### Section Breakdown & Strategy
+- **Section I (Languages)**: Focus on vocabulary in context, reading comprehension, and literary aptitude. English and Hindi remain the most widely chosen mediums.
+- **Section II (Domain Subjects)**: Direct NCERT Class 12 syllabus mapping. Thorough mastery of NCERT textbook exemplars and back-of-chapter problems is sufficient to score 100 percentiles.
+- **Section III (General Test)**: Tests numerical ability, general mental ability, logical and analytical reasoning, and current affairs.
+
+### University Eligibility Rules (Crucial Caveat)
+Each participating university maintains autonomous eligibility criteria. For instance, Delhi University (DU) requires candidates to appear only in the subjects they passed in their Class 12 board exams, while other institutions permit attempting alternate domain subjects. Always cross-verify university eligibility matrices on CaptonAdmission before finalizing your test subjects.`,
     isPublished: true,
   },
 ];
@@ -1134,7 +1527,22 @@ module.exports = {
     return result;
   },
   getUniversityBySlug: (slug) => universities.find((u) => u.slug === slug) || null,
-  getServices: () => services,
+  getServices: (query = {}) => {
+    let result = [...services];
+    if (query.category && query.category !== 'All') {
+      result = result.filter((s) => s.category?.toLowerCase() === query.category.toLowerCase());
+    }
+    if (query.search) {
+      const q = query.search.toLowerCase();
+      result = result.filter(
+        (s) =>
+          s.title.toLowerCase().includes(q) ||
+          s.shortDescription.toLowerCase().includes(q) ||
+          (s.category && s.category.toLowerCase().includes(q))
+      );
+    }
+    return result;
+  },
   getServiceBySlug: (slug) => services.find((s) => s.slug === slug) || null,
   getExams: (query = {}) => {
     let result = [...exams];
@@ -1155,7 +1563,29 @@ module.exports = {
     return result;
   },
   getExamBySlug: (slug) => exams.find((e) => e.slug === slug) || null,
-  getBlogs: (limit) => (limit ? blogs.slice(0, Number(limit)) : blogs),
+  getBlogs: (query = {}) => {
+    let result = [...blogs];
+    const limit = typeof query === 'object' ? query.limit : query;
+    const category = typeof query === 'object' ? query.category : null;
+    const search = typeof query === 'object' ? query.search : null;
+
+    if (category && category !== 'All') {
+      result = result.filter((b) => b.category?.toLowerCase() === category.toLowerCase());
+    }
+    if (search) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (b) =>
+          b.title.toLowerCase().includes(q) ||
+          b.excerpt.toLowerCase().includes(q) ||
+          (b.category && b.category.toLowerCase().includes(q))
+      );
+    }
+    if (limit) {
+      result = result.slice(0, Number(limit));
+    }
+    return result;
+  },
   getBlogBySlug: (slug) => blogs.find((b) => b.slug === slug) || null,
   getTestimonials: () => testimonials,
   getCMS: () => cms,

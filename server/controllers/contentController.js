@@ -25,7 +25,7 @@ exports.getServices = async (req, res, next) => {
     console.warn('[Services] DB query failed, using mockStore fallback:', err.message);
   }
 
-  const fallback = mockStore.getServices();
+  const fallback = mockStore.getServices(req.query);
   res.status(200).json({ success: true, count: fallback.length, data: fallback });
 };
 
@@ -151,7 +151,7 @@ exports.getBlogs = async (req, res, next) => {
     console.warn('[Blogs] DB query failed, using mockStore fallback:', err.message);
   }
 
-  const fallback = mockStore.getBlogs(req.query.limit);
+  const fallback = mockStore.getBlogs(req.query);
   res.status(200).json({ success: true, total: fallback.length, data: fallback });
 };
 
