@@ -96,8 +96,10 @@ const HomePage = () => {
   // Horizontal auto-scroll slider controls
   const coursesScrollRef = useRef(null);
   const unisScrollRef = useRef(null);
+  const blogsScrollRef = useRef(null);
   const [coursesPaused, setCoursesPaused] = useState(false);
   const [unisPaused, setUnisPaused] = useState(false);
+  const [blogsPaused, setBlogsPaused] = useState(false);
 
   // Auto-scroll effect for Featured Courses (smooth step scroll every 3.2s, pauses on hover)
   useEffect(() => {
@@ -133,6 +135,23 @@ const HomePage = () => {
     return () => clearInterval(interval);
   }, [unisPaused, topUniversities]);
 
+  // Auto-scroll effect for Latest Education Blogs (smooth step scroll every 3.8s, pauses on hover)
+  useEffect(() => {
+    if (blogsPaused || blogs.length === 0) return;
+    const interval = setInterval(() => {
+      const el = blogsScrollRef.current;
+      if (!el) return;
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      if (el.scrollLeft >= maxScroll - 15) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        const step = el.clientWidth > 768 ? 400 : 320;
+        el.scrollBy({ left: step, behavior: 'smooth' });
+      }
+    }, 3800);
+    return () => clearInterval(interval);
+  }, [blogsPaused, blogs]);
+
   const scrollLeftCourses = () => {
     coursesScrollRef.current?.scrollBy({ left: -390, behavior: 'smooth' });
   };
@@ -145,6 +164,13 @@ const HomePage = () => {
   };
   const scrollRightUnis = () => {
     unisScrollRef.current?.scrollBy({ left: 400, behavior: 'smooth' });
+  };
+
+  const scrollLeftBlogs = () => {
+    blogsScrollRef.current?.scrollBy({ left: -400, behavior: 'smooth' });
+  };
+  const scrollRightBlogs = () => {
+    blogsScrollRef.current?.scrollBy({ left: 400, behavior: 'smooth' });
   };
 
   const dispatch = useDispatch();
@@ -174,7 +200,7 @@ const HomePage = () => {
             api.get('/services'),
             api.get('/exams'),
             api.get('/testimonials'),
-            api.get('/blogs?limit=3'),
+            api.get('/blogs?limit=10'),
             api.get('/cms').catch(() => ({ data: { data: null } })),
           ]);
 
@@ -353,11 +379,8 @@ const HomePage = () => {
 
       {/* SECTION 3: FEATURED COURSES (Full Width Interactive Auto-Scroll) */}
       <section className="relative z-10 py-16 sm:py-20 bg-slate-50/60 border-b border-slate-200 overflow-hidden w-full">
-        {/* Clean Centered Section Title */}
+        {/* Clean Centered Section Title (Main Line Only) */}
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 px-4">
-          <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3.5 py-1 rounded-full border border-blue-100 inline-block mb-2.5 shadow-2xs">
-            High Demand Degrees
-          </span>
           <h2 className="text-3xl sm:text-4xl font-black text-brand-navy tracking-tight">
             Featured Courses
           </h2>
@@ -488,11 +511,8 @@ const HomePage = () => {
 
       {/* SECTION 4: TOP UNIVERSITIES (Full Width Interactive Auto-Scroll) */}
       <section className="relative z-10 py-16 sm:py-20 bg-white border-b border-slate-200 overflow-hidden w-full">
-        {/* Clean Centered Section Title */}
+        {/* Clean Centered Section Title (Main Line Only) */}
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 px-4">
-          <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3.5 py-1 rounded-full border border-blue-100 inline-block mb-2.5 shadow-2xs">
-            Accredited Campuses
-          </span>
           <h2 className="text-3xl sm:text-4xl font-black text-brand-navy tracking-tight">
             Top Universities & Colleges
           </h2>
@@ -740,70 +760,105 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* SECTION 10: LATEST EDUCATION BLOGS */}
-      <section className="relative z-10 py-20 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12">
-          <div className="max-w-3xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-royal bg-blue-50 px-3 py-1 rounded-full border border-blue-100 inline-block mb-2">
-              Articles & Guides
-            </span>
-            <h2 className="text-3xl font-extrabold text-brand-navy">
-              Latest Education Insights
-            </h2>
-            <p className="text-slate-600 text-sm mt-2">
-              Stay ahead with curated admissions advice, career roadmaps, and college fee analysis.
-            </p>
-          </div>
-          <div className="mt-4 flex justify-center">
-            <Link
-              to="/blogs"
-              className="text-sm font-bold text-brand-royal hover:text-brand-navy flex items-center gap-1 group"
-            >
-              <span>View All Articles</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
+      {/* SECTION 10: LATEST EDUCATION BLOGS (Full Width Interactive Auto-Scroll) */}
+      <section className="relative z-10 py-16 sm:py-20 bg-slate-50/60 border-b border-slate-200 overflow-hidden w-full">
+        {/* Clean Centered Section Title (Main Line Only) */}
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 px-4">
+          <h2 className="text-3xl sm:text-4xl font-black text-brand-navy tracking-tight">
+            Latest Education Insights
+          </h2>
+        </div>
+
+        {/* Full Width Slider Wrapper with Floating Nav Buttons */}
+        <div className="relative w-full group/blogs">
+          {/* Left Floating Arrow Button */}
+          <button
+            type="button"
+            onClick={scrollLeftBlogs}
+            className="absolute left-3 sm:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/95 hover:bg-brand-royal text-slate-700 hover:text-white shadow-xl hover:shadow-2xl border border-slate-200/80 flex items-center justify-center transition-all duration-300 opacity-90 hover:opacity-100 hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-md"
+            title="Previous Articles"
+            aria-label="Previous Articles"
+          >
+            <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
+          </button>
+
+          {/* Right Floating Arrow Button */}
+          <button
+            type="button"
+            onClick={scrollRightBlogs}
+            className="absolute right-3 sm:right-6 lg:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/95 hover:bg-brand-royal text-slate-700 hover:text-white shadow-xl hover:shadow-2xl border border-slate-200/80 flex items-center justify-center transition-all duration-300 opacity-90 hover:opacity-100 hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-md"
+            title="Next Articles"
+            aria-label="Next Articles"
+          >
+            <ChevronRight className="w-5 h-5 stroke-[2.5]" />
+          </button>
+
+          {/* Edge Gradient Masks */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-slate-50 via-slate-50/60 to-transparent z-10" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-slate-50 via-slate-50/60 to-transparent z-10" />
+
+          {/* Horizontal Scroll Track (Scrollbar hidden, full width, smooth auto scroll) */}
+          <div
+            ref={blogsScrollRef}
+            onMouseEnter={() => setBlogsPaused(true)}
+            onMouseLeave={() => setBlogsPaused(false)}
+            onTouchStart={() => setBlogsPaused(true)}
+            onTouchEnd={() => setBlogsPaused(false)}
+            className="flex items-stretch gap-6 overflow-x-auto py-4 px-6 sm:px-12 lg:px-16 scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          >
+            {blogs.map((b) => (
+              <div
+                key={b._id}
+                className="w-[310px] sm:w-[350px] md:w-[380px] shrink-0 snap-start bg-white rounded-3xl border border-slate-200/90 hover:border-brand-royal/40 overflow-hidden shadow-card hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between group/blog"
+              >
+                <div className="h-44 overflow-hidden relative bg-slate-100">
+                  <img
+                    src={b.featuredImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=300&fit=crop'}
+                    alt={b.title}
+                    className="w-full h-full object-cover group-hover/blog:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3.5 left-3.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/95 text-brand-royal shadow-sm backdrop-blur-md">
+                      {b.category}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-extrabold text-base text-brand-navy group-hover/blog:text-brand-royal transition-colors line-clamp-2 leading-snug">
+                      {b.title}
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed font-normal">
+                      {b.excerpt}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                    <span className="font-medium text-slate-500">By {b.author || 'Editorial Desk'}</span>
+                    <Link
+                      to={`/blogs/${b.slug}`}
+                      className="font-bold text-brand-royal hover:underline flex items-center gap-1 group/link"
+                    >
+                      <span>Read Article</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
-          {blogs.map((b) => (
-            <div
-              key={b._id}
-              className="bg-white rounded-2xl border border-brand-border overflow-hidden shadow-card hover:shadow-card-hover transition-all flex flex-col justify-between"
-            >
-              <div className="h-44 overflow-hidden">
-                <img
-                  src={b.featuredImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=300&fit=crop'}
-                  alt={b.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-
-              <div className="p-5 flex-1 flex flex-col justify-between">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-brand-royal">
-                    {b.category}
-                  </span>
-                  <h3 className="font-bold text-sm text-brand-navy mt-1 line-clamp-2 leading-snug">
-                    {b.title}
-                  </h3>
-                  <p className="text-xs text-slate-500 mt-2 line-clamp-3">
-                    {b.excerpt}
-                  </p>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-                  <span>By {b.author || 'Editorial Desk'}</span>
-                  <Link
-                    to={`/blogs/${b.slug}`}
-                    className="font-bold text-brand-royal hover:underline"
-                  >
-                    Read Article &rarr;
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
+        {/* Bottom Interactive Explore CTA */}
+        <div className="mt-10 flex items-center justify-center gap-4 px-4">
+          <Link
+            to="/blogs"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand-royal hover:bg-brand-navy text-white font-extrabold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all"
+          >
+            <span>View All Articles</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 
